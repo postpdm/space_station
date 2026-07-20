@@ -11,3 +11,13 @@ Our portal aggregates common functionality across different systems, separating 
 Think of it as a space station designed to dock starships of any type.
 
 # To do
+
+[ ] Base cms
+[ ] Common tickets and forum
+[ ] Global db and global ref books
+[ ] Local db's
+[ ] Pods for internal solutions
+[ ] Pods for static solutions
+[ ] Subscribe solution for ref book broadcasting
+[ ] Central analitics
+
