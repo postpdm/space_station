@@ -1,14 +1,36 @@
 # Architecture
 
+* ASGI web host
+* web application on python
+* SQLAlchemy supported database
+* static storage
+
+
 # For system administrators and dev ops
 
 Aplication is a standart ASGI Python web application with Litestar framework core.
 
 Central database is SQLAlchemy supported database with Config .env files or DATABASE_URL environment string.
 
+Solution's databases is specific for each, see the plugins docs.
 
-Becourse of 'enterprise kind' you should provide the user authorisation and role-based rules by your side. Best options is a `x-remote-user` headers, provided from you web-server with SSO integration, or `i'm a USER` authorisation URL.
+Becourse of 'enterprise kind of project' you should provide the user authorisation and role-based rules by your side. Best options is a `x-remote-user` headers, provided from you web-server with SSO integration, or `i'm a USER` authorisation URL.
 
 # For core developers
 
+Space station core provide the central functions without business logic: 
+
+* Users
+* User notifications and communications
+* Reg and unreg of plugins and solutions
+
+
 # For solition developers
+
+Solutions could be several types
+
+* CMS/Forum/blog style
+* Static site
+* Static (SPA) with REST API functionality
+* Lambda-style calculators
+* Full stack ASGI plugins
