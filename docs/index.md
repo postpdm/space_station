@@ -8,13 +8,13 @@
 
 # For system administrators and dev ops
 
-Aplication is a standart ASGI Python web application with Litestar framework core.
+Application is a standart ASGI Python web application with Litestar framework core.
 
 Central database is SQLAlchemy supported database with Config .env files or DATABASE_URL environment string.
 
 Solution's databases is specific for each, see the plugins docs.
 
-Becourse of 'enterprise kind of project' you should provide the user authorisation and role-based rules by your side. Best options is a `x-remote-user` headers, provided from you web-server with SSO integration, or `i'm a USER` authorisation URL.
+Becourse of 'enterprise kind of project' you should provide the user authorisation and role-based rules by your side. Best options is a `x-remote-user` headers (https://nginx.org/en/docs/http/ngx_http_proxy_module.html)[ see NGINX for example], provided from you web-server with SSO integration, or `i'm a USER` authorisation URL. Solution developers should know nothing about your Auth or AD infrastructure.
 
 # For core developers
 
@@ -24,6 +24,10 @@ Space station core provide the central functions without business logic:
 * User notifications and communications
 * Reg and unreg of plugins and solutions
 
+Core web contain several blocks
+* core REST API
+* admin panel
+* user front-end
 
 # For solition developers
 
