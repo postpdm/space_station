@@ -32,11 +32,11 @@ Core web contain several blocks
 
 In typical situations users of solutions would not see any part of Space Station interface (only if curiuous).
 
-# For solition developers
+# For solution developers
 
 Solutions could be several types
 
-* CMS/Forum/blog style
+* CMS/Forum/blog style (user frontend and admin/editor section)
 * Static site
 * Static (SPA) with REST API functionality
 * Lambda-style calculators
@@ -44,6 +44,6 @@ Solutions could be several types
 
 # API Keys
 
-Solition developers of static sites with access to core API or another solutions API should manage the API KEY. 
+Solution developers of static sites with access to core API or another solutions API should manage the API KEY. 
 
-Full stack plugins may public it API with API KEY only.
+Full stack plugins may publish it's own API with API KEY only.
