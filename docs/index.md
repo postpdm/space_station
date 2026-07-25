@@ -26,8 +26,10 @@ Space station core provide the central functions without business logic:
 
 Core web contain several blocks
 * core REST API
-* admin panel
-* user front-end
+* admin panel (for system administators)
+* user front-end (for users who want to browse the list of avalable solutions).
+
+In typical situations users of solutions would not see any part of Space Station interface (only if curiuous).
 
 # For solition developers
 
