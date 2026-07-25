@@ -23,6 +23,7 @@ Space station core provide the central functions without business logic:
 * Users
 * User notifications and communications
 * Reg and unreg of plugins and solutions
+* Manage the internal and external API KEYs
 
 Core web contain several blocks
 * core REST API
@@ -40,3 +41,9 @@ Solutions could be several types
 * Static (SPA) with REST API functionality
 * Lambda-style calculators
 * Full stack ASGI plugins
+
+# API Keys
+
+Solition developers of static sites with access to core API or another solutions API should manage the API KEY. 
+
+Full stack plugins may public it API with API KEY only.
