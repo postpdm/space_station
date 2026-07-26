@@ -1,10 +1,8 @@
-from litestar import Litestar, get
+from litestar import Litestar
 
+from .config import template_config
+from .user_portal.views import User_Portal_Controller
 
-@get("/")
-async def index() -> str:
-    """Handler function that returns a greeting dictionary."""
-    return "Space station"
-
-
-app = Litestar(route_handlers=[index])
+app = Litestar( route_handlers=[User_Portal_Controller],
+    template_config=template_config,
+)
