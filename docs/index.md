@@ -14,7 +14,9 @@ Central database is SQLAlchemy supported database with Config .env files or DATA
 
 Solution's databases is specific for each, see the plugins docs.
 
-Becourse of 'enterprise kind of project' you should provide the user authorisation and role-based rules by your side. Best options is a `x-remote-user` headers [https://nginx.org/en/docs/http/ngx_http_proxy_module.html](see NGINX for example) or [https://docs.nginx.com/nginx/deployment-guides/single-sign-on/](SSO), provided from you web-server with SSO integration, or `i'm a USER` authorisation URL. Solution developers should know nothing about your Auth or AD infrastructure.
+Becourse of 'enterprise kind of project' you should provide the user authorisation and role-based rules by your side. Best options is a `x-remote-user` headers [https://nginx.org/en/docs/http/ngx_http_proxy_module.html](see NGINX for example) or [https://docs.nginx.com/nginx/deployment-guides/single-sign-on/](SSO), provided from you web-server with SSO integration, or `i'm a USER` authorisation URL. 
+
+Solution developers should know nothing about your Auth or AD infrastructure.
 
 # For core developers
 
@@ -25,7 +27,7 @@ Space station core provide the central functions without business logic:
 * Reg and unreg of plugins and solutions
 * Manage the internal and external API KEYs
 
-Core web contain several blocks
+Core web contain several controllers
 * core REST API
 * admin panel (for system administators)
 * user front-end (for users who want to browse the list of avalable solutions).
