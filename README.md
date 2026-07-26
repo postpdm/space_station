@@ -10,6 +10,16 @@ Our portal aggregates common functionality across different systems, separating 
 
 Think of it as a space station designed to dock starships of any type.
 
+## Run
+
+Run in developer debug mode
+
+    litestar run --reload --debug
+
+Run in production mode
+
+	litestar run --reload 
+
 # To do
 
 - [ ] Base cms
