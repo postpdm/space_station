@@ -5,9 +5,11 @@ Create virtual env (recomended)
 
 Run local in developer debug mode
 
-litestar run --reload --debug
+    litestar run --reload --debug
 
 Run local
 
-litestar run --reload 
-To do
+    litestar run --reload 
+
+
+# Prepare prod
