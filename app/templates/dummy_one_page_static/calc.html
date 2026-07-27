@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Substance Mass Calculator</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success-color: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .calculator-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            padding: 40px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+            background: linear-gradient(to right, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        select:focus, input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        select option {
+            background: #1e293b;
+            color: var(--text-main);
+        }
+
+        optgroup {
+            background: #0f172a;
+            color: var(--accent-color);
+            font-style: normal;
+            font-weight: bold;
+        }
+
+        .animated-group {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+        }
+
+        .animated-group.show {
+            max-height: 100px;
+            opacity: 1;
+            margin-top: 16px;
+        }
+
+        .results-panel {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 32px;
+            text-align: center;
+        }
+
+        .result-title {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .result-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--success-color);
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+            word-break: break-all;
+        }
+
+        .result-sub {
+            font-size: 16px;
+            color: var(--text-main);
+            margin-top: 4px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator-container">
+    <h1>Mass Calculator</h1>
+    <div class="subtitle">Calculate weight based on substance and volume</div>
+
+    <!-- Substance Selection -->
+    <div class="form-group">
+        <label for="substance">Substance Type</label>
+        <select id="substance" onchange="calculateMass()">
+            <optgroup label="Water & Aqueous Solutions">
+                <option value="1000">Pure Water (Fresh) — 1,000 kg/m³</option>
+                <option value="1025">Sea Water (Saltwater) — 1,025 kg/m³</option>
+                <option value="1200">Brine (20% NaCl) — 1,200 kg/m³</option>
+            </optgroup>
+            <optgroup label="Petroleum & Fuels">
+                <option value="890">Fuel Oil (Mazut / Heavy) — 890 kg/m³</option>
+                <option value="840">Diesel Fuel — 840 kg/m³</option>
+                <option value="740">Gasoline (Petrol) — 740 kg/m³</option>
+                <option value="800">Kerosene — 800 kg/m³</option>
+                <option value="900">Crude Oil (Average) — 900 kg/m³</option>
+            </optgroup>
+            <optgroup label="Chemicals & Alcohols">
+                <option value="789">Ethanol (Pure) — 789 kg/m³</option>
+                <option value="1260">Glycerin — 1,260 kg/m³</option>
+                <option value="1840">Sulfuric Acid (95%) — 1,840 kg/m³</option>
+                <option value="1490">Chloroform — 1,490 kg/m³</option>
+            </optgroup>
+            <optgroup label="Oils & Liquefied Gases">
+                <option value="920">Vegetable Oil — 920 kg/m³</option>
+                <option value="540">LPG (Liquefied Petroleum Gas) — 540 kg/m³</option>
+                <option value="422">LNG (Liquefied Natural Gas) — 422 kg/m³</option>
+            </optgroup>
+        </select>
+    </div>
+
+    <!-- Volume Selection -->
+    <div class="form-group">
+        <label for="volumeSelect">Volume (m³)</label>
+        <select id="volumeSelect" onchange="toggleVolumeMode()">
+            <option value="1000">1,000 m³</option>
+            <option value="5000">5,000 m³</option>
+            <option value="10000">10,000 m³</option>
+            <option value="custom">Custom Volume...</option>
+        </select>
+    </div>
+
+    <!-- Custom Volume Input (Animated) -->
+    <div class="form-group animated-group" id="customVolumeGroup">
+        <label for="customVolume">Enter Custom Volume (m³)</label>
+        <input type="number" id="customVolume" value="1000" min="0" step="any" oninput="calculateMass()">
+    </div>
+
+    <!-- Results Display -->
+    <div class="results-panel">
+        <div class="result-title">Calculated Total Mass</div>
+        <div class="result-value" id="massMetricTons">0 t</div>
+        <div class="result-sub" id="massKilograms">0 kg</div>
+    </div>
+</div>
+
+<script>
+    function toggleVolumeMode() {
+        const select = document.getElementById('volumeSelect');
+        const customGroup = document.getElementById('customVolumeGroup');
+        const customInput = document.getElementById('customVolume');
+        
+        if (select.value === 'custom') {
+            customGroup.classList.add('show');
+        } else {
+            customGroup.classList.remove('show');
+            customInput.value = select.value;
+        }
+        calculateMass();
+    }
+
+    function calculateMass() {
+        const density = parseFloat(document.getElementById('substance').value);
+        const selectVal = document.getElementById('volumeSelect').value;
+        
+        let volume = selectVal === 'custom' 
+            ? parseFloat(document.getElementById('customVolume').value) 
+            : parseFloat(selectVal);
+        
+        if (isNaN(volume) || volume < 0) volume = 0;
+        
+        const massKg = density * volume;
+        const massTons = massKg / 1000;
+        
+        // Format options for beautiful numbers
+        const formatter = new Intl.NumberFormat('en-US', {
+            maximumFractionDigits: 2
+        });
+        
+        document.getElementById('massMetricTons').textContent = `${formatter.format(massTons)} mt`;
+        document.getElementById('massKilograms').textContent = `${formatter.format(massKg)} kg`;
+    }
+
+    // Run initial calculation on page load
+    calculateMass();
+</script>
+
+</body>
+  </html>
+  
