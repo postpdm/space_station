@@ -18,6 +18,5 @@ class NewsCreate_pdnt(BaseModel):
     published_dt: Optional[datetime.datetime] = None
 
 class NewsUpdate_pdnt(BaseModel):
-    name: Optional[str] = None
     title: str
     published_dt: Optional[datetime.datetime] = None
