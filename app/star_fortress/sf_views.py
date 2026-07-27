@@ -11,6 +11,7 @@ class Star_Fortress_Controller(Controller):
         
         # Access to app through request
         app_instance = request.app
+        cached_plugins = request.app.state.active_plugins
 
         # Get all plugins
         plugin_names = [
@@ -19,5 +20,5 @@ class Star_Fortress_Controller(Controller):
         
         return Template(
             template_name = STAR_FORTRESS_TEMPLATES_DIR + "index.html", 
-            context={ 'installed_plugin_names' : plugin_names }
+            context={ 'installed_plugin_names' : plugin_names, 'cached_plugins' : cached_plugins }
         )

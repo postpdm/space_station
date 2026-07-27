@@ -8,9 +8,13 @@ from .core.core_view import NewsController
 
 from .plugins import get_all_ss_plugins
 
+plugins_list = get_all_ss_plugins()
+
 app = Litestar( route_handlers=[User_Portal_Controller, Star_Fortress_Controller, NewsController],
                 template_config=template_config,
-                plugins=[db_plugin] + get_all_ss_plugins(),
+                plugins=[db_plugin] + plugins_list,
     )
+
+app.state.active_plugins = plugins_list
 
 #

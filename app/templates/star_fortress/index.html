@@ -16,6 +16,20 @@
 
 <h2>Settings </h2>
 <p>List of installed plugins: <i>{{installed_plugin_names}}</i></p>
+<p>List of installed spac_station plugins:</p>
+<table border="1">
+{% for p in cached_plugins %}
+<tr>
+<td>	{{p.plugin_name}}</td>
+<td>
+	{% for c in p.controllers %}
+		<a href="{{c.path}}">User home page {{c.path}}</a>
+		<a href="{{c.path}}/admin_panel">Admin panel {{c.path}}/admin_panel</a>
+	{% endfor %}
+</td>
+</tr>
+{% endfor %}
+</table>
 
 <h2>User portal</h2>
 <p><a href="/">User portal</a></p>
