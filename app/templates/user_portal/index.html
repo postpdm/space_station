@@ -63,4 +63,15 @@ data.items.forEach(item => {
 
 <h2 id="applications">Applications<h2>
 
+{% for p in cached_plugins %}
+
+<h3>{{p.plugin_name}}</h3>
+
+	{% for c in p.controllers %}
+		<a href="{{c.path}}">User home page</a>
+	{% endfor %}
+
+{% endfor %}
+
+
 {% endblock %}
