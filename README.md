@@ -20,6 +20,10 @@ Run in production mode
 
 	litestar run --reload 
 
+or
+
+	uvicorn app:app --port 8000 --host 127.0.0.1
+
 # To do
 
 - [ ] Base cms
