@@ -1,1 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIS</title>
+
+    <!-- Relative paths point directly to local static files -->
+    <link rel="stylesheet" href="/static/ol/ol.css">
+    <script src="/static/ol/ol.js"></script>
+
+<style>
+        #map {
+            width: 100%;
+            height: 500px;
+        }
+</style>
+
+</head>
+
+<body>
+
+
 <h1>Here is a GIS</h1>
+
+<div id="map"></div>
+<div class="controls">
+    <button id="layer-toggle">Switch to OpenStreetMap</button>
+</div>
+
+
+
+    <script>
+        // 1. Create a local source and layer to hold the drawings
+        const vectorSource = new ol.source.Vector();
+        const vectorLayer = new ol.layer.Vector({
+            source: vectorSource,
+			visible: true,
+        });
+
+        // 1. Define the OpenStreetMap Layer
+        const osmLayer = new ol.layer.Tile({
+            source: new ol.source.OSM(),
+            visible: false // Hidden by default
+        });
+
+        // 2. Define the Google Maps Layer (using XYZ tiles)
+        const googleLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: 'https://mt{0-3}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+                attributions: '© Google'
+            }),
+            visible: true // Visible by default
+        });
+
+        // 2. Initialize Map
+        const map = new ol.Map({
+            target: 'map',
+            layers: [
+                            osmLayer, googleLayer, vectorLayer,
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([ 32, 60 ]),
+                zoom: 9,
+            })
+        });
+
+        // 4. Handle the Button Click Switch Logic
+        const toggleButton = document.getElementById('layer-toggle');
+
+        toggleButton.addEventListener('click', () => {
+            // Check current visibility of OSM
+            const isOsmVisible = osmLayer.getVisible();
+
+            // Swap visibilities
+            osmLayer.setVisible(!isOsmVisible);
+            googleLayer.setVisible(isOsmVisible);
+
+            // Update button text
+            if (isOsmVisible) {
+                toggleButton.innerText = "Switch to OpenStreetMap";
+            } else {
+                toggleButton.innerText = "Switch to Google Maps";
+            }
+        });
+
+
+
+    // Link the event
+    editBtn.addEventListener('click', toggleEditMode);
+
+
+    </script>
+
+</body>
+</html>
