@@ -1,5 +1,9 @@
-<h1>Welcome to Space Station user portal!</h1>
+{% extends 'user_portal/base.html' %}
+{% block title %}Space station user portal{% endblock %}
+{% block body %}
 
+<h1>Welcome to Space Station user portal!</h1>
+<p>Space Station give you an access to <a href="#applications">applications</a>.</p>
 
    <h3>News</h3>
 
@@ -8,17 +12,15 @@
    <table border="1">
   <thead>
     <tr>
-      <th>ID</th>
-      <th>Title</th>
       <th>published_dt</th>
+      <th>Title</th>
+      <th>ID</th>
     </tr>
   </thead>
   <tbody id="table-body">
     <!-- data -->
   </tbody>
 </table>
-
-    <ul id="news-list"></ul>
 
     <script>
         async function loadNews() {
@@ -27,7 +29,6 @@ fetch('/news')
   .then(response => response.json())
   .then(data => {
     // print
-    document.getElementById('news-list').textContent = JSON.stringify(data, null, 2);
 	const tableBody = document.getElementById('table-body');
 
 // delete table
@@ -38,12 +39,12 @@ data.items.forEach(item => {
 
   const row = `
     <tr>
-      <td>${item.id}</td>
-      <td>${item.title}</td>
       <td>${item.published_dt}</td>
+      <td>${item.title}</td>
+      <td>${item.id}</td>
     </tr>
   `;
-  tableBody.innerHTML += row; 
+  tableBody.innerHTML += row;
   });
 
 
@@ -56,3 +57,7 @@ data.items.forEach(item => {
 
 			};
     </script>
+
+<h1 id="applications">Applications<h2>
+
+{% endblock %}
