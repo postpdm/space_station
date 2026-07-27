@@ -11,10 +11,6 @@
   /* Base styles and space background */
   body {
     background-color: #02040a;
-    background-image:
-      radial-gradient(circle at 20% 30%, rgba(0, 255, 255, 0.08) 0%, transparent 40%),
-      radial-gradient(circle at 80% 70%, rgba(255, 0, 255, 0.08) 0%, transparent 40%),
-      radial-gradient(circle at 50% 50%, #080d1f 0%, #02040a 100%);
     background-attachment: fixed;
     color: #c5d1eb;
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -23,47 +19,6 @@
     line-height: 1.6;
     position: relative;
     overflow-x: hidden;
-  }
-
-  /* Animated stars with faster, dynamic twin-layer speed */
-  body::before, body::after {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -1;
-    background-repeat: repeat;
-  }
-
-  /* Fast dynamic tiny stars */
-  body::before {
-    background-image:
-      radial-gradient(1px 1px at 10% 20%, #fff, transparent),
-      radial-gradient(1.5px 1.5px at 40% 70%, #fff, transparent),
-      radial-gradient(1px 1px at 70% 40%, #fff, transparent),
-      radial-gradient(2px 2px at 80% 15%, #fff, transparent),
-      radial-gradient(1px 1px at 30% 90%, #fff, transparent);
-    background-size: 250px 250px;
-    animation: space-twinkle 2s infinite linear;
-  }
-
-  /* Energetic multicolored nebulae stars */
-  body::after {
-    background-image:
-      radial-gradient(2px 2px at 25% 25%, #00ffff, transparent),
-      radial-gradient(3px 3px at 60% 30%, #ff00ff, transparent),
-      radial-gradient(2px 2px at 85% 75%, #00ffff, transparent),
-      radial-gradient(2.5px 2.5px at 15% 85%, #ffff00, transparent);
-    background-size: 350px 350px;
-    animation: space-twinkle 3.5s infinite ease-in-out alternate;
-  }
-
-  @keyframes space-twinkle {
-    0% { opacity: 0.2; }
-    50% { opacity: 1; }
-    100% { opacity: 0.2; }
   }
 
   /* Sci-fi headings with instant neon ignition effect on page load */
@@ -199,7 +154,6 @@
 </head>
 
 {% block body %}Base{% endblock %}
-
 
 <footer>
     All systems ok.
