@@ -8,12 +8,12 @@ class BasePluginController(Controller, ABC):
     2 obligatory get's.
     """
 
-#    @abstractmethod
-#    @get("/home")
-#    async def user_home_page(self) -> Template:
-#        """User page."""
+    @abstractmethod
+    @get("/")
+    async def user_homepage(self) -> Template:
+        """User page."""
 
-#    @abstractmethod
-#    @get("/admin")
-#    async def admin_panel(self) -> Template:
-#        """Admin page."""
+    @abstractmethod
+    @get("/admin_panel")
+    async def admin_panel(self) -> Template:
+        """Admin page."""
