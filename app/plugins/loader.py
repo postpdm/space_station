@@ -31,7 +31,6 @@ def discover_local_plugins() -> list[InitPlugin]:
                     plugins.append(attr())
                     
         except Exception as e:
-            print('-')
             print(f"Error load plugin {module_name}: {e}")
             
     return plugins
