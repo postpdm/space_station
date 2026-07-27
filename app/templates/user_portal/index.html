@@ -1,1 +1,57 @@
 <h1>Welcome to Space Station user portal!</h1>
+
+
+   <h3>News</h3>
+
+
+   <table border="1">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Title</th>
+      <th>published_dt</th>
+    </tr>
+  </thead>
+  <tbody id="table-body">
+    <!-- data -->
+  </tbody>
+</table>
+
+    <button onclick="loadNews()">Read news</button>
+    <ul id="news-list"></ul>
+
+    <script>
+        async function loadNews() {
+
+fetch('/news')
+  .then(response => response.json())
+  .then(data => {
+    // print
+    document.getElementById('news-list').textContent = JSON.stringify(data, null, 2);
+	const tableBody = document.getElementById('table-body');
+
+// delete table
+tableBody.innerHTML = '';
+
+// array
+//data.forEach(item => {
+//  const row = `
+//    <tr>
+//      <td>${item.id}</td>
+//      <td>${item.title}</td>
+//      <td>${item.published_dt}</td>
+//    </tr>
+//  `;
+//  tableBody.innerHTML += row; 
+//  });
+
+
+
+
+  })
+  .catch(error => {
+    document.getElementById('news-list').textContent = 'Fail!';
+  });
+
+			};
+    </script>
