@@ -3,24 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Substance Mass Calculator</title>
+    <title>Advanced Mass Calculator (with Formula)</title>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #111827 100%);
             --card-bg: rgba(30, 41, 59, 0.7);
-            --card-border: rgba(255, 255, 255, 0.1);
+            --card-border: rgba(255, 255, 255, 0.08);
             --accent-color: #6366f1;
             --accent-hover: #4f46e5;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --success-color: #10b981;
+            --success-color: #34d399;
+            --info-color: #38bdf8;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
         body {
@@ -35,23 +36,22 @@
 
         .calculator-container {
             background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--card-border);
             padding: 40px;
             border-radius: 24px;
             width: 100%;
-            max-width: 500px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
+            max-width: 550px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
         h1 {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             text-align: center;
-            background: linear-gradient(to right, #fff, #a5b4fc);
+            background: linear-gradient(to right, #fff, #c7d2fe);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -60,7 +60,61 @@
             font-size: 14px;
             color: var(--text-muted);
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
+        }
+
+        /* Formula Presentation Styles */
+        .formula-container {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .math-formula {
+            display: inline-flex;
+            align-items: center;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 18px;
+            color: #e2e8f0;
+            user-select: none;
+        }
+
+        .math-variable {
+            font-style: italic;
+        }
+
+        .math-operator {
+            margin: 0 4px;
+        }
+
+        .math-fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 0 6px;
+            vertical-align: middle;
+        }
+
+        .math-numerator {
+            padding-bottom: 2px;
+            width: 100%;
+        }
+
+        .math-denominator {
+            border-top: 1px solid currentColor;
+            padding-top: 2px;
+            width: 100%;
+        }
+
+        sub {
+            font-size: 65%;
+            margin-left: 1px;
         }
 
         .form-group {
@@ -69,15 +123,15 @@
 
         label {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        select, input {
+        select, input[type="number"] {
             width: 100%;
             padding: 14px 16px;
             background: rgba(15, 23, 42, 0.6);
@@ -86,10 +140,10 @@
             color: var(--text-main);
             font-size: 16px;
             outline: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
         }
 
-        select:focus, input:focus {
+        select:focus, input[type="number"]:focus {
             border-color: var(--accent-color);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
         }
@@ -106,6 +160,63 @@
             font-weight: bold;
         }
 
+        .pressure-switch {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            background: rgba(15, 23, 42, 0.4);
+            padding: 6px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+        }
+
+        .pressure-switch label {
+            margin: 0;
+            padding: 10px;
+            text-align: center;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+            text-transform: none;
+        }
+
+        .pressure-switch input[type="radio"] {
+            display: none;
+        }
+
+        .pressure-switch input[type="radio"]:checked + label {
+            background: var(--accent-color);
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .slider-container {
+            background: rgba(15, 23, 42, 0.4);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .slider-value {
+            font-weight: 700;
+            color: var(--info-color);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent-color);
+            cursor: pointer;
+        }
+
         .animated-group {
             max-height: 0;
             overflow: hidden;
@@ -119,13 +230,41 @@
             margin-top: 16px;
         }
 
+        .badges-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .info-badge {
+            font-size: 12px;
+            color: var(--info-color);
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
         .results-panel {
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            border-radius: 16px;
-            padding: 20px;
+            background: rgba(99, 102, 241, 0.08);
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            border-radius: 20px;
+            padding: 24px;
             margin-top: 32px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .results-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-color);
         }
 
         .result-title {
@@ -137,18 +276,17 @@
         }
 
         .result-value {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 700;
             color: var(--success-color);
-            text-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+            text-shadow: 0 0 15px rgba(52, 211, 153, 0.2);
             word-break: break-all;
         }
 
         .result-sub {
             font-size: 16px;
-            color: var(--text-main);
-            margin-top: 4px;
-            opacity: 0.9;
+            color: var(--text-muted);
+            margin-top: 6px;
         }
     </style>
 </head>
@@ -156,36 +294,53 @@
 
 <div class="calculator-container">
     <h1>Mass Calculator</h1>
-    <div class="subtitle">Calculate weight based on substance and volume</div>
+    <div class="subtitle">Calculates mass accounting for Temperature & Pressure</div>
+
+    <!-- Integrated Pure HTML/CSS Formula View -->
+    <div class="formula-container">
+        <div class="math-formula">
+            <span class="math-variable">M</span>
+            <span class="math-operator">=</span>
+            <span class="math-variable">V</span>
+            <span class="math-operator">&middot;</span>
+            <span class="math-variable">&rho;</span><sub>base</sub>
+            <span class="math-operator">&middot;</span>
+            <div class="math-fraction">
+                <div class="math-numerator">
+                    1 + <span class="math-variable">&kappa;</span> &middot; (<span class="math-variable">P</span> &minus; <span class="math-variable">P</span><sub>base</sub>)
+                </div>
+                <div class="math-denominator">
+                    1 + <span class="math-variable">&beta;</span> &middot; (<span class="math-variable">T</span> &minus; <span class="math-variable">T</span><sub>base</sub>)
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Substance Selection -->
     <div class="form-group">
         <label for="substance">Substance Type</label>
         <select id="substance" onchange="calculateMass()">
             <optgroup label="Water & Aqueous Solutions">
-                <option value="1000">Pure Water (Fresh) — 1,000 kg/m³</option>
-                <option value="1025">Sea Water (Saltwater) — 1,025 kg/m³</option>
-                <option value="1200">Brine (20% NaCl) — 1,200 kg/m³</option>
+                <option value="1000|0.00021|0.000045">Pure Water (Fresh) — 1,000 kg/m³</option>
+                <option value="1025|0.00021|0.000044">Sea Water (Saltwater) — 1,025 kg/m³</option>
             </optgroup>
-            <optgroup label="Petroleum & Fuels">
-                <option value="890">Fuel Oil (Mazut / Heavy) — 890 kg/m³</option>
-                <option value="840">Diesel Fuel — 840 kg/m³</option>
-                <option value="740">Gasoline (Petrol) — 740 kg/m³</option>
-                <option value="800">Kerosene — 800 kg/m³</option>
-                <option value="900">Crude Oil (Average) — 900 kg/m³</option>
+            <optgroup label="Petroleum & Heavy Fuels">
+                <option value="890|0.00070|0.000070" selected>Fuel Oil (Mazut / Heavy) — 890 kg/m³</option>
+                <option value="900|0.00070|0.000075">Crude Oil (Average) — 900 kg/m³</option>
             </optgroup>
-            <optgroup label="Chemicals & Alcohols">
-                <option value="789">Ethanol (Pure) — 789 kg/m³</option>
-                <option value="1260">Glycerin — 1,260 kg/m³</option>
-                <option value="1840">Sulfuric Acid (95%) — 1,840 kg/m³</option>
-                <option value="1490">Chloroform — 1,490 kg/m³</option>
+            <optgroup label="Light Fuels & Chemicals">
+                <option value="840|0.00085|0.000080">Diesel Fuel — 840 kg/m³</option>
+                <option value="740|0.00095|0.000095">Gasoline (Petrol) — 740 kg/m³</option>
+                <option value="789|0.00110|0.000110">Ethanol (Pure) — 789 kg/m³</option>
             </optgroup>
-            <optgroup label="Oils & Liquefied Gases">
-                <option value="920">Vegetable Oil — 920 kg/m³</option>
-                <option value="540">LPG (Liquefied Petroleum Gas) — 540 kg/m³</option>
-                <option value="422">LNG (Liquefied Natural Gas) — 422 kg/m³</option>
+            <optgroup label="Liquefied Gases (Highly Compressible)">
+                <option value="540|0.00200|0.000350">LPG (Liquefied Petroleum Gas) — 540 kg/m³</option>
+                <option value="422|0.00350|0.000500">LNG (Liquefied Natural Gas) — 422 kg/m³</option>
             </optgroup>
         </select>
+        <div class="badges-container">
+            <div class="info-badge" id="currentDensity">Density: — kg/m³</div>
+        </div>
     </div>
 
     <!-- Volume Selection -->
@@ -205,10 +360,40 @@
         <input type="number" id="customVolume" value="1000" min="0" step="any" oninput="calculateMass()">
     </div>
 
+    <!-- Temperature Slider -->
+    <div class="form-group">
+        <div class="slider-container">
+            <div class="slider-header">
+                <label style="margin:0;">Temperature</label>
+                <span class="slider-value" id="tempValue">15 °C</span>
+            </div>
+            <input type="range" id="temperature" min="-20" max="100" value="15" step="1" oninput="calculateMass()">
+        </div>
+    </div>
+
+    <!-- Standard Pressure Selection -->
+    <div class="form-group">
+        <label>Standard Pressure Mode</label>
+        <div class="pressure-switch">
+            <div>
+                <input type="radio" id="p1" name="pressure" value="1" checked onchange="calculateMass()">
+                <label for="p1">1 atm (Atmospheric)</label>
+            </div>
+            <div>
+                <input type="radio" id="p10" name="pressure" value="10" onchange="calculateMass()">
+                <label for="p10">10 atm (Mid Press)</label>
+            </div>
+            <div>
+                <input type="radio" id="p50" name="pressure" value="50" onchange="calculateMass()">
+                <label for="p50">50 atm (High Press)</label>
+            </div>
+        </div>
+    </div>
+
     <!-- Results Display -->
     <div class="results-panel">
-        <div class="result-title">Calculated Total Mass</div>
-        <div class="result-value" id="massMetricTons">0 t</div>
+        <div class="result-title">Corrected Total Mass</div>
+        <div class="result-value" id="massMetricTons">0 mt</div>
         <div class="result-sub" id="massKilograms">0 kg</div>
     </div>
 </div>
@@ -229,31 +414,42 @@
     }
 
     function calculateMass() {
-        const density = parseFloat(document.getElementById('substance').value);
-        const selectVal = document.getElementById('volumeSelect').value;
+        const substanceData = document.getElementById('substance').value.split('|');
+        const densityBase = parseFloat(substanceData[0]); 
+        const beta = parseFloat(substanceData[1]);        
+        const kappa = parseFloat(substanceData[2]);       
         
+        const selectVal = document.getElementById('volumeSelect').value;
         let volume = selectVal === 'custom' 
             ? parseFloat(document.getElementById('customVolume').value) 
             : parseFloat(selectVal);
         
         if (isNaN(volume) || volume < 0) volume = 0;
+
+        const temp = parseFloat(document.getElementById('temperature').value);
+        document.getElementById('tempValue').textContent = `${temp} °C`;
+
+        const pressure = parseFloat(document.querySelector('input[name="pressure"]:checked').value);
+
+        const deltaT = temp - 15;
+        const deltaP = pressure - 1; 
         
-        const massKg = density * volume;
+        const actualDensity = densityBase * (1 + (kappa * deltaP)) / (1 + (beta * deltaT));
+        
+        const massKg = actualDensity * volume;
         const massTons = massKg / 1000;
         
-        // Format options for beautiful numbers
         const formatter = new Intl.NumberFormat('en-US', {
             maximumFractionDigits: 2
         });
         
+        document.getElementById('currentDensity').textContent = `Density: ${formatter.format(actualDensity)} kg/m³`;
         document.getElementById('massMetricTons').textContent = `${formatter.format(massTons)} mt`;
         document.getElementById('massKilograms').textContent = `${formatter.format(massKg)} kg`;
     }
 
-    // Run initial calculation on page load
     calculateMass();
 </script>
 
 </body>
-  </html>
-  
+</html>
