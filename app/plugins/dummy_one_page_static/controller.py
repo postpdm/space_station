@@ -12,10 +12,13 @@ class Dummy_One_Page_Static_Controller(BasePluginController):
     @get("/")
     async def user_homepage(self) -> Template:
         return Template(
-            template_name = DOPS_TEMPLATES_DIR + "calc.html", 
+            template_name = DOPS_TEMPLATES_DIR + "calc.html",
             context={  }
         )
-    
+
     @get("/admin_panel")
     async def admin_panel(self) -> str:
         return "Hello dummy admin panel!"
+
+    async def plugin_health(self) -> bool:
+        return True

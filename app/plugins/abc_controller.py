@@ -17,3 +17,9 @@ class BasePluginController(Controller, ABC):
     @get("/admin_panel")
     async def admin_panel(self) -> Template:
         """Admin page."""
+
+    @abstractmethod
+    async def plugin_health(self) -> bool:
+        """Check plugin healths."""
+
+#
