@@ -3,6 +3,7 @@
 
    <h3>News</h3>
 
+    <button onclick="loadNews()">Read news</button>
 
    <table border="1">
   <thead>
@@ -17,7 +18,6 @@
   </tbody>
 </table>
 
-    <button onclick="loadNews()">Read news</button>
     <ul id="news-list"></ul>
 
     <script>
@@ -34,16 +34,17 @@ fetch('/news')
 tableBody.innerHTML = '';
 
 // array
-//data.forEach(item => {
-//  const row = `
-//    <tr>
-//      <td>${item.id}</td>
-//      <td>${item.title}</td>
-//      <td>${item.published_dt}</td>
-//    </tr>
-//  `;
-//  tableBody.innerHTML += row; 
-//  });
+data.items.forEach(item => {
+
+  const row = `
+    <tr>
+      <td>${item.id}</td>
+      <td>${item.title}</td>
+      <td>${item.published_dt}</td>
+    </tr>
+  `;
+  tableBody.innerHTML += row; 
+  });
 
 
 

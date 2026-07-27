@@ -10,8 +10,6 @@ from advanced_alchemy.extensions.litestar import (
     service,
 )
 
-
-
 from .core_service import NewsService
 from .core_models import GNN_Article_Model
 from .core_schema import News_pdnt, NewsCreate_pdnt, NewsUpdate_pdnt
