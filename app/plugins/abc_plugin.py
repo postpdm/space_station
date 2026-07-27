@@ -9,6 +9,19 @@ class BasePlugin(InitPlugin, ABC):
     Loader should skip it.
     """
     
+    fuser_title : str
+    fuser_description : str
+
+    @property
+    def user_title(self) -> str:
+        """Return user title."""
+        return self.fuser_title
+        
+    @property
+    def user_description(self) -> str:
+        """Return user description."""
+        return self.fuser_description
+    
     @property
     def plugin_name(self) -> str:
         """Return class name."""

@@ -65,8 +65,8 @@ data.items.forEach(item => {
 
 {% for p in cached_plugins %}
 
-<h3>{{p.plugin_name}}</h3>
-
+<h3>{{p.user_title}}</h3>
+<p>{{p.user_description}}</p>
 	{% for c in p.controllers %}
 		<a href="{{c.path}}">User home page</a>
 	{% endfor %}

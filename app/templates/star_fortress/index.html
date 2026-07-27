@@ -17,10 +17,23 @@
 <h2>Settings </h2>
 <p>List of installed plugins: <i>{{installed_plugin_names}}</i></p>
 <p>List of installed spac_station plugins:</p>
+
 <table border="1">
+<thead>
+<tr>
+<th>System name</th>
+<th>User title</th>
+<th>User description</th>
+<th>Links</th>
+</tr>
+</thead>
+
+<tbody>
 {% for p in cached_plugins %}
 <tr>
-<td>	{{p.plugin_name}}</td>
+<td>{{p.plugin_name}}</td>
+<td>{{p.user_title}}</td>
+<td>{{p.user_description}}</td>
 <td>
 	{% for c in p.controllers %}
 		<a href="{{c.path}}">User home page {{c.path}}</a>
@@ -29,6 +42,7 @@
 </td>
 </tr>
 {% endfor %}
+</tbody>
 </table>
 
 <h2>User portal</h2>
@@ -36,19 +50,19 @@
 
 
     <h2>Add news</h2>
-    
+
     <form id="newsForm">
         <div class="form-group">
             <label for="title">Title:</label>
             <input type="text" id="title" required placeholder="Enter the title">
         </div>
-        
+
         <div class="form-group">
             <label for="published_dt">Publication date time:</label>
             <!-- current time -->
             <input type="datetime-local" id="published_dt" required>
         </div>
-        
+
         <button type="submit">Send</button>
     </form>
 
@@ -68,7 +82,7 @@
             // Get elements
             const title = document.getElementById('title').value;
             const localDate = document.getElementById('published_dt').value;
-            
+
             // Date time set to ISO (YYYY-MM-DDTHH:mm:ssZ)
             const published_dt = new Date(localDate).toISOString();
 

@@ -8,3 +8,5 @@ class Dummy_One_Page_Static_Plugin(BasePlugin):
     # add routing
     controllers = [Dummy_One_Page_Static_Controller]
 
+    fuser_title = 'Demo calculator'
+    fuser_description = 'Demo app calculates mass accounting for temperature & pressure'
