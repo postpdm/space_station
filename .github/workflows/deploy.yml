@@ -1,4 +1,4 @@
-:yamlname: Deploy Docs
+name: Deploy Docs
 on:
   push:
     branches: [ main ]
