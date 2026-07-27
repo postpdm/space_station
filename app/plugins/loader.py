@@ -1,38 +1,37 @@
 import importlib
 import pkgutil
 from pathlib import Path
+import inspect
+
 from litestar.plugins import InitPlugin
+
+from .abc_plugin import BasePlugin
 
 def discover_local_plugins() -> list[InitPlugin]:
     """Find and load all local space station plugins from code base."""
     plugins: list[InitPlugin] = []
-    
-    # get plugin dir
     plugins_dir = Path(__file__).parent
     
-    # Scan for plugins
     for _, module_name, is_pkg in pkgutil.iter_modules([str(plugins_dir)]):
-        if not is_pkg or module_name == "loader":
+        # Skip loader and abstract base
+        if not is_pkg or module_name in ("loader", "abc_plugin"):
             continue
             
         try:
-            # Import
             module = importlib.import_module(f"app.plugins.{module_name}")
-            
-            # Find InitPlugin
             for attr_name in dir(module):
                 attr = getattr(module, attr_name)
                 
                 if (
                     isinstance(attr, type) 
-                    and issubclass(attr, InitPlugin) 
-                    and attr is not InitPlugin
+                    and issubclass(attr, BasePlugin)  # Check for BasePlugin inheritance
+                    and ( attr != BasePlugin )
+                    and not inspect.isabstract(attr)  # Skip abstract
                 ):
-                    # Init and add to list
                     plugins.append(attr())
                     
         except Exception as e:
-            # Error
+            print('-')
             print(f"Error load plugin {module_name}: {e}")
             
     return plugins
