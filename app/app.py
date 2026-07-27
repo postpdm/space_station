@@ -6,9 +6,11 @@ from .star_fortress.sf_views import Star_Fortress_Controller
 from .core.core_config import db_plugin
 from .core.core_view import NewsController
 
+from .plugins import get_all_ss_plugins
+
 app = Litestar( route_handlers=[User_Portal_Controller, Star_Fortress_Controller, NewsController],
                 template_config=template_config,
-                plugins=[db_plugin],
+                plugins=[db_plugin] + get_all_ss_plugins(),
     )
 
 #
