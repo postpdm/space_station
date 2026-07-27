@@ -10,3 +10,5 @@ alchemy_config = SQLAlchemyAsyncConfig(
 )
 
 db_plugin = SQLAlchemyPlugin(config=alchemy_config )
+
+#
