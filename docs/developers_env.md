@@ -12,4 +12,8 @@ Run local
     litestar run --reload 
 
 
+See `.env.example` file for example.
+
 # Prepare prod
+
+Copy `.env.example` to `.env` file and set up your production settings.
