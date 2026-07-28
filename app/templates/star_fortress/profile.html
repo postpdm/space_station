@@ -1,16 +1,39 @@
-{% if error %}
-{{error}}
-{% endif %}
 
-{% if user_name %}
-<code>
-<p>{{user_name}}</p>
-</code>
-{% endif %}
+{% if server_request %}
+	<p>Server request get you auth user name</p>
+	{% if error %}
+		{{error}}
+	{% endif %}
 
-{% if s %}
-Raw output
-<pre>
-{{s}}
-</pre>
+	{% if user_name %}
+	<code>
+	<p>{{user_name}}</p>
+	</code>
+	{% endif %}
+
+	{% if js_data %}
+	Raw output
+	<pre>{{js_data}}</pre>
+	{% endif %}
+
+{% else %}
+
+	<p>Client request get you auth user name</p>
+	<div id="user_name"></div>
+
+	<script>
+
+	async function getField(url, fieldName) {
+	  const response = await fetch(url);
+	  const data = await response.json();
+
+	  console.log( data );
+
+	  document.getElementById('user_name').textContent = data[fieldName];
+	}
+
+	getField( "{{am_i_user_url}}", "{{am_i_user_field}}" );
+
+	</script>
+
 {% endif %}
