@@ -35,7 +35,8 @@ class Star_Fortress_Controller(Controller):
 
     @get('/profile')
     async def sf_profile(self, request: Request, app_settings: AppSettings ) -> Template:
-        js_data = []
+        js_data = []        
+        user_name = None
 
         try:
             if app_settings.AM_I_USER_URL:
@@ -48,21 +49,28 @@ class Star_Fortress_Controller(Controller):
             else:
                 am_i_user_field = 'userName'
 
-            async with httpx.AsyncClient() as client:
-                response = await client.get( am_i_user_url )
-                # Выбрасывает исключение для плохих HTTP-статусов (опционально)
-                response.raise_for_status()
-                js_data = response.json()
-                user_name = js_data.get( am_i_user_field )
-
-            return Template(
-                template_name = STAR_FORTRESS_TEMPLATES_DIR + "profile.html",
-                context={ 'user_name' : user_name, 's' : js_data, 'error' : None }
-            )
+            server_request = app_settings.AM_I_USER_SERVER_REQUEST
+            
+            if server_request:
+                async with httpx.AsyncClient() as client:
+                    response = await client.get( am_i_user_url )
+                    # raise exception
+                    response.raise_for_status()
+                    js_data = response.json()
+                    user_name = js_data.get( am_i_user_field )
+                    return Template(
+                        template_name = STAR_FORTRESS_TEMPLATES_DIR + "profile.html",
+                        context={ 'server_request' : server_request, 'user_name' : user_name, 'js_data' : js_data, 'error' : None }
+                        )
+            else:
+                return Template(
+                    template_name = STAR_FORTRESS_TEMPLATES_DIR + "profile.html",
+                    context={ 'server_request' : server_request, 'am_i_user_url' : am_i_user_url, 'am_i_user_field' : am_i_user_field }
+                    )
         except:
             return Template(
                 template_name = STAR_FORTRESS_TEMPLATES_DIR + "profile.html",
-                context={ 'user_name' : user_name, 's' : None, 'error' : "can't fetch url " + am_i_user_url }
+                context={ 'js_data' : None, 'error' : "can't fetch url " + am_i_user_url }
                 )
 
 
