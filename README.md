@@ -26,13 +26,14 @@ or
 
 # To do
 
+- [ ] auth
 - [ ] Base cms
 - [ ] Common tickets and forum
-- [*] Global db
+- [x] Global db
 - [ ] Global ref books
 - [ ] Local db's
 - [ ] Pods for internal solutions
-- [*] Pods for static solutions
+- [x] Pods for static solutions
 - [ ] Subscribe solution for ref book broadcasting
 - [ ] Central analitics
 
