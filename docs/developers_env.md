@@ -7,10 +7,15 @@ Run local in developer debug mode
 
     litestar run --reload --debug
 
-Run local
+Or run local
 
     litestar run --reload 
+    
+or
 
+    uvicorn app:app --port 8000 --host 127.0.0.1
+
+Litestar or uvicorn is equivalent, couse litestar runs the uvicorn.
 
 See `.env.example` file for example.
 

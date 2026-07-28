@@ -1,0 +1,6 @@
+site_name: Space station
+theme:
+  name: readthedocs
+nav:
+  - Main: index.md
+  

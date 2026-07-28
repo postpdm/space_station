@@ -20,14 +20,19 @@ Run in production mode
 
 	litestar run --reload 
 
+or
+
+	uvicorn app:app --port 8000 --host 127.0.0.1
+
 # To do
 
 - [ ] Base cms
 - [ ] Common tickets and forum
-- [ ] Global db and global ref books
+- [*] Global db
+- [ ] Global ref books
 - [ ] Local db's
 - [ ] Pods for internal solutions
-- [ ] Pods for static solutions
+- [*] Pods for static solutions
 - [ ] Subscribe solution for ref book broadcasting
 - [ ] Central analitics
 

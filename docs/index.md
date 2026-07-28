@@ -1,7 +1,6 @@
 # Architecture
 
-* ASGI web host
-* web application on python
+* ASGI web application on python
 * SQLAlchemy supported database
 * static storage
 
