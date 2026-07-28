@@ -10,6 +10,8 @@ from .core.core_view import NewsController
 
 from .plugins import get_all_ss_plugins
 
+from .views import favicon
+
 settings = get_settings()
 
 # Security: Limit domains to prevent HTTP Host Header attacks
@@ -26,7 +28,7 @@ app = Litestar( debug=settings.litestar_debug, # Hard disable debug mode in prod
                 # Inject settings globally via dependency injection
                 dependencies={"app_settings": Provide(get_settings, use_cache=True, sync_to_thread=False )},
                 
-                route_handlers=[User_Portal_Controller, Star_Fortress_Controller, NewsController],
+                route_handlers=[favicon, User_Portal_Controller, Star_Fortress_Controller, NewsController],
                 template_config=template_config,
                 static_files_config=[static_config],
                 plugins=[db_plugin] + plugins_list,
