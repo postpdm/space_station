@@ -17,4 +17,8 @@ or
 
 Litestar or uvicorn is equivalent, couse litestar runs the uvicorn.
 
+See `.env.example` file for example.
+
 # Prepare prod
+
+Copy `.env.example` to `.env` file and set up your production settings.
