@@ -1,4 +1,4 @@
-from litestar import Litestar, get
+from litestar import get
 from litestar.status_codes import HTTP_204_NO_CONTENT
 
 # shut it up
