@@ -3,3 +3,5 @@ aiosqlite
 sqlalchemy
 advanced_alchemy
 litestar_users
+pydantic
+pydantic_settings
