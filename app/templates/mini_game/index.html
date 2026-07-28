@@ -155,17 +155,20 @@
         const statusText = document.getElementById('status');
         const resetBtn = document.getElementById('resetBtn');
 
-        let currentPlayer = 'X'; // Player is always X
+        let currentPlayer = 'X'; 
         let gameState = ["", "", "", "", "", "", "", "", ""];
         let isGameActive = true;
 
-        const winningConditions = [, [3, 4, 5], [6, 7, 8], // Rows, [1, 4, 7], [2, 5, 8], // Columns, [2, 4, 6]             // Diagonals
+        // Исправленные комбинации для проверки победы
+        const winningConditions = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+            [0, 4, 8], [2, 4, 6]             // Diagonals
         ];
 
         function handleCellClick(e) {
             const clickedCell = e.target;
             
-            // Check if click is valid and it's human's turn
             if (!clickedCell.classList.contains('cell') || currentPlayer !== 'X' || !isGameActive) {
                 return;
             }
@@ -181,22 +184,22 @@
             if (checkResult()) {
                 currentPlayer = 'O';
                 statusText.textContent = "Robot is thinking...";
-                setTimeout(robotMove, 500); // Artificial delay for realism
+                setTimeout(robotMove, 500); 
             }
         }
 
         function robotMove() {
             if (!isGameActive) return;
 
-            // 1. Try to win or block player
+            // 1. Попытка выиграть или заблокировать игрока
             let move = findBestMove('O') || findBestMove('X');
 
-            // 2. Take center if empty
+            // 2. Если тактических ходов нет, занимаем центр
             if (move === null && gameState[4] === "") {
                 move = 4;
             }
 
-            // 3. Take random empty cell
+            // 3. Выбираем случайную пустую ячейку
             if (move === null) {
                 const emptyCells = [];
                 gameState.forEach((val, idx) => {
@@ -215,7 +218,6 @@
             }
         }
 
-        // Search for winning/blocking moves
         function findBestMove(playerSymbol) {
             for (let i = 0; i < winningConditions.length; i++) {
                 const [a, b, c] = winningConditions[i];
@@ -267,22 +269,19 @@
                 }
                 highlightWinningCells(winningCombo);
                 isGameActive = false;
-                return false; // Game over
+                return false; 
             }
 
             let roundDraw = !gameState.includes("");
             if (roundDraw) {
                 statusText.textContent = "Draw! 🤝";
                 isGameActive = false;
-                return false; // Game over
+                return false; 
             }
 
-            // Switch turns
-            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-            if (currentPlayer === 'X') {
-                statusText.textContent = "Your turn!";
-            }
-            return true; // Game continues
+            currentPlayer = 'X';
+            statusText.textContent = "Your turn!";
+            return true; 
         }
 
         function highlightWinningCells(combo) {
@@ -306,5 +305,4 @@
         resetBtn.addEventListener('click', resetGame);
     </script>
 </body>
-  </html>
-  
+</html>
