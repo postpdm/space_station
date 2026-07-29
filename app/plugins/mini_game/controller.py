@@ -6,8 +6,8 @@ from app.plugins.abc_controller import BasePluginController
 DOPS_TEMPLATES_DIR = "mini_game/"
 
 
-class Dummy_One_Page_Static_Controller(BasePluginController):
-    path = "/tic_tak_toe"
+class Mini_Game_Controller(BasePluginController):
+    path = "/tic_tac_toe"
 
     @get("/")
     async def user_homepage(self) -> Template:

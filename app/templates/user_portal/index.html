@@ -68,7 +68,7 @@ data.items.forEach(item => {
 <h3>{{p.user_title}}</h3>
 <p>{{p.user_description}}</p>
 	{% for c in p.controllers %}
-		<a href="{{c.path}}">User home page</a>
+		<a href="{{c.path}}">{{p.user_title}} application start page</a>
 	{% endfor %}
 
 {% endfor %}

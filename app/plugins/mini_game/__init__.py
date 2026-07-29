@@ -8,5 +8,5 @@ class Mini_Game_Plugin(BasePlugin):
     # add routing
     controllers = [Mini_Game_Controller]
 
-    fuser_title = 'Tic-tak-toe'
-    fuser_description = 'Tic-tak-toe min game'
+    fuser_title = 'Tic-tac-toe'
+    fuser_description = 'Tic-tac-toe mini game'
