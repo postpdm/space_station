@@ -31,11 +31,11 @@ class Star_Fortress_Controller(Controller):
     async def get_fake_user(self) -> dict[str, str]:
         """Fake method for local testing purposes"""
         # Litestar automatically converts this dict to a JSON response
-        return { "id": "123", "userName": "fake_user", 'some_key' : 'some_string' }
+        return { "id": "123", "userLogin": "fake_domain\\fake_user", "userName": "Mr. Fake User jr.", 'some_key' : 'some_string' }
 
     @get('/profile')
     async def sf_profile(self, request: Request, app_settings: AppSettings ) -> Template:
-        js_data = []        
+        js_data = []
         user_name = None
 
         try:
@@ -43,29 +43,36 @@ class Star_Fortress_Controller(Controller):
                 am_i_user_url = app_settings.AM_I_USER_URL
             else:
                 am_i_user_url = 'http://127.0.0.1:8000/star_fortress/fake_user'
-            
-            if app_settings.AM_I_USER_FIELD:
-                am_i_user_field = app_settings.AM_I_USER_FIELD
+
+            if app_settings.AM_I_USER_LOGIN_FIELD:
+                am_i_user_login_field = app_settings.AM_I_USER_LOGIN_FIELD
             else:
-                am_i_user_field = 'userName'
+                am_i_user_login_field = 'userLogin'
+
+            if app_settings.AM_I_USER_NAME_FIELD:
+                am_i_user_name_field = app_settings.AM_I_USER_NAME_FIELD
+            else:
+                am_i_user_name_field = 'userName'
 
             server_request = app_settings.AM_I_USER_SERVER_REQUEST
-            
+
             if server_request:
                 async with httpx.AsyncClient() as client:
                     response = await client.get( am_i_user_url )
                     # raise exception
                     response.raise_for_status()
                     js_data = response.json()
-                    user_name = js_data.get( am_i_user_field )
+                    user_login = js_data.get( am_i_user_login_field )
+                    user_name = js_data.get( am_i_user_name_field )
+
                     return Template(
                         template_name = STAR_FORTRESS_TEMPLATES_DIR + "profile.html",
-                        context={ 'server_request' : server_request, 'user_name' : user_name, 'js_data' : js_data, 'error' : None }
+                        context={ 'server_request' : server_request, 'user_login' : user_login, 'user_name' : user_name, 'js_data' : js_data, 'error' : None }
                         )
             else:
                 return Template(
                     template_name = STAR_FORTRESS_TEMPLATES_DIR + "profile.html",
-                    context={ 'server_request' : server_request, 'am_i_user_url' : am_i_user_url, 'am_i_user_field' : am_i_user_field }
+                    context={ 'server_request' : server_request, 'am_i_user_url' : am_i_user_url, 'am_i_user_login_field' : am_i_user_login_field, 'am_i_user_name_field' : am_i_user_name_field }
                     )
         except:
             return Template(
