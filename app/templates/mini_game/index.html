@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe vs AI</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --container-bg: #1e293b;
+            --text-color: #f8fafc;
+            --cell-bg: #334155;
+            --cell-hover: #475569;
+            --x-color: #f43f5e;
+            --o-color: #38bdf8;
+            --win-bg: #10b981;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            user-select: none;
+        }
+
+        .game-container {
+            background-color: var(--container-bg);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 340px;
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+        }
+
+        .sub-title {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .status {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            height: 30px;
+            font-weight: 600;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 12px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+
+        .cell {
+            background-color: var(--cell-bg);
+            border: none;
+            border-radius: 12px;
+            font-size: 2.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cell:hover {
+            background-color: var(--cell-hover);
+        }
+
+        .cell:active {
+            transform: scale(0.95);
+        }
+
+        .cell.x {
+            color: var(--x-color);
+        }
+
+        .cell.o {
+            color: var(--o-color);
+        }
+
+        .cell.winning {
+            background-color: var(--win-bg);
+            animation: pulse 0.8s infinite alternate;
+        }
+
+        .btn-reset {
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            width: 100%;
+        }
+
+        .btn-reset:hover {
+            background-color: #4f46e5;
+        }
+
+        .btn-reset:active {
+            transform: scale(0.98);
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.04); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>TIC-TAC-TOE</h1>
+        <div class="sub-title">You (❌) vs Robot (⭕)</div>
+        <div class="status" id="status">Your turn!</div>
+        
+        <div class="board" id="board">
+            <button class="cell" data-index="0"></button>
+            <button class="cell" data-index="1"></button>
+            <button class="cell" data-index="2"></button>
+            <button class="cell" data-index="3"></button>
+            <button class="cell" data-index="4"></button>
+            <button class="cell" data-index="5"></button>
+            <button class="cell" data-index="6"></button>
+            <button class="cell" data-index="7"></button>
+            <button class="cell" data-index="8"></button>
+        </div>
+
+        <button class="btn-reset" id="resetBtn">Restart Game</button>
+    </div>
+
+    <script>
+        const board = document.getElementById('board');
+        const cells = document.querySelectorAll('.cell');
+        const statusText = document.getElementById('status');
+        const resetBtn = document.getElementById('resetBtn');
+
+        let currentPlayer = 'X'; 
+        let gameState = ["", "", "", "", "", "", "", "", ""];
+        let isGameActive = true;
+
+        // Исправленные комбинации для проверки победы
+        const winningConditions = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+            [0, 4, 8], [2, 4, 6]             // Diagonals
+        ];
+
+        function handleCellClick(e) {
+            const clickedCell = e.target;
+            
+            if (!clickedCell.classList.contains('cell') || currentPlayer !== 'X' || !isGameActive) {
+                return;
+            }
+
+            const clickedCellIndex = parseInt(clickedCell.getAttribute('data-index'));
+
+            if (gameState[clickedCellIndex] !== "") {
+                return;
+            }
+
+            makeMove(clickedCell, clickedCellIndex);
+            
+            if (checkResult()) {
+                currentPlayer = 'O';
+                statusText.textContent = "Robot is thinking...";
+                setTimeout(robotMove, 500); 
+            }
+        }
+
+        function robotMove() {
+            if (!isGameActive) return;
+
+            // 1. Попытка выиграть или заблокировать игрока
+            let move = findBestMove('O') || findBestMove('X');
+
+            // 2. Если тактических ходов нет, занимаем центр
+            if (move === null && gameState[4] === "") {
+                move = 4;
+            }
+
+            // 3. Выбираем случайную пустую ячейку
+            if (move === null) {
+                const emptyCells = [];
+                gameState.forEach((val, idx) => {
+                    if (val === "") emptyCells.push(idx);
+                });
+                if (emptyCells.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+                    move = emptyCells[randomIndex];
+                }
+            }
+
+            if (move !== null) {
+                const cell = cells[move];
+                makeMove(cell, move);
+                checkResult();
+            }
+        }
+
+        function findBestMove(playerSymbol) {
+            for (let i = 0; i < winningConditions.length; i++) {
+                const [a, b, c] = winningConditions[i];
+                const values = [gameState[a], gameState[b], gameState[c]];
+                
+                const playerCount = values.filter(v => v === playerSymbol).length;
+                const emptyCount = values.filter(v => v === "").length;
+
+                if (playerCount === 2 && emptyCount === 1) {
+                    if (gameState[a] === "") return a;
+                    if (gameState[b] === "") return b;
+                    if (gameState[c] === "") return c;
+                }
+            }
+            return null;
+        }
+
+        function makeMove(cell, index) {
+            gameState[index] = currentPlayer;
+            cell.textContent = currentPlayer;
+            cell.classList.add(currentPlayer.toLowerCase());
+        }
+
+        function checkResult() {
+            let roundWon = false;
+            let winningCombo = [];
+
+            for (let i = 0; i < winningConditions.length; i++) {
+                const winCondition = winningConditions[i];
+                let a = gameState[winCondition[0]];
+                let b = gameState[winCondition[1]];
+                let c = gameState[winCondition[2]];
+
+                if (a === '' || b === '' || c === '') {
+                    continue;
+                }
+                if (a === b && b === c) {
+                    roundWon = true;
+                    winningCombo = winCondition;
+                    break;
+                }
+            }
+
+            if (roundWon) {
+                if (currentPlayer === 'X') {
+                    statusText.textContent = "You WIN! 🎉";
+                } else {
+                    statusText.textContent = "Robot WINS! 🤖";
+                }
+                highlightWinningCells(winningCombo);
+                isGameActive = false;
+                return false; 
+            }
+
+            let roundDraw = !gameState.includes("");
+            if (roundDraw) {
+                statusText.textContent = "Draw! 🤝";
+                isGameActive = false;
+                return false; 
+            }
+
+            currentPlayer = 'X';
+            statusText.textContent = "Your turn!";
+            return true; 
+        }
+
+        function highlightWinningCells(combo) {
+            combo.forEach(index => {
+                cells[index].classList.add('winning');
+            });
+        }
+
+        function resetGame() {
+            currentPlayer = 'X';
+            gameState = ["", "", "", "", "", "", "", "", ""];
+            isGameActive = true;
+            statusText.textContent = "Your turn!";
+            cells.forEach(cell => {
+                cell.textContent = "";
+                cell.className = "cell";
+            });
+        }
+
+        board.addEventListener('click', handleCellClick);
+        resetBtn.addEventListener('click', resetGame);
+    </script>
+</body>
+</html>
