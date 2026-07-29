@@ -5,6 +5,12 @@
 		{{error}}
 	{% endif %}
 
+	{% if user_login %}
+	<code>
+	<p>{{userlogin}}</p>
+	</code>
+	{% endif %}
+
 	{% if user_name %}
 	<code>
 	<p>{{user_name}}</p>
@@ -19,20 +25,20 @@
 {% else %}
 
 	<p>Client request get you auth user name</p>
+	<div id="user_login"></div>
 	<div id="user_name"></div>
 
 	<script>
 
-	async function getField(url, fieldName) {
-	  const response = await fetch(url, { credentials: 'include' } );
+	async function getField( ) {
+	  const response = await fetch( "{{am_i_user_url}}", { credentials: 'include' } );
 	  const data = await response.json();
 
-	  console.log( data );
-
-	  document.getElementById('user_name').textContent = data[fieldName];
+	  document.getElementById('user_login').textContent = data["{{am_i_user_login_field}}"];
+	  document.getElementById('user_name').textContent = data["{{am_i_user_name_field}}"];
 	}
 
-	getField( "{{am_i_user_url}}", "{{am_i_user_field}}" );
+	getField( );
 
 	</script>
 

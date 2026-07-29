@@ -41,7 +41,8 @@ class AppSettings(BaseSettings):
     
     # Auth section
     AM_I_USER_URL : str
-    AM_I_USER_FIELD : str
+    AM_I_USER_LOGIN_FIELD : str
+    AM_I_USER_NAME_FIELD : str
     AM_I_USER_SERVER_REQUEST : bool = True
     
     model_config = SettingsConfigDict(
