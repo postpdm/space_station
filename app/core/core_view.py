@@ -1,8 +1,12 @@
 from uuid import UUID
-from typing import Annotated, Optional
+from dataclasses import dataclass
+from typing import Annotated
 
-from litestar import Controller, Litestar, delete, get, patch, post
+from litestar import Controller, Litestar, Request, delete, get, patch, post # we don't like "put"
 from litestar.params import Dependency, PathParameter
+from litestar.response import Template, Redirect
+
+from litestar.params import URLEncodedBody
 
 from advanced_alchemy.extensions.litestar import (
     filters,
@@ -10,13 +14,65 @@ from advanced_alchemy.extensions.litestar import (
     service,
 )
 
-from .core_service import NewsService
-from .core_models import GNN_Article_Model
-from .core_schema import News_pdnt, NewsCreate_pdnt, NewsUpdate_pdnt
+from .core_service import NewsService, UserService
+from .core_models import User, GNN_Article_Model
+from .core_schema import News_pdnt, NewsCreate_pdnt, NewsUpdate_pdnt, User_pdnt, UserCreate_pdnt, UserUpdate_pdnt
 
+
+# AUTH
+
+@dataclass
+class UserForm:
+    user_login: str
+    user_name: str
+
+
+class UserController(Controller):
+    path = "/users"
+        
+    dependencies = providers.create_service_dependencies(
+        UserService,
+        "user_service",
+        load=[User],
+        filters={"pagination_type": "limit_offset", "id_filter": UUID, "search": "user_name", "search_ignore_case": True},
+    )
+
+    @get("/login", exclude_from_auth=True) # exclude from auth require, elsewhere middleware redirect as infinitely
+    async def login_page( self, user_service: UserService ) -> Template:
+        return Template(template_name="login.html")
+
+
+    @post("/login_form", exclude_from_auth=True) # exclude from auth require, elsewhere middleware redirect as infinitely
+    async def login_form( self, request: Request, user_service: UserService, data: URLEncodedBody[UserForm] ) -> UserForm:
+        
+        # check or create
+        user, res = await user_service.get_or_create_user( data.user_login, data.user_name )
+    
+        if user:
+            request.set_session( {"user_login": user.user_login, "user_name": user.user_name })   
+        
+        #redirect_target = request.session.pop("next_url", "/")
+        
+        # check for evil Redirect attack
+        if not redirect_target.startswith("/"):
+            redirect_target = "/"
+        return Redirect(path=redirect_target)
+
+
+    @get(path="/list_users")
+    async def list_users(
+        self,
+        user_service: UserService,
+        filters: Annotated[list[filters.FilterTypes], Dependency(skip_validation=True)],
+    ) -> service.OffsetPagination[User_pdnt]:
+        """List users."""
+        results, total = await user_service.get_many_and_count(*filters)
+        return user_service.to_schema(results, total, filters=filters, schema_type=User_pdnt)
+
+# News
 class NewsController(Controller):
     """News CRUD"""
-
+    
     dependencies = providers.create_service_dependencies(
         NewsService,
         "news_service",

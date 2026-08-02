@@ -4,7 +4,18 @@ from typing import Annotated, Optional
 
 from pydantic import BaseModel
 
+class User_pdnt(BaseModel):
+    user_login : str
+    user_name : str
 
+class UserCreate_pdnt(BaseModel):
+    user_login : str
+    user_name : str
+
+class UserUpdate_pdnt(BaseModel):
+    user_login : str
+    user_name : str
+    
 # we will explicitly define the schema instead of using DTO objects for clarity.
 
 class News_pdnt(BaseModel):
