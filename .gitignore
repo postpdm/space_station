@@ -13,3 +13,6 @@ __pycache__/
 
 # Windows
 *.bat
+
+# session_data folder (if File_Storage used)
+session_data

@@ -4,6 +4,7 @@
 
 <h1>Welcome to Space Station user portal!</h1>
 <p>Space Station give you an access to <a href="#applications">applications</a>.</p>
+<p>Go to your <a href="/user_fav">favorites</a>.</p>
 
    <h3>News</h3>
 
@@ -14,6 +15,7 @@
     <tr>
       <th>published_dt</th>
       <th>Title</th>
+      <th>Content</th>
       <th>ID</th>
     </tr>
   </thead>
@@ -41,6 +43,7 @@ data.items.forEach(item => {
     <tr>
       <td>${item.published_dt}</td>
       <td>${item.title}</td>
+      <td>${item.content}</td>
       <td>${item.id}</td>
     </tr>
   `;
@@ -68,7 +71,7 @@ data.items.forEach(item => {
 <h3>{{p.user_title}}</h3>
 <p>{{p.user_description}}</p>
 	{% for c in p.controllers %}
-		<a href="{{c.path}}">User home page</a>
+		<a href="{{c.path}}">{{p.user_title}} application start page</a>
 	{% endfor %}
 
 {% endfor %}
