@@ -135,7 +135,7 @@ class NewsController(Controller):
     dependencies = providers.create_service_dependencies(
         NewsService,
         "news_service",
-        load=[GNN_Article_Model.sections],
+        #load=[GNN_Article_Model.sections],
         filters={"pagination_type": "limit_offset", "id_filter": UUID, "search": "title", "search_ignore_case": True},
     )
 
@@ -153,6 +153,7 @@ class NewsController(Controller):
     async def create_news(self, news_service: NewsService, data: NewsCreate_pdnt) -> News_pdnt:
         """Create a new news."""
         obj = await news_service.create(data)
+#        obj.created_user_id = 1
         return news_service.to_schema(obj, schema_type=News_pdnt)
 
     # we override the news_repo to use the version that joins the Sections in

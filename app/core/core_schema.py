@@ -21,13 +21,16 @@ class UserUpdate_pdnt(BaseModel):
 class News_pdnt(BaseModel):
     id: Optional[UUID] = None
     title: str
+    content : str
     published_dt: Optional[datetime.datetime] = None
 
 
 class NewsCreate_pdnt(BaseModel):
     title: str
+    content : str
     published_dt: Optional[datetime.datetime] = None
 
 class NewsUpdate_pdnt(BaseModel):
     title: str
+    content : str
     published_dt: Optional[datetime.datetime] = None
