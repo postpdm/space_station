@@ -27,12 +27,6 @@ class Star_Fortress_Controller(Controller):
             context={ 'installed_plugin_names' : plugin_names, 'cached_plugins' : cached_plugins }
         )
 
-    @get('/fake_user')
-    async def get_fake_user(self) -> dict[str, str]:
-        """Fake method for local testing purposes"""
-        # Litestar automatically converts this dict to a JSON response
-        return { "id": "123", "userLogin": "fake_domain\\fake_user", "userName": "Mr. Fake User jr.", 'some_key' : 'some_string' }
-
     @get('/profile')
     async def sf_profile(self, request: Request, app_settings: AppSettings ) -> Template:
         js_data = []

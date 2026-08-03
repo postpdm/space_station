@@ -2,11 +2,57 @@
 <html>
 <head><title>Authorisation</title></head>
 <body>
+
+{% if server_request %}
+	<p>Server request get you auth user name</p>
+	{% if error %}
+		{{error}}
+	{% endif %}
+
+	{% if user_login %}
+	<code>
+	<p>{{user_login}}</p>
+	</code>
+	{% endif %}
+
+	{% if user_name %}
+	<code>
+	<p>{{user_name}}</p>
+	</code>
+	{% endif %}
+
+	{% if js_data %}
+	Raw output
+	<pre>{{js_data}}</pre>
+	{% endif %}
+
+	<p>You can proceed with <a href="/">portal</a>.</p>
+{% else %}
+
+	<h2>Client request get you auth user name</h2>
+	
     <h2>Enter</h2>
     <form action="/users/login_form" method="POST">
-        <input name="user_login" placeholder="user login" required>
-        <input name="user_name" placeholder="user name" required>
+        <input name="user_login" id="user_login" required readonly="readonly">
+        <input name="user_name" id="user_name" required readonly="readonly">
         <button type="submit">Enter</button>
     </form>
+	
+	<script>
+
+	async function getField( ) {
+	  const response = await fetch( "{{am_i_user_url}}", { credentials: 'include' } );
+	  const data = await response.json();
+
+	  document.getElementById('user_login').value = data["{{am_i_user_login_field}}"];
+	  document.getElementById('user_name').value = data["{{am_i_user_name_field}}"];
+	}
+
+	getField( );
+
+	</script>
+
+{% endif %}
+
 </body>
 </html>
