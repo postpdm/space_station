@@ -1,5 +1,6 @@
 litestar
 aiosqlite
+uuid-utils
 sqlalchemy
 advanced_alchemy
 pydantic
