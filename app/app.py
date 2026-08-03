@@ -1,7 +1,8 @@
+
 from litestar import Litestar
 #from litestar.config.allowed_hosts import AllowedHostsConfig
 from litestar.di import Provide
-from litestar.middleware.session import SessionMiddleware
+#from litestar.middleware.session import SessionMiddleware
 from litestar.exceptions.http_exceptions import NotAuthorizedException
 
 from functools import partial
@@ -10,7 +11,7 @@ from functools import partial
 from .config import template_config, static_config, get_settings
 from .user_portal.up_views import User_Portal_Controller
 from .star_fortress.sf_views import Star_Fortress_Controller
-from .core.core_config import db_plugin, session_backend
+from .core.core_config import db_plugin, session_config_b, session_store_config # session_backend 
 from .core.core_view import NewsController, UserController
 from .core.core_auth import auth_mw, auth_exception_handler
 
@@ -33,7 +34,9 @@ app = Litestar( debug=settings.litestar_debug, # Hard disable debug mode in prod
 
                 # Inject settings globally via dependency injection
                 dependencies={"app_settings": Provide(get_settings, use_cache=True, sync_to_thread=False )},
-                middleware=[partial(SessionMiddleware, backend=session_backend), auth_mw],
+                #middleware=[partial(SessionMiddleware, backend=session_backend), auth_mw],
+                middleware=[session_config_b.middleware, auth_mw],
+                stores=session_store_config,
                 exception_handlers={NotAuthorizedException: auth_exception_handler},
 
                 route_handlers=[ favicon,

@@ -4,7 +4,7 @@ from advanced_alchemy.extensions.litestar import (
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from advanced_alchemy.extensions.litestar.session import SessionModelMixin
+#from advanced_alchemy.extensions.litestar.session import SessionModelMixin
 
 from uuid import UUID
 from typing import Annotated, Optional
@@ -18,8 +18,8 @@ class User(base.UUIDBase):
 
 ## AUTH sessions in db
 # Session model
-class WebSession(SessionModelMixin):
-    __tablename__ = "web_sessions"
+#class WebSession(SessionModelMixin):
+#    __tablename__ = "web_sessions"
 
 
 # GNN — Galactic News Network
