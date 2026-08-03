@@ -41,9 +41,6 @@ class UserController(Controller):
     )
 
     async def set_session( self, request: Request, user_login : str, user_name : str ) -> None:
-        print( 'set_session' )
-        print( user_login )
-        print( user_name )
         request.set_session( {"user_login": user_login, "user_name": user_name })
 
     @get("/login", exclude_from_auth=True) # exclude from auth require, elsewhere middleware redirect as infinitely
@@ -101,12 +98,9 @@ class UserController(Controller):
     @post("/login_form", exclude_from_auth=True) # exclude from auth require, elsewhere middleware redirect as infinitely
     async def login_form( self, request: Request, user_service: UserService, data: URLEncodedBody[UserForm] ) -> UserForm:
         
-        print( 'login_form' )
         # check or create
         user, res = await user_service.get_or_create_user( data.user_login, data.user_name )
         
-        print( user )
-        print( res )
         if user:
             await self.set_session( request, user.user_login, user.user_name  )
 

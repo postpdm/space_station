@@ -31,10 +31,14 @@
 
 	<h2>Client request get you auth user name</h2>
 	
-    <h2>Enter</h2>
+    <h2>Check your login and name is correct and press enter. You can't change the login.</h2>
     <form action="/users/login_form" method="POST">
-        <input name="user_login" id="user_login" required readonly="readonly">
-        <input name="user_name" id="user_name" required readonly="readonly">
+        <input type="hidden" name="user_login" id="user_login" required readonly="readonly">
+        <input type="hidden" name="user_name" id="user_name" required readonly="readonly">
+        
+		<input type="text" name="user_login" id="v_user_login" disabled readonly="readonly">
+        <input type="text" 	name="user_name" id="v_user_name" disabled readonly="readonly">
+
         <button type="submit">Enter</button>
     </form>
 	
@@ -46,6 +50,8 @@
 
 	  document.getElementById('user_login').value = data["{{am_i_user_login_field}}"];
 	  document.getElementById('user_name').value = data["{{am_i_user_name_field}}"];
+	  document.getElementById('v_user_login').value = data["{{am_i_user_login_field}}"];
+	  document.getElementById('v_user_name').value = data["{{am_i_user_name_field}}"];
 	}
 
 	getField( );
