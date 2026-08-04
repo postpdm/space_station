@@ -40,8 +40,8 @@ class UserController(Controller):
         filters={"pagination_type": "limit_offset", "id_filter": UUID, "search": "user_name", "search_ignore_case": True},
     )
 
-    async def set_session( self, request: Request, user_login : str, user_name : str ) -> None:
-        request.set_session( {"user_login": user_login, "user_name": user_name })
+    async def set_session( self, request: Request, user_id : UUID, user_login : str, user_name : str ) -> None:
+        request.set_session( { "user_id" : user_id, "user_login": user_login, "user_name": user_name })
 
     @get("/login", exclude_from_auth=True) # exclude from auth require, elsewhere middleware redirect as infinitely
     async def login_page( self, app_settings: AppSettings, user_service: UserService, request: Request ) -> Template:
@@ -73,7 +73,12 @@ class UserController(Controller):
                     user_login = js_data.get( am_i_user_login_field )
                     user_name = js_data.get( am_i_user_name_field )
                     # we read login from server
-                    await self.set_session( user_login, user_name )
+                    
+                    
+                    # check or create
+                    user, res = await user_service.get_or_create_user( user_login, user_name )
+                    if user:
+                        await self.set_session( user.id, user_login, user_name )
                     
                     return Redirect(path='/')
                     
@@ -102,7 +107,7 @@ class UserController(Controller):
         user, res = await user_service.get_or_create_user( data.user_login, data.user_name )
         
         if user:
-            await self.set_session( request, user.user_login, user.user_name  )
+            await self.set_session( request, user.id, user.user_login, user.user_name  )
 
         redirect_target = request.session.pop("next_url", "/")
 
@@ -150,10 +155,20 @@ class NewsController(Controller):
         return news_service.to_schema(results, total, filters=filters, schema_type=News_pdnt)
 
     @post(path="/news")
-    async def create_news(self, news_service: NewsService, data: NewsCreate_pdnt) -> News_pdnt:
+    async def create_news(self, request : Request, news_service: NewsService, data: NewsCreate_pdnt) -> News_pdnt:
         """Create a new news."""
-        obj = await news_service.create(data)
-#        obj.created_user_id = 1
+        print(data)
+        user_id = request.session.get("user_id")
+        #print( user_id )
+        news_data_dict = data.model_dump()
+        news_data_dict[ "created_user_id" ] = str( user_id )
+        
+        
+        
+        #print(news_data_dict)
+        obj = await news_service.create( news_data_dict )
+        #obj.created_user_id = 'qqqww'
+        print( obj )
         return news_service.to_schema(obj, schema_type=News_pdnt)
 
     # we override the news_repo to use the version that joins the Sections in

@@ -15,7 +15,7 @@ class UserCreate_pdnt(BaseModel):
 class UserUpdate_pdnt(BaseModel):
     user_login : str
     user_name : str
-    
+
 # we will explicitly define the schema instead of using DTO objects for clarity.
 
 class News_pdnt(BaseModel):
@@ -23,7 +23,7 @@ class News_pdnt(BaseModel):
     title: str
     content : str
     published_dt: Optional[datetime.datetime] = None
-
+    created_user_id : str #UUID
 
 class NewsCreate_pdnt(BaseModel):
     title: str
