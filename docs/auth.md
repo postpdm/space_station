@@ -18,7 +18,8 @@ Auth routing
 
 AM_I_USER_URL = url to authorisation service
 
-Authorisation server is your intranet SSO server, it should return current user login (system name) and common name fields json.
+Authorisation service is your intranet SSO server, it should return current user login (system name) and common name fields, in json.
+
 AM_I_USER_LOGIN_FIELD = user system login
 AM_I_USER_NAME_FIELD = user common name
 
