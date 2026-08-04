@@ -52,6 +52,62 @@
 <h2>User portal</h2>
 <p><a href="/">User portal</a></p>
 
+<h2>User list</h2>
+
+    <button onclick="loadUsers()">Read user list</button>
+
+   <table border="1">
+  <thead>
+    <tr>
+      <th>Login</th>
+      <th>Name</th>
+    </tr>
+  </thead>
+  <tbody id="table-body">
+    <!-- data -->
+  </tbody>
+</table>
+
+    <script>
+        async function loadUsers() {
+
+fetch('/users/list_users')
+  .then(response => response.json())
+  .then(data => {
+    // print
+	const tableBody = document.getElementById('table-body');
+
+// delete table
+tableBody.innerHTML = '';
+
+// array
+data.items.forEach(item => {
+
+  const row = `
+    <tr>
+      <td>${item.user_login}</td>
+      <td>${item.user_name}</td>
+    </tr>
+  `;
+  tableBody.innerHTML += row;
+  });
+
+
+
+
+  })
+  .catch(error => {
+    document.getElementById('news-list').textContent = 'Fail!';
+  });
+
+			};
+
+
+  window.onload = loadUsers;
+</script>
+
+
+
 
     <h2>Add news</h2>
 
