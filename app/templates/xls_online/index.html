@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editable Excel File Viewer & Downloader</title>
-    <!-- Load SheetJS library via CDN -->
-    <script src="/static/xls/xlsx.full.min.js"></script>
-
+    {% if USE_CDN %}
+		<!-- Load SheetJS library via CDN -->
+		<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+	{% else %}
+		<script src="/static/xls/xlsx.full.min.js"></script>
+	{% endif %}
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -95,7 +98,7 @@
 
 <div class="container">
     <h2>Editable Excel File Viewer & Downloader (.xls / .xlsx)</h2>
-    
+
     <!-- File upload dropzone -->
     <div class="upload-section" onclick="document.getElementById('fileInput').click()">
         <p>Click here or drag and drop an Excel file to upload</p>
@@ -112,7 +115,7 @@
     <div id="actionsSection" class="actions-section">
         <button id="downloadBtn" class="btn-download">Download as XLSX</button>
     </div>
-    
+
     <!-- Table output display container -->
     <div class="table-container" id="tableOutput"></div>
 </div>
@@ -163,7 +166,7 @@
 
                 // First row contains column headers
                 headers = rawData[0];
-                
+
                 // Remaining rows contain actual database records
                 jsonData = rawData.slice(1);
 
@@ -189,7 +192,7 @@
     // Function to render HTML table based on internal javascript array state
     function renderTable() {
         let html = '<table><thead><tr>';
-        
+
         // Render headers
         headers.forEach(header => {
             html += `<th>${header || ''}</th>`;
@@ -215,10 +218,10 @@
             cell.addEventListener('blur', function() {
                 const r = parseInt(this.getAttribute('data-row'));
                 const c = parseInt(this.getAttribute('data-col'));
-                
+
                 // Initialize the sub-row array if it wasn't populated fully
                 if (!jsonData[r]) jsonData[r] = [];
-                
+
                 // Capture edited string inside UI and sync back to array store
                 jsonData[r][c] = this.innerText.trim();
             });
@@ -234,7 +237,7 @@
 
         // Create virtual sheet strictly tracking the array data structure matrix values
         const updatedWorksheet = XLSX.utils.aoa_to_sheet(fullOutputData);
-        
+
         // Setup empty container book
         const newWorkbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(newWorkbook, updatedWorksheet, "Sheet1");
