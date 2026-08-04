@@ -73,15 +73,15 @@ class UserController(Controller):
                     user_login = js_data.get( am_i_user_login_field )
                     user_name = js_data.get( am_i_user_name_field )
                     # we read login from server
-                    
-                    
+
+
                     # check or create
                     user, res = await user_service.get_or_create_user( user_login, user_name )
                     if user:
                         await self.set_session( user.id, user_login, user_name )
-                    
+
                     return Redirect(path='/')
-                    
+
                     #return Template(
                     #    template_name = STAR_FORTRESS_TEMPLATES_DIR + "profile.html",
                     #    context={ 'server_request' : server_request, 'user_login' : user_login, 'user_name' : user_name, 'js_data' : js_data, 'error' : None }
@@ -102,10 +102,10 @@ class UserController(Controller):
 
     @post("/login_form", exclude_from_auth=True) # exclude from auth require, elsewhere middleware redirect as infinitely
     async def login_form( self, request: Request, user_service: UserService, data: URLEncodedBody[UserForm] ) -> UserForm:
-        
+
         # check or create
         user, res = await user_service.get_or_create_user( data.user_login, data.user_name )
-        
+
         if user:
             await self.set_session( request, user.id, user.user_login, user.user_name  )
 
@@ -157,18 +157,11 @@ class NewsController(Controller):
     @post(path="/news")
     async def create_news(self, request : Request, news_service: NewsService, data: NewsCreate_pdnt) -> News_pdnt:
         """Create a new news."""
-        print(data)
         user_id = request.session.get("user_id")
-        #print( user_id )
         news_data_dict = data.model_dump()
-        news_data_dict[ "created_user_id" ] = str( user_id )
-        
-        
-        
-        #print(news_data_dict)
+        news_data_dict[ "created_user_id" ] = UUID( user_id )
+
         obj = await news_service.create( news_data_dict )
-        #obj.created_user_id = 'qqqww'
-        print( obj )
         return news_service.to_schema(obj, schema_type=News_pdnt)
 
     # we override the news_repo to use the version that joins the Sections in
