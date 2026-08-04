@@ -33,3 +33,11 @@ If AM_I_USER_SERVER_REQUEST = False, that mean your Space Station server have no
 Internal user id created in Space Station DB for data linking. User login and name stores in Space Station DB as SSO was return, and should not change.
 
 Browser sessions store in server side, in `session_data` folder and could be deleted at any time.
+
+## Why use folder for session store?
+
+Alternative is some kind of Redis, and it could be unavailable for your.
+
+Another alternative is a DB - but in this case your 'session flush cron job' should have an access to DB. 
+
+Best solution is a folder. Just drop all old files - and flush is done.
