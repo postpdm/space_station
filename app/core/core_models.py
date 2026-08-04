@@ -30,6 +30,7 @@ class GNN_Article_Model(base.UUIDAuditBase):
     content: Mapped[str]
     published_dt: Mapped[Optional[datetime.datetime]]
 
-#    created_user_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"))
-#    created_user: Mapped["User"] = relationship(lazy="joined", innerjoin=True, viewonly=True)
+    created_user_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"))
+    created_user: Mapped["User"] = relationship(lazy="joined", innerjoin=True, viewonly=True)
+
 #
