@@ -182,3 +182,252 @@ button:active {
   transform: scale(0.96);
   box-shadow: 0 0 10px #00ffff;
 }
+
+
+
+
+/* ==========================================================================
+   NEW STYLES: Stargazin' Navigation Menu & Cyber Form Fields
+   ========================================================================== */
+
+/* Stargazin' Navigation Menu */
+.stargazin-nav {
+  background: rgba(8, 14, 36, 0.7);
+  border: 1px solid rgba(255, 0, 255, 0.3);
+  border-radius: 8px;
+  padding: 10px 20px;
+  margin-bottom: 40px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.1);
+}
+
+.stargazin-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+  padding: 0;
+  margin: 0;
+}
+
+.stargazin-nav a {
+  color: #c5d1eb;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 8px 12px;
+  border-bottom: none;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+/* Hyper-space underline flare on hover */
+.stargazin-nav a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: #ff00ff;
+  box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+  transition: all 0.2s ease;
+  transform: translateX(-50%);
+}
+
+.stargazin-nav a:hover {
+  color: #ff00ff;
+  text-shadow: 0 0 8px rgba(255, 0, 255, 0.6);
+}
+
+.stargazin-nav a:hover::after {
+  width: 100%;
+}
+
+/* Cyber Form Fields */
+.cyber-form-group {
+  margin-bottom: 25px;
+  max-width: 400px;
+}
+
+.cyber-form-group label {
+  display: block;
+  color: #00ffff;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 8px;
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.4);
+}
+
+.cyber-input {
+  width: 100%;
+  background: rgba(8, 14, 36, 0.9);
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  border-radius: 4px;
+  padding: 12px 16px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Nebula Engine Core Ignition when selected */
+.cyber-input:focus {
+  outline: none;
+  border-color: #ff00ff;
+  box-shadow: 
+    0 0 15px rgba(255, 0, 255, 0.4), 
+    inset 0 0 8px rgba(255, 0, 255, 0.2);
+}
+
+/* Subtly change placeholder color to match theme */
+.cyber-input::placeholder {
+  color: rgba(197, 209, 235, 0.4);
+}
+
+/* Cyber Textarea */
+textarea.cyber-input {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Cyber Select Dropdown Container */
+.cyber-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.cyber-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  background: rgba(8, 14, 36, 0.9);
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  border-radius: 4px;
+  padding: 12px 40px 12px 16px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 1rem;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cyber-select:focus {
+  outline: none;
+  border-color: #ff00ff;
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+}
+
+/* Custom Dropdown Arrow */
+.cyber-select-wrapper::after {
+  content: '▼';
+  font-size: 0.7rem;
+  color: #00ffff;
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: color 0.15s ease;
+}
+
+.cyber-select-wrapper:focus-within::after {
+  color: #ff00ff;
+  text-shadow: 0 0 5px #ff00ff;
+}
+
+/* Style options dropdown list (limited browser support, but keeps theme background) */
+.cyber-select option {
+  background: #02040a;
+  color: #c5d1eb;
+}
+
+/* Cyber Checkbox Container */
+.cyber-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  color: #c5d1eb;
+  font-size: 1rem;
+  user-select: none;
+  margin-top: 10px;
+}
+
+/* Hide Default Checkbox */
+.cyber-checkbox-label input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Custom Checkbox Box */
+.cyber-checkmark {
+  width: 20px;
+  height: 20px;
+  background: rgba(8, 14, 36, 0.9);
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  border-radius: 4px;
+  position: relative;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+/* Hover over checkbox */
+.cyber-checkbox-label:hover input ~ .cyber-checkmark {
+  border-color: #00ffff;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+}
+
+/* Checked Box State */
+.cyber-checkbox-label input:checked ~ .cyber-checkmark {
+  border-color: #ff00ff;
+  background: rgba(255, 0, 255, 0.1);
+  box-shadow: 0 0 12px rgba(255, 0, 255, 0.5);
+}
+
+/* Checkmark Indicator (Hidden by default) */
+.cyber-checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid #ff00ff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Show indicator when checked */
+.cyber-checkbox-label input:checked ~ .cyber-checkmark::after {
+  display: block;
+}
+
+
+/* Cyber Datetime-Local Picker */
+input[type="datetime-local"].cyber-input {
+  cursor: pointer;
+}
+
+/* Customizes the native browser calendar icon behavior */
+input[type="datetime-local"].cyber-input::-webkit-calendar-picker-indicator {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://w3.org" width="16" height="16" fill="%2300ffff" class="bi bi-calendar-event" viewBox="0 0 16 16"><path d="M11 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z"/><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/></svg>');
+  cursor: pointer;
+  filter: drop-shadow(0 0 3px rgba(0, 255, 255, 0.8));
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+/* Hyper-space pop on icon hover */
+input[type="datetime-local"].cyber-input:focus::-webkit-calendar-picker-indicator,
+input[type="datetime-local"].cyber-input::-webkit-calendar-picker-indicator:hover {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://w3.org" width="16" height="16" fill="%23ff00ff" class="bi bi-calendar-event" viewBox="0 0 16 16"><path d="M11 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z"/><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/></svg>');
+  filter: drop-shadow(0 0 6px rgba(255, 0, 255, 1));
+  transform: scale(1.1);
+}
