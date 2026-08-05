@@ -24,10 +24,15 @@
 <h1>Here is a GIS</h1>
 
 <div id="map"></div>
-<div class="controls">
-    <button id="layer-toggle">Switch to OpenStreetMap</button>
-</div>
 
+<div class="controls">
+    <label for="layer-select">Base Map: </label>
+    <select id="layer-select">
+        <option value="google">Google Maps</option>
+        <option value="osm">OpenStreetMap</option>
+        <option value="geoserver">Internal GeoServer</option>
+    </select>
+</div>
 
 
     <script>
@@ -53,11 +58,25 @@
             visible: true // Visible by default
         });
 
+		// Replace URL, workspace:layer_name, and parameters with your GeoServer details
+		const geoserverLayer = new ol.layer.Tile({
+			source: new ol.source.TileWMS({
+				url: 'https://ahocevar.com/geoserver/wms',
+				params: { 'LAYERS' : 'topp:states', 'TILED': true },
+				serverType: 'geoserver',
+				attributions: '© Internal GeoServer',
+				transition: 0
+				
+				<!-- , crossOrigin: 'anonymous' -->
+			}),
+			visible: false
+		});
+
         // 2. Initialize Map
         const map = new ol.Map({
             target: 'map',
             layers: [
-                            osmLayer, googleLayer, vectorLayer,
+                            geoserverLayer, osmLayer, googleLayer, vectorLayer,
             ],
             view: new ol.View({
                 center: ol.proj.fromLonLat([ 32, 60 ]),
@@ -65,30 +84,29 @@
             })
         });
 
-        // 4. Handle the Button Click Switch Logic
-        const toggleButton = document.getElementById('layer-toggle');
+		// 4. Handle Dropdown Change Switch Logic
+		const layerSelect = document.getElementById('layer-select');
 
-        toggleButton.addEventListener('click', () => {
-            // Check current visibility of OSM
-            const isOsmVisible = osmLayer.getVisible();
+		layerSelect.addEventListener('change', (event) => {
+			const selectedValue = event.target.value;
 
-            // Swap visibilities
-            osmLayer.setVisible(!isOsmVisible);
-            googleLayer.setVisible(isOsmVisible);
+			// Hide all base layers first
+			googleLayer.setVisible(false);
+			osmLayer.setVisible(false);
+			geoserverLayer.setVisible(false);
 
-            // Update button text
-            if (isOsmVisible) {
-                toggleButton.innerText = "Switch to OpenStreetMap";
-            } else {
-                toggleButton.innerText = "Switch to Google Maps";
-            }
-        });
+			// Show the chosen one
+			if (selectedValue === 'google') {
+				googleLayer.setVisible(true);
+			} else if (selectedValue === 'osm') {
+				osmLayer.setVisible(true);
+			} else if (selectedValue === 'geoserver') {
+				geoserverLayer.setVisible(true);
+			}
+		});
 
 
-
-    // Link the event
-    editBtn.addEventListener('click', toggleEditMode);
-
+    
 
     </script>
 
