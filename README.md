@@ -26,7 +26,7 @@ or
 
 # To do
 
-- [ ] auth
+- [x] auth
 - [ ] Base cms
 - [ ] Common tickets and forum
 - [x] Global db
