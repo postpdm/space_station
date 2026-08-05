@@ -1,0 +1,48 @@
+{% extends 'star_fortress/base.html' %}
+{% block title %}
+    Star fortress - Space station admin portal
+{% endblock %}
+{% block body %}
+
+<h1>Star Fortress</h1>
+
+<h2>Backend API</h2>
+<p><a href ="/schema/">schemas</a></p>
+
+<p><a href="/schema/elements">schema/elements</a></p>
+<p><a href="/schema/redoc">schema/redoc</a></p>
+
+<h2>Settings </h2>
+<p>List of installed plugins: <i>{{installed_plugin_names}}</i></p>
+<p>List of installed spac_station plugins:</p>
+
+<table border="1">
+<thead>
+<tr>
+<th>System name</th>
+<th>User title</th>
+<th>User description</th>
+<th>Links</th>
+</tr>
+</thead>
+
+<tbody>
+{% for p in cached_plugins %}
+<tr>
+<td>{{p.plugin_name}}</td>
+<td>{{p.user_title}}</td>
+<td>{{p.user_description}}</td>
+<td>
+	{% for c in p.controllers %}
+		<a href="{{c.path}}">User home page {{c.path}}</a>
+		<br>
+		<br>
+		<a href="{{c.path}}/admin_panel">Admin panel {{c.path}}/admin_panel</a>
+	{% endfor %}
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %}

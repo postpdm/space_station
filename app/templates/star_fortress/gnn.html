@@ -1,0 +1,87 @@
+{% extends 'star_fortress/base.html' %}
+{% block title %}
+    Star fortress - Space station admin portal
+{% endblock %}
+{% block body %}
+
+<h1>Galactic News Network</h1>
+
+<h2>Add news</h2>
+
+<form id="newsForm">
+	<div class="cyber-form-group">
+        <label for="title">Title:</label>
+        <input type="text" class="cyber-input" id="title" required placeholder="Enter the title">
+    </div>
+	
+    <div class="cyber-form-group">
+        <label for="content">Content:</label>
+        <textarea id="content" required placeholder="Enter the content" rows="5" cols="55" class="cyber-input"></textarea>
+    </div>
+    
+	<div class="cyber-form-group">
+        <label for="published_dt">Publication date time:</label>
+        <!-- current time -->
+        <input type="datetime-local" class="cyber-input" id="published_dt" required>
+    </div>
+
+    <button type="submit">Send</button>
+</form>
+
+<div id="status"></div>
+
+<script>
+    // Current date time
+    document.getElementById('published_dt').value = new Date().toISOString().slice(0, 16);
+
+    document.getElementById('newsForm').addEventListener('submit', async function(e) {
+        e.preventDefault(); // cancel
+
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = 'Sending...';
+        statusDiv.style.color = 'black';
+
+        // Get elements
+        const title = document.getElementById('title').value;
+        const content = document.getElementById('content').value;
+        const localDate = document.getElementById('published_dt').value;
+
+        // Date time set to ISO (YYYY-MM-DDTHH:mm:ssZ)
+        const published_dt = new Date(localDate).toISOString();
+
+        // payload
+        const payload = {
+            title: title,
+			content : content,
+            published_dt: published_dt
+        };
+
+        try {
+            // POST API
+            const response = await fetch('/news', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                statusDiv.textContent = 'Success!';
+                statusDiv.style.color = 'green';
+                document.getElementById('newsForm').reset(); // Clear form
+                document.getElementById('published_dt').value = new Date().toISOString().slice(0, 16);
+            } else {
+                const errorText = await response.text();
+                statusDiv.textContent = `Server fail: ${response.status} - ${errorText}`;
+                statusDiv.style.color = 'red';
+            }
+        } catch (error) {
+            statusDiv.textContent = `Network fail: ${error.message}`;
+            statusDiv.style.color = 'red';
+        }
+    });
+</script>
+
+{% endblock %}

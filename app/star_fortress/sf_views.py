@@ -8,7 +8,27 @@ class Star_Fortress_Controller(Controller):
 
     @get('/')
     async def sf_index_handler(self, request: Request) -> Template:
+        return Template(
+            template_name = STAR_FORTRESS_TEMPLATES_DIR + "index.html",
+            context={  }
+        )
 
+    @get('/gnn')
+    async def sf_gnn(self, request: Request, ) -> Template:
+        return Template(
+            template_name = STAR_FORTRESS_TEMPLATES_DIR + "gnn.html",
+            context={  }
+        )
+    
+    @get('/crew')
+    async def sf_crew(self, request: Request, ) -> Template:
+        return Template(
+            template_name = STAR_FORTRESS_TEMPLATES_DIR + "crew.html",
+            context={  }
+        )
+    
+    @get('/hull')
+    async def sf_hull(self, request: Request, ) -> Template:
         # Access to app through request
         app_instance = request.app
         cached_plugins = request.app.state.active_plugins
@@ -19,7 +39,7 @@ class Star_Fortress_Controller(Controller):
         ]
 
         return Template(
-            template_name = STAR_FORTRESS_TEMPLATES_DIR + "index.html",
+            template_name = STAR_FORTRESS_TEMPLATES_DIR + "hull.html",
             context={ 'installed_plugin_names' : plugin_names, 'cached_plugins' : cached_plugins }
         )
 
