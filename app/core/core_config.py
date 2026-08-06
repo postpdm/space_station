@@ -25,7 +25,7 @@ db_plugin = SQLAlchemyPlugin(config=alchemy_config )
 
 # Session configuration
 session_config_b = ServerSideSessionConfig(
-    max_age=3600,  
+    max_age=60*60*24,  
 )
 
 session_store_config = { "sessions" : FileStore(path=Path("session_data"), create_directories=True ) }
