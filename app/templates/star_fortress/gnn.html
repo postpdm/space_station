@@ -15,9 +15,11 @@
     </div>
 	
     <div class="cyber-form-group">
-        <label for="content">Content:</label>
-        <textarea id="content" required placeholder="Enter the content" rows="5" cols="55" class="cyber-input"></textarea>
+        <label for="content">Content (markdown supported):</label>
+        <textarea id="content" required placeholder="Enter the markdown content" rows="5" cols="55" class="cyber-input"></textarea>
     </div>
+	<!-- The live preview box -->
+	<div id="preview"></div>
     
 	<div class="cyber-form-group">
         <label for="published_dt">Publication date time:</label>
@@ -27,6 +29,20 @@
 
     <button type="submit">Send</button>
 </form>
+
+
+<!-- Include marked.umd.js -->
+<script src="/static/markdown/marked.umd.js"></script>
+<script>
+  const editor = document.getElementById('content');
+  const preview = document.getElementById('preview');
+
+  // Update preview on input
+  editor.addEventListener('input', () => {
+    const markdownText = editor.value;
+    preview.innerHTML = marked.parse(markdownText);
+  });
+</script>
 
 <div id="status"></div>
 
