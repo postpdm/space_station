@@ -24,6 +24,7 @@ class News_pdnt(BaseModel):
     content : str
     published_dt: Optional[datetime.datetime] = None
     created_user_id : UUID
+    created_user : User_pdnt
 
 class NewsCreate_pdnt(BaseModel):
     title: str

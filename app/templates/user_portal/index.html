@@ -16,6 +16,7 @@
       <th>Title</th>
       <th>Content</th>
       <th>published_dt</th>
+      <th>Author</th>
       <th>ID</th>
     </tr>
   </thead>
@@ -44,6 +45,7 @@ data.items.forEach(item => {
       <td>${item.title}</td>
       <td>${item.content}</td>
       <td>${item.published_dt}</td>
+      <td>${item.created_user.user_name}</td>
       <td>${item.id}</td>
     </tr>
   `;
