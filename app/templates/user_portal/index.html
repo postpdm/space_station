@@ -17,7 +17,6 @@
       <th>Content</th>
       <th>published_dt</th>
       <th>Author</th>
-      <th>ID</th>
     </tr>
   </thead>
   <tbody id="table-body">
@@ -25,8 +24,10 @@
   </tbody>
 </table>
 
+  <script src="/static/markdown/marked.umd.js"></script>
     <script>
-        async function loadNews() {
+      
+	  async function loadNews() {
 
 fetch('/news')
   .then(response => response.json())
@@ -43,10 +44,9 @@ data.items.forEach(item => {
   const row = `
     <tr>
       <td>${item.title}</td>
-      <td>${item.content}</td>
+      <td>${marked.parse(item.content)}</td>
       <td>${item.published_dt}</td>
       <td>${item.created_user.user_name}</td>
-      <td>${item.id}</td>
     </tr>
   `;
   tableBody.innerHTML += row;
