@@ -5,7 +5,7 @@ from advanced_alchemy.extensions.litestar import (
 )
 from sqlalchemy import select
 
-from .core_models import User, GNN_Article_Model
+from .core_models import User, UserFav, GNN_Article_Model
 
 # AUTH
 
@@ -34,6 +34,18 @@ class UserService(service.SQLAlchemyAsyncRepositoryService[User]):
         self.repository.session.add( new_user )
         await self.repository.session.commit()  # commit
         return new_user, True  # return
+
+# User fav
+
+class UserFav_Service(service.SQLAlchemyAsyncRepositoryService[UserFav]):
+    """User favorites repository."""
+
+    class Repo(repository.SQLAlchemyAsyncRepository[UserFav]):
+        """User favorites  repository."""
+
+        model_type = UserFav
+
+    repository_type = Repo
 
 # NEWS
 

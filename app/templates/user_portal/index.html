@@ -71,6 +71,12 @@ data.items.forEach(item => {
 {% for p in cached_plugins %}
 
 <h3>{{p.user_title}}</h3>
+
+<form class="ajax-form">
+  <input type="hidden" name="plugin_UUID" value="{{p.ID}}">
+  <button type="submit">Add {{p.user_title}} to favorites</button>
+</form>
+
 <p>{{p.user_description}}</p>
 	{% for c in p.controllers %}
 		<a href="{{c.path}}">{{p.user_title}} application start page</a>
@@ -78,5 +84,31 @@ data.items.forEach(item => {
 
 {% endfor %}
 
+<script>
+document.addEventListener('submit', async function(e) {
+  // check form class
+  if (!e.target.classList.contains('ajax-form')) return;
+  
+  e.preventDefault(); // no page reload
+  
+  const form = e.target;
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+
+  console.log('Send:', data); // print plugin_UUID
+
+  try {
+    const response = await fetch('/userfav/userfav', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    
+    if (response.ok) alert(`Success send ID ${data.plugin_UUID}!`);
+  } catch (error) {
+    console.error('Fail:', error);
+  }
+});
+</script>
 
 {% endblock %}

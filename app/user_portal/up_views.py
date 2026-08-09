@@ -15,8 +15,8 @@ class User_Portal_Controller(Controller):
             context={ 'cached_plugins' : cached_plugins }
         )
 
-    @get( '/user_fav' )
-    async def user_favs(self, request: Request) -> Template:
+    @get( '/user_profile' )
+    async def user_profile(self, request: Request) -> Template:
         #cached_plugins = request.app.state.active_plugins
         username = request.session.get("user_name")
  

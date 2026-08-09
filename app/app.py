@@ -12,7 +12,7 @@ from .config import template_config, static_config, get_settings
 from .user_portal.up_views import User_Portal_Controller
 from .star_fortress.sf_views import Star_Fortress_Controller
 from .core.core_config import db_plugin, session_config_b, session_store_config # session_backend 
-from .core.core_view import NewsController, UserController
+from .core.core_view import NewsController, UserController, UserFavController
 from .core.core_auth import auth_mw, auth_exception_handler
 
 from .plugins import get_all_ss_plugins
@@ -40,7 +40,7 @@ app = Litestar( debug=settings.litestar_debug, # Hard disable debug mode in prod
                 exception_handlers={NotAuthorizedException: auth_exception_handler},
 
                 route_handlers=[ favicon,
-                                 UserController, User_Portal_Controller, Star_Fortress_Controller, NewsController],
+                                 UserController, UserFavController, User_Portal_Controller, Star_Fortress_Controller, NewsController],
                 template_config=template_config,
                 static_files_config=[static_config],
                 plugins=[db_plugin] + plugins_list,

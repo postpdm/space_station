@@ -16,6 +16,16 @@ class UserUpdate_pdnt(BaseModel):
     user_login : str
     user_name : str
 
+# User fav
+
+class UserFav_pdnt(BaseModel):
+    whose_user_fav_id : UUID
+    whose_user_fav : User_pdnt
+    plugin_UUID : UUID
+
+class UserFavCreate_pdnt(BaseModel):
+    plugin_UUID : UUID
+
 # we will explicitly define the schema instead of using DTO objects for clarity.
 
 class News_pdnt(BaseModel):
