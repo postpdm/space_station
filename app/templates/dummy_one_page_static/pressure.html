@@ -1,0 +1,208 @@
+{% extends 'dummy_one_page_static/base.html' %} 
+
+{% block title %}
+    Calculates Pressure Loss in Tube (Darcy-Weisbach) & Reynolds Number
+{% endblock %} 
+
+{% block body %} 
+<div class="calculator-container">
+    <h1>Pressure Loss Calculator</h1>
+    <div class="subtitle">Calculates pressure loss in tube accounting for velocity, density, pipe friction, and flow regime</div>
+
+    <!-- Integrated Pure HTML/CSS Formula View -->
+    <div class="formula-container">
+        <div class="math-formula">
+            <span class="math-variable">&Delta;P</span>
+            <span class="math-operator">=</span>
+            <span class="math-variable">f</span>
+            <span class="math-operator">&middot;</span>
+            <div class="math-fraction">
+                <div class="math-numerator">
+                    <span class="math-variable">L</span>
+                </div>
+                <div class="math-denominator">
+                    <span class="math-variable">D</span>
+                </div>
+            </div>
+            <span class="math-operator">&middot;</span>
+            <div class="math-fraction">
+                <div class="math-numerator">
+                    <span class="math-variable">&rho;</span> &middot; <span class="math-variable">v</span><sup>2</sup>
+                </div>
+                <div class="math-denominator">
+                    2
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pipe Material Selection (Determines Friction Factor 'f') -->
+    <div class="form-group">
+        <label for="substance">Tube Material (Friction Factor)</label>
+        <select id="substance" onchange="calculatePressureLoss()">
+            <optgroup label="Smooth Tubes">
+                <option value="0.015|1000">Copper / Plastic (Smooth) — f ≈ 0.015</option>
+                <option value="0.018|1000" selected>Stainless Steel (Clean) — f ≈ 0.018</option>
+            </optgroup>
+            <optgroup label="Commercial Pipes">
+                <option value="0.022|1000">Carbon Steel (Commercial) — f ≈ 0.022</option>
+                <option value="0.028|1000">Cast Iron (New) — f ≈ 0.028</option>
+            </optgroup>
+            <optgroup label="Rough / Old Pipes">
+                <option value="0.040|1000">Rusted Steel / Incrusted Tube — f ≈ 0.040</option>
+            </optgroup>
+        </select>
+        <div class="badges-container">
+            <div class="info-badge" id="currentDensity">Friction Factor (f): —</div>
+            <div class="info-badge" id="reynoldsBadge" >Reynolds (Re): —</div>
+        </div>
+    </div>
+
+    <!-- Tube Length Selection -->
+    <div class="form-group">
+        <label for="volumeSelect">Tube Length (m)</label>
+        <select id="volumeSelect" onchange="toggleVolumeMode()">
+            <option value="10">10 m</option>
+            <option value="50">50 m</option>
+            <option value="100">100 m</option>
+            <option value="custom">Custom Length...</option>
+        </select>
+    </div>
+
+    <!-- Custom Tube Length Input (Animated) -->
+    <div class="form-group animated-group" id="customVolumeGroup">
+        <label for="customVolume">Enter Custom Length (m)</label>
+        <input type="number" id="customVolume" value="10" min="0" step="any" oninput="calculatePressureLoss()">
+    </div>
+
+    <!-- Flow Velocity Slider -->
+    <div class="form-group">
+        <div class="slider-container">
+            <div class="slider-header">
+                <label style="margin:0;">Flow Velocity</label>
+                <span class="slider-value" id="tempValue">2.0 m/s</span>
+            </div>
+            <input type="range" id="temperature" min="0.1" max="10" value="2" step="0.1" oninput="calculatePressureLoss()">
+        </div>
+    </div>
+
+    <!-- Inner Diameter Selection -->
+    <div class="form-group">
+        <label for="diameterSelect">Inner Tube Diameter (D)</label>
+        <select id="diameterSelect" onchange="toggleDiameterMode()">
+            <option value="0.025">25 mm (1")</option>
+            <option value="0.050" selected>50 mm (2")</option>
+            <option value="0.100">100 mm (4")</option>
+            <option value="custom">Custom Diameter...</option>
+        </select>
+    </div>
+
+    <!-- Custom Tube Diameter Input (Animated) -->
+    <div class="form-group animated-group" id="customDiameterGroup">
+        <label for="customDiameter">Enter Custom Inner Diameter (mm)</label>
+        <input type="number" id="customDiameter" value="50" min="0.1" step="any" oninput="calculatePressureLoss()">
+    </div>
+
+    <!-- Results Display -->
+    <div class="results-panel">
+        <div class="result-title">Estimated Pressure Drop</div>
+        <div class="result-value" id="massMetricTons">0 bar</div>
+        <div class="result-sub" id="massKilograms">0 Pa</div>
+    </div>
+</div>
+
+<script>
+    function toggleVolumeMode() {
+        const select = document.getElementById('volumeSelect');
+        const customGroup = document.getElementById('customVolumeGroup');
+        const customInput = document.getElementById('customVolume');
+        
+        if (select.value === 'custom') {
+            customGroup.classList.add('show');
+        } else {
+            customGroup.classList.remove('show');
+            customInput.value = select.value;
+        }
+        calculatePressureLoss();
+    }
+
+    function toggleDiameterMode() {
+        const select = document.getElementById('diameterSelect');
+        const customGroup = document.getElementById('customDiameterGroup');
+        const customInput = document.getElementById('customDiameter');
+        
+        if (select.value === 'custom') {
+            customGroup.classList.add('show');
+        } else {
+            customGroup.classList.remove('show');
+            // Store selected equivalent in mm into input
+            customInput.value = parseFloat(select.value) * 1000;
+        }
+        calculatePressureLoss();
+    }
+
+    function calculatePressureLoss() {
+        const materialData = document.getElementById('substance').value.split('|');
+        const frictionFactor = parseFloat(materialData[0]); 
+        const fluidDensity = parseFloat(materialData[1]); 
+
+        // Handle Length Core
+        const lengthSelectVal = document.getElementById('volumeSelect').value;
+        let length = lengthSelectVal === 'custom' 
+            ? parseFloat(document.getElementById('customVolume').value) 
+            : parseFloat(lengthSelectVal);
+        if (isNaN(length) || length < 0) length = 0;
+
+        // Handle Velocity Core
+        const velocity = parseFloat(document.getElementById('temperature').value);
+        document.getElementById('tempValue').textContent = `${velocity.toFixed(1)} m/s`;
+
+        // Handle Diameter Core (Convert custom mm input to meters if applied)
+        const diameterSelectVal = document.getElementById('diameterSelect').value;
+        let diameter = 0;
+        if (diameterSelectVal === 'custom') {
+            let customMm = parseFloat(document.getElementById('customDiameter').value);
+            if (isNaN(customMm) || customMm <= 0) customMm = 1; // Safeguard against divide by zero
+            diameter = customMm / 1000; 
+        } else {
+            diameter = parseFloat(diameterSelectVal);
+        }
+
+        // Calculate Reynolds Number (Re = (v * D) / Kinematic Viscosity)
+        // Water dynamic kinematic viscosity at ~20°C is 1.004e-6 m²/s
+        const kinematicViscosity = 0.000001004;
+        let reynolds = 0;
+        let flowRegime = "Laminar";
+        
+        if (diameter > 0) {
+            reynolds = (velocity * diameter) / kinematicViscosity;
+        }
+
+        if (reynolds >= 4000) {
+            flowRegime = "Turbulent";
+        } else if (reynolds > 2300 && reynolds < 4000) {
+            flowRegime = "Transitional";
+        }
+
+        // Darcy-Weisbach Equation Execution
+        let pressureDropPa = 0;
+        if (diameter > 0) {
+            pressureDropPa = frictionFactor * (length / diameter) * ((fluidDensity * Math.pow(velocity, 2)) / 2);
+        }
+        const pressureDropBar = pressureDropPa / 100000;
+
+        // Formatting options
+        const formatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 4 });
+        const intFormatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+
+        // Update output nodes matching exact classes/IDs
+        document.getElementById('currentDensity').textContent = `Friction Factor (f): ${frictionFactor}`;
+        document.getElementById('reynoldsBadge').textContent = `Reynolds (Re): ${intFormatter.format(reynolds)} (${flowRegime})`;
+        document.getElementById('massMetricTons').textContent = `${formatter.format(pressureDropBar)} bar`;
+        document.getElementById('massKilograms').textContent = `${intFormatter.format(pressureDropPa)} Pa`;
+    }
+
+    // Initialize on load
+    calculatePressureLoss();
+</script>
+{% endblock %}
