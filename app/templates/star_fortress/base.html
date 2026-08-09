@@ -7,7 +7,7 @@
 	{% block title %}{% endblock %}
 
 	</title>
-	<link rel="stylesheet" href="/static/cosmos/cosmos.css">
+	<link rel="stylesheet" href="{{ url_for_static_asset('static', file_path='cosmos/cosmos.css') }}">
 	<style>
 	{% block addition_style %}{% endblock %}
 	</style>

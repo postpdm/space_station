@@ -6,8 +6,9 @@
     <title>GIS</title>
 
     <!-- Relative paths point directly to local static files -->
-    <link rel="stylesheet" href="/static/ol/ol.css">
-    <script src="/static/ol/ol.js"></script>
+	<link rel="stylesheet" href="{{ url_for_static_asset('static', file_path='ol/ol.css') }}">
+
+    <script src="{{ url_for_static_asset('static', file_path='ol/ol.js') }}"></script>
 
 <style>
         #map {

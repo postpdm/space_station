@@ -32,7 +32,7 @@
 
 
 <!-- Include marked.umd.js -->
-<script src="/static/markdown/marked.umd.js"></script>
+<script src="{{ url_for_static_asset('static', file_path='markdown/marked.umd.js') }}"></script>
 <script>
   const editor = document.getElementById('content');
   const preview = document.getElementById('preview');

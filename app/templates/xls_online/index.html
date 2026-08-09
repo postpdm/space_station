@@ -8,7 +8,7 @@
 		<!-- Load SheetJS library via CDN -->
 		<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 	{% else %}
-		<script src="/static/xls/xlsx.full.min.js"></script>
+		<script src="{{ url_for_static_asset('static', file_path='xls/xlsx.full.min.js') }}"></script>
 	{% endif %}
     <style>
         body {

@@ -43,6 +43,8 @@ Solutions could be several types
 * Lambda-style calculators
 * Full stack ASGI plugins
 
+For routing for static files use the `url_for_static_asset`.
+
 # API Keys
 
 Solution developers of static sites with access to core API or another solutions API should manage the API KEY. 

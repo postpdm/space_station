@@ -26,6 +26,7 @@ static_config = StaticFilesConfig(
     path="/static",          # The URL prefix (e.g., http://localhost:8000/static/logo.png)
     directories=[STATIC_DIR], # List of directory paths to look up files
     html_mode=False,         # Set to True if serving a Single Page App (SPA) index.html
+    name='static',
 )
 
 
