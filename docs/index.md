@@ -45,6 +45,8 @@ Solutions could be several types
 
 For routing for static files use the `url_for_static_asset`.
 
+Solution (plugin) should have unique UUID, fixed in	`__init__.py`. Do not change the UUID. Never.
+
 # API Keys
 
 Solution developers of static sites with access to core API or another solutions API should manage the API KEY. 

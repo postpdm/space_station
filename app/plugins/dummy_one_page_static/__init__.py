@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from litestar.config.app import AppConfig
 
 from .controller import Dummy_One_Page_Static_Controller
@@ -10,3 +12,6 @@ class Dummy_One_Page_Static_Plugin(BasePlugin):
 
     fuser_title = 'Demo calculator'
     fuser_description = 'Demo app calculates mass accounting for temperature & pressure'
+    fplugin_id = UUID( '123e4567-e89b-12d3-a456-426614174000' )
+
+#

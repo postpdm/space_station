@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from litestar.config.app import AppConfig
 
 from .controller import XLS_Online_Controller
@@ -10,3 +12,7 @@ class XLS_Online_Plugin(BasePlugin):
 
     fuser_title = 'Online xls-xlsx viewer-editor'
     fuser_description = 'Online xls-xlsx viewer-editor'
+    
+    fplugin_id = UUID( 'b29e71f4-3d8b-4b11-a083-725281729bfa' )
+
+#

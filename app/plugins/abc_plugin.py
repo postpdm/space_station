@@ -1,4 +1,6 @@
 from abc import ABC
+from uuid import UUID
+
 from litestar.plugins import InitPlugin
 from litestar.config.app import AppConfig
 from litestar.types import ControllerRouterHandler
@@ -9,8 +11,14 @@ class BasePlugin(InitPlugin, ABC):
     Loader should skip it.
     """
     
+    fplugin_id : UUID # global unique plugin ID
     fuser_title : str
     fuser_description : str
+    
+    @property
+    def ID(self) -> UUID:
+        """Return ID."""
+        return self.fplugin_id
 
     @property
     def user_title(self) -> str:
@@ -43,5 +51,5 @@ class BasePlugin(InitPlugin, ABC):
         if self.controllers:
             app_config.route_handlers.extend(self.controllers)
         
-        print(f"🔌 Plugin [{self.plugin_name}] is plug successfully.")
+        print(f"🔌 Plugin [{self.plugin_name}] ([{self.fplugin_id}]) is plug successfully.")
         return app_config

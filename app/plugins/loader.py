@@ -25,9 +25,16 @@ def discover_local_plugins() -> list[InitPlugin]:
                 if (
                     isinstance(attr, type) 
                     and issubclass(attr, BasePlugin)  # Check for BasePlugin inheritance
-                    and ( attr != BasePlugin )
+                    and ( attr != BasePlugin ) # skip base
                     and not inspect.isabstract(attr)  # Skip abstract
+                    and hasattr(attr, 'fplugin_id') # skip if plugin has no unique UUID
                 ):
+                    check_id = getattr(attr, 'fplugin_id')
+                    for c in plugins:
+                        if c.fplugin_id == check_id:
+                            raise Exception('Plugin ID is not unique, can not install')
+                            
+                    # add to list
                     plugins.append(attr())
                     
         except Exception as e:

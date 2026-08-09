@@ -19,6 +19,7 @@
 <table border="1">
 <thead>
 <tr>
+<th>System ID</th>
 <th>System name</th>
 <th>User title</th>
 <th>User description</th>
@@ -29,6 +30,7 @@
 <tbody>
 {% for p in cached_plugins %}
 <tr>
+<td>{{p.ID}}</td>
 <td>{{p.plugin_name}}</td>
 <td>{{p.user_title}}</td>
 <td>{{p.user_description}}</td>
