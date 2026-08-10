@@ -136,24 +136,26 @@ class UserController(Controller):
 # User fav
 class UserFavController(Controller):
     path = "/userfav"
-    
+
     """User favorites CRUD"""
     dependencies = providers.create_service_dependencies(
         UserFav_Service,
         "userfav_service",
         filters={"pagination_type": "limit_offset", "id_filter": UUID, "search": "title", "search_ignore_case": True},
     )
-    
+
     @get(path="/userfav")
     async def list_userfavs(
         self,
+        request : Request,
         userfav_service: UserFav_Service,
-        filters: Annotated[list[filters.FilterTypes], Dependency(skip_validation=True)],
     ) -> service.OffsetPagination[UserFav_pdnt]:
         """List user favs."""
-        results, total = await userfav_service.get_many_and_count(*filters)
-        return userfav_service.to_schema(results, total, filters=filters, schema_type=UserFav_pdnt)
-    
+        user_id = request.session.get("user_id")
+        # return list of current user favorite plugins        
+        results = await userfav_service.get_many( whose_user_fav_id = user_id )
+        return userfav_service.to_schema(results, schema_type=UserFav_pdnt)
+
     @post(path="/userfav")
     async def create_userfav(self, request : Request, userfav_service: UserFav_Service, data: UserFavCreate_pdnt) -> UserFav_pdnt:
         """Create a new news."""

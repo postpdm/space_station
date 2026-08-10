@@ -2,11 +2,64 @@
 {% block title %}Space station user portal{% endblock %}
 {% block body %}
 
-
-<h1>User favorites applications</h1>
-
 {% if username %}
+<h1>User profile</h1>
 {{username}}
+
+<h2>User favorites applications</h2>
+
+    <button onclick="loadApps()">Read apps</button>
+
+   <table border="1">
+  <thead>
+    <tr>
+      <th>plugin_UUID</th>
+      
+    </tr>
+  </thead>
+  <tbody id="table-body">
+    <!-- data -->
+  </tbody>
+</table>
+
+    <script>
+      
+	  async function loadApps() {
+
+fetch('/userfav/userfav/')
+  .then(response => response.json())
+  .then(data => {
+    // print
+	const tableBody = document.getElementById('table-body');
+
+// delete table
+tableBody.innerHTML = '';
+
+// array
+data.items.forEach(item => {
+
+  const row = `
+    <tr>
+      <td>${item.plugin_UUID}</td>
+    </tr>
+  `;
+  tableBody.innerHTML += row;
+  });
+
+
+
+
+  })
+  .catch(error => {
+    document.getElementById('news-list').textContent = 'Fail!';
+  });
+
+			};
+
+
+  window.onload = loadApps;
+</script>
+
 
 {% else %}
 
