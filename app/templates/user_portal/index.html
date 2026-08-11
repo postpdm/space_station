@@ -62,8 +62,6 @@ data.items.forEach(item => {
 
 			};
 
-
-  window.onload = loadNews;
 </script>
 
 <h2 id="applications">Applications<h2>
@@ -72,15 +70,16 @@ data.items.forEach(item => {
 
 <h3>{{p.user_title}}</h3>
 
-<form class="ajax-form">
-  <input type="hidden" name="plugin_UUID" value="{{p.ID}}">
-  <button type="submit">Add {{p.user_title}} to favorites</button>
-</form>
 
 <p>{{p.user_description}}</p>
 	{% for c in p.controllers %}
 		<a href="{{c.path}}">{{p.user_title}} application start page</a>
 	{% endfor %}
+
+<form class="ajax-form">
+  <input type="hidden" name="plugin_UUID" value="{{p.ID}}">
+  <button type="submit" id="{{p.ID}}">Add {{p.user_title}} to favorites</button>
+</form>
 
 {% endfor %}
 
@@ -104,11 +103,44 @@ document.addEventListener('submit', async function(e) {
       body: JSON.stringify(data)
     });
     
-    if (response.ok) alert(`Success send ID ${data.plugin_UUID}!`);
+    if (response.ok) { console.log(`Success send ID ${data.plugin_UUID}!`); loadFavAppstatus(); }
   } catch (error) {
     console.error('Fail:', error);
   }
 });
+
+
+async function loadFavAppstatus() {
+// load user fav status and disable buttons
+
+fetch('/userfav/userfav/')
+  .then(response => response.json())
+  .then(data => {
+
+// array
+data.items.forEach(item => {
+
+	const elButton = document.getElementById(item.plugin_UUID);
+	// console.log(item.plugin_UUID)
+	// console.log(elButton)
+	if (elButton) { elButton.style.display = "none"; };
+  });
+  })
+  .catch(error => {
+    document.getElementById('news-list').textContent = 'Fail!';
+  });
+
+
+};
+
+async function PageOnLoad() {
+  loadFavAppstatus();
+  loadNews();
+};
+  
+  window.onload = PageOnLoad;
+
+
 </script>
 
 {% endblock %}
