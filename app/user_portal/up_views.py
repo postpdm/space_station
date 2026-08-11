@@ -17,10 +17,10 @@ class User_Portal_Controller(Controller):
 
     @get( '/user_profile' )
     async def user_profile(self, request: Request) -> Template:
-        #cached_plugins = request.app.state.active_plugins
+        cached_plugins = request.app.state.active_plugins
         username = request.session.get("user_name")
  
         return Template(
             template_name = USER_PORTAL_TEMPLATES_DIR + "user_favs.html", 
-            context={ 'username' : username }
+            context={ 'username' : username, 'cached_plugins' : cached_plugins }
         )

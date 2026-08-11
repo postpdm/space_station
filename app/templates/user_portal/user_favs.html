@@ -13,7 +13,8 @@
    <table border="1">
   <thead>
     <tr>
-      <th>plugin_UUID</th>
+      <th>Title</th>
+      <th>Links</th>
       
     </tr>
   </thead>
@@ -38,21 +39,39 @@ tableBody.innerHTML = '';
 // array
 data.items.forEach(item => {
 
+  
+  {% for p in cached_plugins %}
+  
+  if (item.plugin_UUID == '{{p.ID}}') {
   const row = `
     <tr>
-      <td>${item.plugin_UUID}</td>
+		<td>{{p.user_title}}</td>
+	  <td>
+	  <p>{{p.user_description}}</p>
+	{% for c in p.controllers %}
+		<a href="{{c.path}}">{{p.user_title}} application start page</a>
+	{% endfor %}
+	  </td>
+
+	  
+	  
     </tr>
   `;
   tableBody.innerHTML += row;
+  };
+  {% endfor %}
+  
   });
 
 
 
 
   })
-  .catch(error => {
-    document.getElementById('news-list').textContent = 'Fail!';
-  });
+  //.catch(error => {
+  //  document.getElementById('table-body').textContent = 'Fail!';
+  //})
+  
+  ;
 
 			};
 
