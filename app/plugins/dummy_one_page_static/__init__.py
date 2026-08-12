@@ -14,4 +14,7 @@ class Dummy_One_Page_Static_Plugin(BasePlugin):
     fuser_description = 'Demo app calculates mass accounting for temperature & pressure'
     fplugin_id = UUID( '123e4567-e89b-12d3-a456-426614174000' )
 
+    fstatic_req = [ 'cosmos/cosmic_racoon_slide_rule.jpeg' ]
+
+
 #

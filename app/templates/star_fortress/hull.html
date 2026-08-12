@@ -20,6 +20,7 @@
 <thead>
 <tr>
 <th>System ID</th>
+<th>Errors</th>
 <th>System name</th>
 <th>User title</th>
 <th>User description</th>
@@ -31,6 +32,11 @@
 {% for p in cached_plugins %}
 <tr>
 <td>{{p.ID}}</td>
+{%if p.init_error_log %}
+<td style="color: red;">{{p.init_error_log}}</td>
+{% else %}
+<td></td>
+{% endif %}
 <td>{{p.plugin_name}}</td>
 <td>{{p.user_title}}</td>
 <td>{{p.user_description}}</td>
