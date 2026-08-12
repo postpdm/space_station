@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MathLive Compute Engine Sample</title>
+    {% if USE_CDN %}
+    <!-- Load MathLive and Compute Engine from CDN -->
+    <script defer src="https://jsdelivr.net"></script>
+    {% else %}
+    <!-- Or load MathLive and Compute Engine locally -->
+    <script src="{{ url_for_static_asset('static', file_path='math/mathlive/0.110.0/mathlive.js ') }}"></script>
+    {% endif %}
+    <style>
+        /* Blinking/pulsing animation for the Calculate button */
+        @keyframes pulse-blink {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .calculating {
+            animation: pulse-blink 0.6s infinite ease-in-out;
+            pointer-events: none; /* Disable multiple clicks during calculation */
+            background-color: #004c99 !important; /* Slightly darker shade during calc */
+        }
+    </style>
+</head>
+<body style="font-family: sans-serif; padding: 20px; max-width: 850px;">
+
+    <h2>Calc MathLive + Compute Engine (<a href="/dops">Back to list</a>)</h2>
+
+    <!-- Main Equation -->
+    <p><b>Target Equation:</b></p>
+    <math-field id="math-input" style="font-size: 1.5rem; width: 100%; display: block; margin-bottom: 20px;">
+        \frac{\sqrt{16} + x \cdot 2^3}{y}
+    </math-field>
+
+    <!-- Variables Block -->
+    <p><b>Variables:</b></p>
+    <div id="variables-container" style="margin-bottom: 20px;">
+        <!-- Dynamic variable rows are injected here -->
+        <div class="variable-row" style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <input type="text" class="var-name" placeholder="Name (e.g., x)" value="x" style="padding: 5px; width: 110px; font-size: 1rem;">
+            <span>=</span>
+            <math-field class="var-value" style="font-size: 1.2rem; width: 200px;">5</math-field>
+            <button class="delete-var-btn" style="padding: 5px 10px; cursor: pointer; color: red;">Delete</button>
+        </div>
+        <div class="variable-row" style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <input type="text" class="var-name" placeholder="Name (e.g., y)" value="y" style="padding: 5px; width: 110px; font-size: 1rem;">
+            <span>=</span>
+            <math-field class="var-value" placeholder="Empty = 0" style="font-size: 1.2rem; width: 200px;"></math-field>
+            <button class="delete-var-btn" style="padding: 5px 10px; cursor: pointer; color: red;">Delete</button>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+        <button id="add-var-btn" style="padding: 8px 16px; font-size: 1rem; background-color: #e0e0e0; border: 1px solid #ccc; cursor: pointer;">+ Add Variable</button>
+        <button id="calc-btn" style="padding: 8px 24px; font-size: 1rem; background-color: #0066cc; color: white; border: none; cursor: pointer; font-weight: bold; transition: background-color 0.2s;">Calculate</button>
+    </div>
+
+    <h3>Result:</h3>
+    <!-- Beautiful result rendering via MathLive (read-only) -->
+    <math-field id="result-field" read-only style="font-size: 1.5rem; width: 100%; border: none; background: transparent; color: #0066cc; padding: 0;">
+        —
+    </math-field>
+
+    <script type="module">
+        {% if USE_CDN %}
+        <!-- Load MathLive and Compute Engine from CDN or local -->
+        import { ComputeEngine } from "https://esm.run";
+        {% else %}
+        import { ComputeEngine } from "{{ url_for_static_asset('static', file_path='math/mathlive/0.110.0/esm.js') }}";
+        {% endif %}
+
+        const ce = new ComputeEngine();
+        const mathField = document.getElementById('math-input');
+        const calcBtn = document.getElementById('calc-btn');
+        const addVarBtn = document.getElementById('add-var-btn');
+        const varsContainer = document.getElementById('variables-container');
+        const resultField = document.getElementById('result-field');
+
+        // Function to create a new variable row dynamically
+        function createVariableRow() {
+            const row = document.createElement('div');
+            row.className = 'variable-row';
+            row.style.cssText = 'display: flex; align-items: center; gap: 10px; margin-bottom: 10px;';
+
+            row.innerHTML = `
+                <input type="text" class="var-name" placeholder="Name (e.g., z)" style="padding: 5px; width: 110px; font-size: 1rem;">
+                <span>=</span>
+                <math-field class="var-value" placeholder="Empty = 0" style="font-size: 1.2rem; width: 200px;"></math-field>
+                <button class="delete-var-btn" style="padding: 5px 10px; cursor: pointer; color: red;">Delete</button>
+            `;
+
+            row.querySelector('.delete-var-btn').addEventListener('click', () => row.remove());
+            return row;
+        }
+
+        // Listener to append a new variable input group
+        addVarBtn.addEventListener('click', () => {
+            varsContainer.appendChild(createVariableRow());
+        });
+
+        // Initialize delete event for default pre-rendered rows
+        document.querySelectorAll('.delete-var-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => e.target.parentElement.remove());
+        });
+
+        // Main evaluation process
+        calcBtn.addEventListener('click', () => {
+            // Add the blinking class to trigger animation instantly
+            calcBtn.classList.add('calculating');
+
+            // Using setTimeout to allow the browser to paint the UI/animation state 
+            // before running blocking mathematical computations
+            setTimeout(() => {
+                try {
+                    const currentCe = new ComputeEngine();
+
+                    // Parse and assign each user-defined variable
+                    const rows = document.querySelectorAll('.variable-row');
+                    rows.forEach(row => {
+                        const name = row.querySelector('.var-name').value.trim();
+                        let valueLatex = row.querySelector('.var-value').value;
+
+                        if (name) {
+                            // Fallback to "0" if the input field is blank
+                            if (!valueLatex || valueLatex.trim() === "") {
+                                valueLatex = "0";
+                            }
+
+                            const parsedVal = currentCe.parse(valueLatex).evaluate();
+                            currentCe.assign(name, parsedVal);
+                        }
+                    });
+
+                    // Evaluate the master math expression
+                    const mainLatexText = mathField.value;
+                    const expr = currentCe.parse(mainLatexText);
+                    const evaluated = expr.evaluate();
+                    
+                    // Render outputs beautifully using raw LaTeX structures
+                    resultField.value = evaluated.latex || evaluated.toString();
+                } catch (err) {
+                    resultField.value = '\\text{Evaluation Error!}';
+                    console.error(err);
+                } finally {
+                    // Remove blinking effect once calculation finishes
+                    calcBtn.classList.remove('calculating');
+                }
+            }, 50); // Small delay to guarantee visual render execution
+        });
+    </script>
+</body>
+</html>
