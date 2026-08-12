@@ -5,7 +5,7 @@
     <title>MathLive Compute Engine Sample</title>
     {% if USE_CDN %}
     <!-- Load MathLive and Compute Engine from CDN -->
-    <script defer src="https://jsdelivr.net"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathlive"></script>
     {% else %}
     <!-- Or load MathLive and Compute Engine locally -->
     <script src="{{ url_for_static_asset('static', file_path='math/mathlive/0.110.0/mathlive.js ') }}"></script>
@@ -66,7 +66,7 @@
     <script type="module">
         {% if USE_CDN %}
         <!-- Load MathLive and Compute Engine from CDN or local -->
-        import { ComputeEngine } from "https://esm.run";
+        import { ComputeEngine } from "https://esm.run/@cortex-js/compute-engine";
         {% else %}
         import { ComputeEngine } from "{{ url_for_static_asset('static', file_path='math/mathlive/0.110.0/esm.js') }}";
         {% endif %}
