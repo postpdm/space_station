@@ -38,6 +38,36 @@
             padding: 20px;
         }
 
+		/* Unvisited link - Bright Cyan */
+		a:link {
+		  color: #00d2ff;
+		  text-decoration: none;
+		  transition: color 0.2s ease, text-shadow 0.2s ease;
+		}
+
+		/* Visited link - Dark Blue */
+		a:visited {
+		  color: #005580;
+		}
+
+		/* Hover state - Glowing Purple */
+		a:hover {
+		  color: #bf55ec;
+		  text-shadow: 0 0 8px rgba(191, 85, 236, 0.6);
+		}
+
+		/* Active state (moment of click) - Keeps purple or can be customized */
+		a:active {
+		  color: #9b59b6;
+		}
+
+		/* Keyboard navigation focus (for accessibility) */
+		a:focus {
+		  outline: 2px dashed #bf55ec;
+		  outline-offset: 4px;
+		}
+
+
         .calculator-container {
             background: var(--card-bg);
             backdrop-filter: blur(20px);
