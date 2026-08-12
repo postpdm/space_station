@@ -33,7 +33,7 @@ class Dummy_One_Page_Static_Controller(BasePluginController):
     async def get_page(self, page_template_name : LatinStr ) -> Template:
         # check for Path Traversal attack
         verified_template_name = page_template_name
-        if verified_template_name in [ 'mass_calc', 'pressure' ]:
+        if verified_template_name in [ 'mass_calc', 'pressure', 'mathlive' ]:
             return Template(
                 template_name = DOPS_TEMPLATES_DIR + verified_template_name + ".html",
                 context={  }

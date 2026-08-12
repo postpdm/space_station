@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>MathLive Compute Engine Sample</title>
+  {% if USE_CDN %}
+  <!-- load MathLive and Compute Engine from CDN -->
+  <script defer src="https://cdn.jsdelivr.net/npm/mathlive"></script>
+  {% else %}
+  <!-- or load MathLive and Compute Engine local -->
+  <script src="{{ url_for_static_asset('static', file_path='math/mathlive/0.110.0/mathlive.js ') }}"></script>
+  {% endif %}
+</head>
+<body style="font-family: sans-serif; padding: 20px;">
+
+  <h2>Calc MathLive + Compute Engine</h2>
+
+  <!-- input -->
+  <p>Enter math equation:</p>
+  <math-field id="math-input" style="font-size: 1.5rem; width: 800px; display: block; margin-bottom: 10px;">
+    \sqrt{16} + x*2^3
+  </math-field>
+
+  <button id="calc-btn" style="padding: 8px 16px; font-size: 1rem;">Calculate</button>
+
+  <h3>Result:</h3>
+  <div id="result" style="font-size: 1.2rem; font-weight: bold; color: #0066cc;">—</div>
+
+  <script type="module">
+	{% if USE_CDN %}
+	<!-- load MathLive and Compute Engine from CDN or local -->
+    import { ComputeEngine } from "https://esm.run/@cortex-js/compute-engine";
+	{% else %}
+    import { ComputeEngine } from "{{ url_for_static_asset('static', file_path='math/mathlive/0.110.0/esm.js') }}";
+	{% endif %}
+
+    const ce = new ComputeEngine();
+
+    const mathField = document.getElementById('math-input');
+    const calcBtn = document.getElementById('calc-btn');
+    const resultDiv = document.getElementById('result');
+
+    calcBtn.addEventListener('click', () => {
+      const latexText = mathField.value;
+
+      try {
+        const expr = ce.parse(latexText);
+        const evaluated = expr.evaluate();
+
+        resultDiv.textContent = evaluated.toString();
+      } catch (err) {
+        resultDiv.textContent = 'Miscalculation!';
+        console.error(err);
+      }
+    });
+  </script>
+
+</body>
+</html>
