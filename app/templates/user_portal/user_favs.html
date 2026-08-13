@@ -15,7 +15,7 @@
     <tr>
       <th>Title</th>
       <th>Links</th>
-      
+
     </tr>
   </thead>
   <tbody id="table-body">
@@ -24,7 +24,7 @@
 </table>
 
     <script>
-      
+
 	  async function loadApps() {
 
 fetch('/userfav/userfav/')
@@ -36,41 +36,36 @@ fetch('/userfav/userfav/')
 // delete table
 tableBody.innerHTML = '';
 
+const FavPlugins = [];
+
 // array
 data.items.forEach(item => {
 
-  
-  {% for p in cached_plugins %}
-  
-  if (item.plugin_UUID == '{{p.ID}}') {
-  const row = `
-    <tr>
-		<td>{{p.user_title}}</td>
-	  <td>
-	  <p>{{p.user_description}}</p>
-	{% for c in p.controllers %}
-		<a href="{{c.path}}">{{p.user_title}} application start page</a>
-	{% endfor %}
-	  </td>
-
-	  
-	  
-    </tr>
-  `;
-  tableBody.innerHTML += row;
-  };
-  {% endfor %}
-  
+FavPlugins.push ( item.plugin_UUID );
   });
 
-
-
+  {% for p in cached_plugins %}
+	  if (FavPlugins.includes( '{{p.ID}}' )) {
+	  const row = `
+		<tr>
+			<td>{{p.user_title}}</td>
+		  <td>
+		  <p>{{p.user_description}}</p>
+		{% for c in p.controllers %}
+			<a href="{{c.path}}">{{p.user_title}} application start page</a>
+		{% endfor %}
+		  </td>
+		</tr>
+	  `;
+	  tableBody.innerHTML += row;
+	  };
+  {% endfor %}
 
   })
   //.catch(error => {
   //  document.getElementById('table-body').textContent = 'Fail!';
   //})
-  
+
   ;
 
 			};
