@@ -167,6 +167,25 @@ class UserFavController(Controller):
         return userfav_service.to_schema(obj, schema_type=UserFav_pdnt)
 
 
+    @delete(path="/userfav/{plugin_id:uuid}")
+    async def delete_fav(
+        self,
+        request : Request,
+        userfav_service: UserFav_Service,
+        plugin_id: Annotated[
+            UUID,
+            PathParameter(
+                title="Plugin ID",
+                description="The plugin to exclude from fav.",
+            ),
+        ],
+    ) -> None:
+        """Exclude plugin from favorites. By plugin UUID"""
+        user_id = request.session.get("user_id")
+        
+        _ = await userfav_service.delete_where(whose_user_fav_id=user_id, plugin_UUID=plugin_id)
+
+
 # News
 class NewsController(Controller):
     """News CRUD"""
