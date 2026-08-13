@@ -81,7 +81,7 @@ FavPlugins.push ( item.plugin_UUID );
 
 async function deletePost(PluginUUID) {
   // Optional confirmation prompt
-  if (!confirm("Are you sure you want to delete this post?")) return;
+  if (!confirm("Are you sure you want to exclude this application from you favorites?")) return;
 
   try {
     const response = await fetch(`/userfav/userfav/${PluginUUID}`, {
@@ -96,7 +96,7 @@ async function deletePost(PluginUUID) {
       // Successfully deleted from database, now remove from the visual UI
       loadApps();
     } else {
-      alert("Failed to delete the post.");
+      alert("Failed to delete.");
     }
   } catch (error) {
     console.error("Error:", error);
