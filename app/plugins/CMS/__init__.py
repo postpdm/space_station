@@ -14,4 +14,6 @@ class CMS_Plugin(BasePlugin):
     fuser_description = 'Content management'
     fplugin_id = UUID( '6def0698-aa92-45f7-b0b7-946b59845dce' )
 
+    fstatic_req = [ 'pico/2.1.1/pico.classless.min.css', 'pico/2.1.1/minimal-theme-switcher.js', 'pico/2.1.1/modals.js' ]
+
 #

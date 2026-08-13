@@ -5,6 +5,7 @@ from app.plugins.abc_controller import BasePluginController
 
 CMS_TEMPLATES_DIR = "CMS/"
 
+from .service import CMSService
 
 class CMS_Controller(BasePluginController):
     path = "/CMS"

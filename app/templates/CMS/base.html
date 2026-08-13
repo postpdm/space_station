@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>{% block title %}{% endblock %}</title>
+	<meta name="description" content="A class-less example, without dependencies.">
+
+    <!-- Pico.css -->
+	{% if USE_CDN %}
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.classless.min.css">
+	{% else %}
+	<link rel="stylesheet" href="{{ url_for_static_asset('static', file_path='pico/2.1.1/pico.classless.min.css') }}">
+	{% endif %}
+
+
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header>
+      <hgroup>
+        <h1>CMS</h1>
+        <p>Enterprise CMS.</p>
+      </hgroup>
+      <nav>
+        <ul>
+          <li><a href="#" data-theme-switcher="auto">Auto</a></li>
+          <li><a href="#" data-theme-switcher="light">Light</a></li>
+          <li><a href="#" data-theme-switcher="dark">Dark</a></li>
+        </ul>
+      </nav>
+    </header>
+    <!-- ./ Header -->
+
+    <!-- Main -->
+    <main>
+      {% block body %}
+	  {% endblock %}
+    </main>
+    <!-- ./ Main -->
+
+    <!-- Footer -->
+    <footer>
+      <small
+        >Built with <a href="https://picocss.com">Pico</a> •
+        <a href="https://github.com/picocss/examples/blob/master/v2-html-classless/index.html"
+          >Source code</a
+        ></small
+      >
+    </footer>
+    <!-- ./ Footer -->
+
+    <!-- Modal example -->
+    <dialog id="modalExample">
+      <article>
+        <header>
+          <button aria-label="Close" rel="prev" onclick="modalExample.close()"></button>
+          <h3>Confirm your action!</h3>
+        </header>
+        <p>
+          Cras sit amet maximus risus. Pellentesque sodales odio sit amet augue finibus
+          pellentesque. Nullam finibus risus non semper euismod.
+        </p>
+        <footer>
+          <button role="button" onclick="modalExample.close()">Cancel</button
+          ><button autofocus role="button" onclick="modalExample.close()">Confirm</button>
+        </footer>
+      </article>
+    </dialog>
+    <!-- ./ Modal example -->
+
+    <!-- Minimal theme switcher -->
+
+  	<script src="{{ url_for_static_asset('static', file_path='pico/2.1.1//minimal-theme-switcher.js') }}"></script>
+
+  </body>
+</html>
