@@ -69,8 +69,8 @@
                 const result = await response.json();
                 statusDiv.textContent = 'Success!';
                 statusDiv.style.color = 'green';
-                document.getElementById('newsForm').reset(); // Clear form
-                document.getElementById('published_dt').value = new Date().toISOString().slice(0, 16);
+                document.getElementById('new_page_Form').reset(); // Clear form
+                
             } else {
                 const errorText = await response.text();
                 statusDiv.textContent = `Server fail: ${response.status} - ${errorText}`;
