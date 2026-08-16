@@ -1,0 +1,94 @@
+{% extends 'CMS/base.html' %}
+
+{% block title %}CMS - new page{% endblock %}
+
+{% block body %}
+
+<section id="editor">
+
+
+<form id="new_page_Form">
+	<div>
+        <label for="title">Title:</label>
+        <input type="text" id="title" required placeholder="Enter the title">
+    </div>
+	
+    <div>
+        <label for="content">Content (markdown supported):</label>
+        <textarea id="content" required placeholder="Enter the markdown content" rows="5" cols="55"></textarea>
+    </div>
+    
+    <button type="submit">Send</button>
+</form>
+
+	<!-- The live preview box -->
+	<div id="preview"></div>
+
+<!-- Include marked.umd.js -->
+<script src="{{ url_for_static_asset('static', file_path='markdown/marked.umd.js') }}"></script>
+<script>
+  const editor = document.getElementById('content');
+  const preview = document.getElementById('preview');
+
+  // Update preview on input
+  editor.addEventListener('input', () => {
+    const markdownText = editor.value;
+    preview.innerHTML = marked.parse(markdownText);
+  });
+  
+
+    document.getElementById('new_page_Form').addEventListener('submit', async function(e) {
+        e.preventDefault(); // cancel
+
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = 'Sending...';
+        statusDiv.style.color = 'black';
+
+        // Get elements
+        const title = document.getElementById('title').value;
+        const content = document.getElementById('content').value;
+        
+        
+        // payload
+        const payload = {
+            title: title,
+			content : content,
+        };
+
+        try {
+            // POST API
+            const response = await fetch('/CMS/new_page_api', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                statusDiv.textContent = 'Success!';
+                statusDiv.style.color = 'green';
+                document.getElementById('newsForm').reset(); // Clear form
+                document.getElementById('published_dt').value = new Date().toISOString().slice(0, 16);
+            } else {
+                const errorText = await response.text();
+                statusDiv.textContent = `Server fail: ${response.status} - ${errorText}`;
+                statusDiv.style.color = 'red';
+            }
+        } catch (error) {
+            statusDiv.textContent = `Network fail: ${error.message}`;
+            statusDiv.style.color = 'red';
+        }
+    });
+  
+  
+  
+</script>
+
+<div id="status"></div>
+
+
+</section>
+
+{% endblock %}

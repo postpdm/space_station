@@ -12,10 +12,10 @@ class Page_pdnt(BaseModel):
     created_user_id : UUID
     #created_user : User_pdnt
 
-#class NewsCreate_pdnt(BaseModel):
-#    title: str
-#    content : str
-#    published_dt: Optional[datetime.datetime] = None
+class NewPageCreate_pdnt(BaseModel):
+    title: str
+    content : str
+    #published_dt: Optional[datetime.datetime] = None
 
 #class NewsUpdate_pdnt(BaseModel):
 #    title: str
