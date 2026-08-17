@@ -5,9 +5,9 @@
 {% block body %}
 
 <section id="editor">
+{{page_id}}
 
-
-<form id="new_page_Form">
+<!-- form id="new_page_Form">
 	<div>
         <label for="title">Title:</label>
         <input type="text" id="title" required placeholder="Enter the title">
@@ -19,7 +19,7 @@
     </div>
     
     <button type="submit">Send</button>
-</form>
+</form -->
 
 	<!-- The live preview box -->
 	<div id="preview"></div>
@@ -57,7 +57,7 @@
 
         try {
             // POST API
-            const response = await fetch('/cms/new_page_api', {
+            const response = await fetch('/CMS/new_page_api', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -70,8 +70,7 @@
                 statusDiv.textContent = 'Success!';
                 statusDiv.style.color = 'green';
                 document.getElementById('new_page_Form').reset(); // Clear form
-				window.location.href = `/cms/page/${result.id}`;
-						
+                
             } else {
                 const errorText = await response.text();
                 statusDiv.textContent = `Server fail: ${response.status} - ${errorText}`;

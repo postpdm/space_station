@@ -1,13 +1,62 @@
-{% extends 'CMS/base.html' %}
+{% extends 'cms/base.html' %}
 
 {% block title %}CMS{% endblock %}
 
 {% block body %}
-      <section id="preview">
+      <section id="CMS">
 <h1>Enterprise CMS</h1>
 
         <a href="new_page" role="button">New page</a>
 		
       </section>
+
+    <button onclick="loadPages()">Read pages</button>
+
+	<ul id="page_list"></ul>
+
+
+    <script>
+      
+	  async function loadPages() {
+
+fetch('/cms/get_pages_api')
+  .then(response => response.json())
+  .then(data => {
+    // print
+	const listBody = document.getElementById('page_list');
+
+// delete list content
+listBody.innerHTML = '';
+
+// array
+data.items.forEach(item => {
+
+
+      const li = document.createElement('li');
+	  const link = document.createElement('a');
+	  link.href = `/cms/page/${item.id}`; 
+		
+      link.textContent = item.title;
+	  li.appendChild(link);
+      listBody.appendChild(li);
+	  
+  
+  });
+
+
+
+
+  })
+  .catch(error => {
+    document.getElementById('news-list').textContent = 'Fail!';
+  });
+
+			};
+
+window.onload = loadPages;
+
+</script>
+
+
 
 {% endblock %}

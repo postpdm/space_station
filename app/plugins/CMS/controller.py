@@ -14,13 +14,13 @@ from advanced_alchemy.extensions.litestar import (
 
 from app.plugins.abc_controller import BasePluginController
 
-CMS_TEMPLATES_DIR = "CMS/"
+CMS_TEMPLATES_DIR = "cms/"
 
 from .service import CMSService
 from .schema import Page_pdnt, NewPageCreate_pdnt
 
 class CMS_Controller(BasePluginController):
-    path = "/CMS"
+    path = "/cms"
 
     dependencies = providers.create_service_dependencies(
         CMSService,
@@ -35,6 +35,13 @@ class CMS_Controller(BasePluginController):
         return Template(
             template_name = CMS_TEMPLATES_DIR + "index.html",
             context={  }
+        )
+
+    @get("/page/{page_id:uuid}")
+    async def view_page(self, page_id:UUID) -> Template:
+        return Template(
+            template_name = CMS_TEMPLATES_DIR + "view_page.html",
+            context={ 'page_id' : page_id }
         )
 
     @get("/admin_panel")
