@@ -16,18 +16,27 @@ from app.plugins.abc_controller import BasePluginController
 
 CMS_TEMPLATES_DIR = "cms/"
 
-from .service import CMSService
-from .schema import Page_pdnt, NewPageCreate_pdnt
+from .service import CMSService, CMS_Section_Service
+from .schema import Page_pdnt, PageCreate_pdnt, Page_with_sections_pdnt, Page_Section_pdnt, Page_Section_Create_pdnt
+
+from .parsers import CONST_PLAIN_MARKDOWN
 
 class CMS_Controller(BasePluginController):
     path = "/cms"
 
-    dependencies = providers.create_service_dependencies(
-        CMSService,
-        "CMS_service",
-        #load=[GNN_Article_Model.sections],
-        filters={"pagination_type": "limit_offset", "id_filter": UUID, "search": "title", "search_ignore_case": True},
-    )
+    # this mega structure just import 2 dependencies
+    dependencies = {
+        **providers.create_service_dependencies(
+            CMSService,
+            "CMS_service",
+            filters={"pagination_type": "limit_offset", "id_filter": UUID, "search": "title", "search_ignore_case": True},
+        ),
+
+        **providers.create_service_dependencies(
+            CMS_Section_Service,
+            "CMS_Section_Service",
+        )
+    }
 
 
     @get("/")
@@ -67,15 +76,26 @@ class CMS_Controller(BasePluginController):
             template_name = CMS_TEMPLATES_DIR + "new_page.html",
             context={  }
         )
-        
-    @post(path="/new_page_api")
-    async def create_new_page_api(self, request : Request, CMS_service: CMSService, data: NewPageCreate_pdnt) -> Page_pdnt:
-        """Create a new page."""
-        user_id = request.session.get("user_id")
-        new_page_dict = data.model_dump()
-        new_page_dict[ "created_user_id" ] = UUID( user_id )
 
-        obj = await CMS_service.create( new_page_dict )
+    @get("/get_page_api/{page_id:uuid}")
+    async def get_page_api(self, CMS_service: CMSService, page_id:UUID) -> Page_with_sections_pdnt:
+        obj = await CMS_service.get_one_or_none( id = page_id )
+        return CMS_service.to_schema( obj, schema_type=Page_with_sections_pdnt)
+
+    @post(path="/new_page_api")
+    async def create_new_page_api(self, request : Request, CMS_service: CMSService, data: PageCreate_pdnt) -> Page_pdnt:
+        """Create a new page."""
+        obj = await CMS_service.create( data )
         return CMS_service.to_schema(obj, schema_type=Page_pdnt)
 
+    @post(path="/new_page_section_api/{page_id:uuid}")
+    async def create_new_page_section_api(self, request : Request, CMS_Section_Service: CMS_Section_Service, page_id : UUID, data: Page_Section_Create_pdnt) -> Page_Section_pdnt:
+        """Create a new page section."""
+
+        section_data_dict = data.model_dump()
+        section_data_dict[ "page_id" ] = page_id
+        section_data_dict[ "content_type" ] = CONST_PLAIN_MARKDOWN
+
+        obj = await CMS_Section_Service.create( section_data_dict )
+        return CMS_Section_Service.to_schema(obj, schema_type=Page_Section_pdnt)
 #
