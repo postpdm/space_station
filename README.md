@@ -4,9 +4,11 @@ CMS for enterprise portals.
 
 ```mermaid
 flowchart TD
-    A[Your bussines ask for MVP] --> B{Create plugin for Space station!}
-    B -- Problem solved --> C[Great! Use it!]
-    B -- No --> D[Ask for budget for new project]
+    A[Your business asks for an MVP] --> B{Is it simple?}
+    B -- Yes --> C[Great! Create an interactive section in CMS. Problem solved!]
+    B -- No --> D{Can you solve it with html/js file?}
+    D -- Yes --> E[Create a static solution!]
+    D -- No --> F[Create plugin for Space station!]
 ```
 
 # Goals
