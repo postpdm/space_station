@@ -2,6 +2,13 @@
 
 CMS for enterprise portals.
 
+```mermaid
+flowchart TD
+    A[Your bussines ask for MVP] --> B{Create plugin for Space station!}
+    B -- Problem solved --> C[Great! Use it!]
+    B -- No --> D[Ask for budget for new project]
+```
+
 # Goals
 
 Big enterprises need enterprise software. Today’s market is dominated by bloated ERPs, colossal BI solutions, and massive data centers. But not all applications need to be overwhelmingly complex; large companies often need simple tools too. The problem arises when managing hundreds of these disparate solutions. 
