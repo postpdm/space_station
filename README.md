@@ -36,12 +36,13 @@ or
 # To do
 
 - [x] auth
-- [ ] Base cms
+- [x] Base CMS
+- [ ] Interactive CMS
 - [ ] Common tickets and forum
 - [x] Global db
 - [ ] Global ref books
 - [ ] Local db's
-- [ ] Pods for internal solutions
+- [x] Pods for internal solutions
 - [x] Pods for static solutions
 - [ ] Subscribe solution for ref book broadcasting
 - [ ] Central analitics
