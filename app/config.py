@@ -41,7 +41,7 @@ class AppSettings(BaseSettings):
     #database_url: str
     
     # Auth section
-    AM_I_USER_URL : HttpUrl
+    AM_I_USER_URL : str
     AM_I_USER_LOGIN_FIELD : str
     AM_I_USER_NAME_FIELD : str
     AM_I_USER_SERVER_REQUEST : bool = True
@@ -50,7 +50,7 @@ class AppSettings(BaseSettings):
     # GIS GeoServer settings
     GIS_USE_GEOSERVER : bool = False
     PROJECTION : str
-    EXTENT_SIZE : int
+    TILE_SIZE : int
     WMTS_ATTRIBUTIONS : str
     WMTS_URL : HttpUrl
     WMTS_LAYER : str

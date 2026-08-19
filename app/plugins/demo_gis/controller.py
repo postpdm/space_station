@@ -15,7 +15,7 @@ class Demo_GIS_Controller(BasePluginController):
         if app_settings.GIS_USE_GEOSERVER:
             geoserver_cfg = {
               'projection'        : app_settings.PROJECTION,
-              'extent_size'       : app_settings.EXTENT_SIZE,
+              'tile_size'       : app_settings.TILE_SIZE,
               'wmts_attributions' : app_settings.WMTS_ATTRIBUTIONS,
               'wmts_url'          : app_settings.WMTS_URL,
               'wmts_layer'        : app_settings.WMTS_LAYER,

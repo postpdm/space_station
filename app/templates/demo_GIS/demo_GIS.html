@@ -66,7 +66,7 @@
 			// Replace matrix name and parameters with your GeoServer details
 			const projection = ol.proj.get( '{{geoserver_cfg.projection}}' );
 			const projectionExtent = projection.getExtent();
-			const size = ol.extent.getWidth(projectionExtent) / {{geoserver_cfg.extent_size}};
+			const size = ol.extent.getWidth(projectionExtent) / {{geoserver_cfg.tile_size}};
 			const resolutions = new Array(20);
 			const matrixIds = new Array(20);
 			for (let z = 0; z < 20; ++z) {
