@@ -31,7 +31,9 @@
     <select id="layer-select">
         <option value="google">Google Maps</option>
         <option value="osm">OpenStreetMap</option>
-        <option value="geoserver">Internal GeoServer</option>
+		{% if geoserver_cfg %}
+			<option value="geoserver">Internal GeoServer</option>
+		{% endif %}
     </select>
 </div>
 
@@ -59,25 +61,56 @@
             visible: true // Visible by default
         });
 
-		// Replace URL, workspace:layer_name, and parameters with your GeoServer details
-		const geoserverLayer = new ol.layer.Tile({
-			source: new ol.source.TileWMS({
-				url: 'https://ahocevar.com/geoserver/wms',
-				params: { 'LAYERS' : 'topp:states', 'TILED': true },
-				serverType: 'geoserver',
-				attributions: '© Internal GeoServer',
-				transition: 0
-				
-				<!-- , crossOrigin: 'anonymous' -->
-			}),
-			visible: false
-		});
+
+		{% if geoserver_cfg %}
+			// Replace matrix name and parameters with your GeoServer details
+			const projection = ol.proj.get( '{{geoserver_cfg.proj}}' );
+			const projectionExtent = projection.getExtent();
+			const size = ol.extent.getWidth(projectionExtent) / {{geoserver_cfg.size}};
+			const resolutions = new Array(20);
+			const matrixIds = new Array(20);
+			for (let z = 0; z < 20; ++z) {
+				resolutions[z] = size / Math.pow(2, z);
+				matrixIds[z] = 'WebMercator:' + z;
+			}
+
+			// Replace matrixSet, URL, layer and other parameters with your GeoServer details
+			const geoserverLayer = new ol.layer.Tile({
+				source: new ol.source.WMTS({
+					attributions: '{{geoserver_cfg.wmts_attributions|safe}}',
+					url: '{{geoserver_cfg.wmts_url}}',
+					layer: '{{geoserver_cfg.wmts_layer}}',
+					matrixSet: 'WebMercator',
+					format: 'image/jpeg',
+					projection: projection,
+					tileGrid: new ol.tilegrid.WMTS({
+						origin: ol.extent.getTopLeft(projectionExtent),
+						resolutions: resolutions,
+						matrixIds: matrixIds,
+					}),
+					style: 'default',
+					wrapX: true,
+				}),
+				visible: false
+			});
+
+			// Replace URL, LAYERS with your GeoServer details
+			const wmsLayer = new ol.layer.Image({
+				source: new ol.source.ImageWMS({
+					url: '{{geoserver_cfg.wms_url}}',
+					params: {
+						LAYERS: [ {{geoserver_cfg.wms_layers|safe}} ] },
+					ratio: 1,
+					serverType: 'geoserver',
+				}),
+				visible: false
+			});
+		{% endif %}
 
         // 2. Initialize Map
         const map = new ol.Map({
             target: 'map',
-            layers: [
-                            geoserverLayer, osmLayer, googleLayer, vectorLayer,
+            layers: [ {% if geoserver_cfg %} geoserverLayer, {% endif %} osmLayer, googleLayer, {% if geoserver_cfg %} wmsLayer, {%endif%} vectorLayer,
             ],
             view: new ol.View({
                 center: ol.proj.fromLonLat([ 32, 60 ]),
@@ -94,20 +127,22 @@
 			// Hide all base layers first
 			googleLayer.setVisible(false);
 			osmLayer.setVisible(false);
-			geoserverLayer.setVisible(false);
-
+			{% if geoserver_cfg %} 
+				geoserverLayer.setVisible(false);
+			{% endif %}
 			// Show the chosen one
 			if (selectedValue === 'google') {
 				googleLayer.setVisible(true);
 			} else if (selectedValue === 'osm') {
 				osmLayer.setVisible(true);
-			} else if (selectedValue === 'geoserver') {
+			} {% if geoserver_cfg %} else if (selectedValue === 'geoserver') {
 				geoserverLayer.setVisible(true);
-			}
+				wmsLayer.setVisible(true);
+			}{% endif %} 
 		});
 
 
-    
+
 
     </script>
 
