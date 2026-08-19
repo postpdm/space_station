@@ -3,22 +3,31 @@ from litestar.response import Template
 
 from app.plugins.abc_controller import BasePluginController
 
+from ...config import AppSettings
+
 DG_TEMPLATES_DIR = "demo_gis/"
 
 class Demo_GIS_Controller(BasePluginController):
     path = "/demo_gis"
 
     @get("/")
-    async def user_homepage(self) -> Template:
-        geoserver_cfg = { 'proj' : 'EPSG:3857',
-                          'size' : 256,
-
-
-                           };
+    async def user_homepage(self, app_settings: AppSettings) -> Template:
+        if app_settings.GIS_USE_GEOSERVER:
+            geoserver_cfg = {
+              'projection'        : app_settings.PROJECTION,
+              'extent_size'       : app_settings.EXTENT_SIZE,
+              'wmts_attributions' : app_settings.WMTS_ATTRIBUTIONS,
+              'wmts_url'          : app_settings.WMTS_URL,
+              'wmts_layer'        : app_settings.WMTS_LAYER,
+              'wms_url'           : app_settings.WMS_URL,
+              'wms_layers'        : app_settings.WMS_LAYERS,
+            }
+        else:
+            geoserver_cfg = {}
 
         return Template(
             template_name = DG_TEMPLATES_DIR + "demo_gis.html",
-            context={ 'geoserver_cfg' :geoserver_cfg }
+            context={ 'geoserver_cfg' : geoserver_cfg }
         )
 
     @get("/admin_panel")

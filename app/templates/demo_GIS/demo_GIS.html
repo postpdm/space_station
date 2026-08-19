@@ -64,9 +64,9 @@
 
 		{% if geoserver_cfg %}
 			// Replace matrix name and parameters with your GeoServer details
-			const projection = ol.proj.get( '{{geoserver_cfg.proj}}' );
+			const projection = ol.proj.get( '{{geoserver_cfg.projection}}' );
 			const projectionExtent = projection.getExtent();
-			const size = ol.extent.getWidth(projectionExtent) / {{geoserver_cfg.size}};
+			const size = ol.extent.getWidth(projectionExtent) / {{geoserver_cfg.extent_size}};
 			const resolutions = new Array(20);
 			const matrixIds = new Array(20);
 			for (let z = 0; z < 20; ++z) {
@@ -99,7 +99,7 @@
 				source: new ol.source.ImageWMS({
 					url: '{{geoserver_cfg.wms_url}}',
 					params: {
-						LAYERS: [ {{geoserver_cfg.wms_layers|safe}} ] },
+						LAYERS: {{geoserver_cfg.wms_layers|safe}} },
 					ratio: 1,
 					serverType: 'geoserver',
 				}),

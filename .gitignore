@@ -1,4 +1,5 @@
 # Environment configuration
+# .env is your secret file, never commit it!
 .env
 
 # ---> Python
