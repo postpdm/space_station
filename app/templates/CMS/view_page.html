@@ -7,9 +7,17 @@
 <section id="editor">
 
     <div id="record-container">Loading data...</div>
-	
+
 <!-- Include marked.umd.js -->
-<script src="{{ url_for_static_asset('static', file_path='markdown/marked.umd.js') }}"></script>
+{% if USE_CDN %}
+	<script src="https://cdn.jsdelivr.net/npm/marked@18.0.9/lib/marked.umd.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs"></script>
+
+{% else %}
+	<script src="{{ url_for_static_asset('static', file_path='markdown/marked/18.0.9/marked.umd.js') }}"></script>
+	<script src="{{ url_for_static_asset('static', file_path='markdown/mermaid/11.17.0/mermaid.min.js') }}"></script>
+{% endif %}
+
 
 <script>
 async function fetchAndDisplayRecord() {
@@ -20,7 +28,7 @@ async function fetchAndDisplayRecord() {
     try {
         // 1. Fetch the data from the API
         const response = await fetch(url);
-        
+
         // Check if the response status is OK (e.g., 200)
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -33,8 +41,8 @@ async function fetchAndDisplayRecord() {
         container.innerHTML = `
                 <h2>Title: ${record.title}</h2>
                 <h3>Record ID: ${record.id}</h3>
-                
-            
+
+
         `;
 	    for (const section of record.sections) {
 		container.innerHTML += marked.parse( section.content );
@@ -55,20 +63,36 @@ fetchAndDisplayRecord();
 
 <h1>Add new section</h1>
 <form id="new_page_section_Form">
-	
-	
+
+
     <div>
         <label for="content">Content (markdown supported):</label>
         <textarea id="content" required placeholder="Enter the markdown content" rows="5" cols="55"></textarea>
     </div>
-    
+
     <button type="submit">Add new section</button>
 </form>
 
 	<!-- The live preview box -->
 	<div id="preview"></div>
 
-<script>
+<script >
+
+
+  // turn off auto start
+  mermaid.initialize({ startOnLoad: false });
+
+      // Tune marked class: if parse ```mermaid then convert it to pre
+      const renderer = new marked.Renderer();
+      renderer.code = function({ text, lang }) {
+        if (lang === 'mermaid') {
+          return `<pre class="mermaid">${text}</pre>`;
+        }
+        return `<pre><code>${text}</code></pre>`;
+      };
+      marked.setOptions({ renderer });
+
+
   const editor = document.getElementById('content');
   const preview = document.getElementById('preview');
 
@@ -76,8 +100,21 @@ fetchAndDisplayRecord();
   editor.addEventListener('input', () => {
     const markdownText = editor.value;
     preview.innerHTML = marked.parse(markdownText);
+
+	        // Search for all Mermaid blocks
+        const mermaidBlocks = preview.querySelectorAll('.mermaid');
+        if (mermaidBlocks.length > 0) {
+          try {
+             mermaid.run({ nodes: Array.from(mermaidBlocks) });
+          } catch (e) {
+            console.error('Error rendering Mermaid:', e);
+          }
+        };
+
+
+
   });
-  
+
 
     document.getElementById('new_page_section_Form').addEventListener('submit', async function(e) {
         e.preventDefault(); // cancel
@@ -88,8 +125,8 @@ fetchAndDisplayRecord();
 
         // Get elements
         const content = document.getElementById('content').value;
-        
-        
+
+
         // payload
         const payload = {
             content : content,
@@ -121,15 +158,15 @@ fetchAndDisplayRecord();
             statusDiv.style.color = 'red';
         }
     });
-  
-  
-  
+
+
+
 </script>
 
 <div id="status"></div>
 
 
-	
+
 
 </section>
 
