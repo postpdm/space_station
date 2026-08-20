@@ -18,8 +18,49 @@
 	<script src="{{ url_for_static_asset('static', file_path='markdown/mermaid/11.17.0/mermaid.min.js') }}"></script>
 {% endif %}
 
+<h1>Add new section</h1>
+<form id="new_page_section_Form">
+
+    <div>
+        <label for="content">Content (markdown with mermaid supported):</label>
+        <textarea id="content" required placeholder="Enter the markdown content" rows="5" cols="55"></textarea>
+    </div>
+
+    <button type="submit">Add new section</button>
+</form>
+
+	<!-- The live preview box -->
+	<div id="preview"></div>
+
 
 <script>
+
+  // turn off auto start
+  mermaid.initialize({ startOnLoad: false });
+
+  // Tune marked class: if parse ```mermaid then convert it to pre
+  const renderer = new marked.Renderer();
+  renderer.code = function({ text, lang }) {
+    if (lang === 'mermaid') {
+      return `<pre class="mermaid">${text}</pre>`;
+    }
+    return `<pre><code>${text}</code></pre>`;
+  };
+  marked.setOptions({ renderer });
+
+async function search_mermaid( container ){
+
+        const mermaidBlocks = container.querySelectorAll('.mermaid');
+        if (mermaidBlocks.length > 0) {
+          try {
+             mermaid.run({ nodes: Array.from(mermaidBlocks) });
+          } catch (e) {
+            console.error('Error rendering Mermaid:', e);
+          }
+        };
+
+};
+
 async function fetchAndDisplayRecord() {
     // URL targeting a single record ID (Post #1)
     const url = '/cms/get_page_api/{{page_id}}';
@@ -41,13 +82,15 @@ async function fetchAndDisplayRecord() {
         container.innerHTML = `
                 <h2>Title: ${record.title}</h2>
                 <h3>Record ID: ${record.id}</h3>
-
-
         `;
 	    for (const section of record.sections) {
 		container.innerHTML += marked.parse( section.content );
 			};
 		container.innerHTML += `</div>`;
+
+		// Search for all Mermaid blocks in sections
+		search_mermaid( container );
+
     } catch (error) {
         // Handle errors gracefully if the fetch fails
         console.error('Fetch error:', error);
@@ -59,40 +102,6 @@ async function fetchAndDisplayRecord() {
 fetchAndDisplayRecord();
 
 
-</script>
-
-<h1>Add new section</h1>
-<form id="new_page_section_Form">
-
-
-    <div>
-        <label for="content">Content (markdown supported):</label>
-        <textarea id="content" required placeholder="Enter the markdown content" rows="5" cols="55"></textarea>
-    </div>
-
-    <button type="submit">Add new section</button>
-</form>
-
-	<!-- The live preview box -->
-	<div id="preview"></div>
-
-<script >
-
-
-  // turn off auto start
-  mermaid.initialize({ startOnLoad: false });
-
-      // Tune marked class: if parse ```mermaid then convert it to pre
-      const renderer = new marked.Renderer();
-      renderer.code = function({ text, lang }) {
-        if (lang === 'mermaid') {
-          return `<pre class="mermaid">${text}</pre>`;
-        }
-        return `<pre><code>${text}</code></pre>`;
-      };
-      marked.setOptions({ renderer });
-
-
   const editor = document.getElementById('content');
   const preview = document.getElementById('preview');
 
@@ -101,18 +110,10 @@ fetchAndDisplayRecord();
     const markdownText = editor.value;
     preview.innerHTML = marked.parse(markdownText);
 
-	        // Search for all Mermaid blocks
-        const mermaidBlocks = preview.querySelectorAll('.mermaid');
-        if (mermaidBlocks.length > 0) {
-          try {
-             mermaid.run({ nodes: Array.from(mermaidBlocks) });
-          } catch (e) {
-            console.error('Error rendering Mermaid:', e);
-          }
-        };
-
-
-
+	// Search for all Mermaid blocks in preview
+	search_mermaid( preview );
+		
+	document.getElementById('status').innerHTML = '';
   });
 
 
@@ -147,7 +148,8 @@ fetchAndDisplayRecord();
                 statusDiv.textContent = 'Success!';
                 statusDiv.style.color = 'green';
                 document.getElementById('new_page_section_Form').reset(); // Clear form
-                fetchAndDisplayRecord();
+                document.getElementById('preview').innerHTML = '';
+				fetchAndDisplayRecord();
             } else {
                 const errorText = await response.text();
                 statusDiv.textContent = `Server fail: ${response.status} - ${errorText}`;
