@@ -2,14 +2,9 @@
 Service for special CMS pages.
 '''
 
-from typing import Protocol, Any, Optional
+from typing import Any
 
 from anyio import Path
-
-#class DataService(Protocol):
-#    """Service."""
-#    async def get_data(self) -> Any:
-#        ...
 
 class TextFileService:
     async def get_data(self) -> Any:
@@ -18,7 +13,7 @@ class TextFileService:
         content = await Path(p).read_text(encoding="utf-8")
         print( content )
 
-        return { "id" : '123-444',
+        return { "id" : 'special_help',
                  "title": "This is Help!",
                  "sections": [ { "content" : content, "content_type" : 1911117 }
                              ] }
