@@ -18,6 +18,7 @@
 	<script src="{{ url_for_static_asset('static', file_path='markdown/mermaid/11.17.0/mermaid.min.js') }}"></script>
 {% endif %}
 
+{% if Enable_edit_flag %}
 <hr>
       <!-- Accordions -->
       <section id="accordion_markdown_help">
@@ -98,6 +99,7 @@ pie title Pets adopted by volunteers
 	<!-- The live preview box -->
 	<div id="preview"></div>
 
+{% endif %}
 
 <script>
 
@@ -113,9 +115,8 @@ pie title Pets adopted by volunteers
     return `<pre><code>${text}</code></pre>`;
   };
   marked.setOptions({ renderer });
-
-async function search_mermaid( container ){
-
+  
+  async function search_mermaid( container ){
         const mermaidBlocks = container.querySelectorAll('.mermaid');
         if (mermaidBlocks.length > 0) {
           try {
@@ -124,12 +125,15 @@ async function search_mermaid( container ){
             console.error('Error rendering Mermaid:', e);
           }
         };
-
-};
+	};
 
 async function fetchAndDisplayRecord() {
     // URL targeting a single record ID (Post #1)
-    const url = '/cms/get_page_api/{{page_id}}';
+    {% if special_page %}
+		const url = '/cms/get_special_page_api/{{page_id}}';
+	{% else %}
+		const url = '/cms/get_page_api/{{page_id}}';
+	{% endif %}
     const container = document.getElementById('record-container');
 
     try {

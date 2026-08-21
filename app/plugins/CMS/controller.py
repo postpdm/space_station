@@ -6,6 +6,8 @@ from litestar import Controller, get, post, Request
 from litestar.response import Template
 from litestar.params import Dependency, PathParameter
 
+from litestar.di import Provide
+
 from advanced_alchemy.extensions.litestar import (
     filters,
     providers,
@@ -21,6 +23,10 @@ from .schema import Page_pdnt, PageCreate_pdnt, Page_with_sections_pdnt, Page_Se
 
 from .parsers import CONST_PLAIN_MARKDOWN
 
+from .service_special import provide_file_service, TextFileService
+
+SPECIAL_HELP_PAGE = 'help'
+
 class CMS_Controller(BasePluginController):
     path = "/cms"
 
@@ -35,9 +41,10 @@ class CMS_Controller(BasePluginController):
         **providers.create_service_dependencies(
             CMS_Section_Service,
             "CMS_Section_Service",
-        )
-    }
+        ),
 
+        "file_service": Provide(provide_file_service),
+    }
 
     @get("/")
     async def user_homepage(self) -> Template:
@@ -50,7 +57,18 @@ class CMS_Controller(BasePluginController):
     async def view_page(self, page_id:UUID) -> Template:
         return Template(
             template_name = CMS_TEMPLATES_DIR + "view_page.html",
-            context={ 'page_id' : page_id }
+            context={ 'special_page' : False,
+                      'page_id' : page_id,
+                      'Enable_edit_flag' : True }
+        )
+
+    @get("/special/help")
+    async def view_page_spetial_help(self) -> Template:
+        return Template(
+            template_name = CMS_TEMPLATES_DIR + "view_page.html",
+            context={ 'special_page' : True,
+                      'page_id' : SPECIAL_HELP_PAGE,
+                      'Enable_edit_flag' : False }
         )
 
     @get("/admin_panel")
@@ -81,6 +99,11 @@ class CMS_Controller(BasePluginController):
     async def get_page_api(self, CMS_service: CMSService, page_id:UUID) -> Page_with_sections_pdnt:
         obj = await CMS_service.get_one_or_none( id = page_id )
         return CMS_service.to_schema( obj, schema_type=Page_with_sections_pdnt)
+
+    @get("/get_special_page_api/{page_id:str}")
+    async def get_special_page_api(self, file_service: TextFileService, page_id:str) -> Page_with_sections_pdnt:
+        obj = await file_service.get_data()
+        return obj
 
     @post(path="/new_page_api")
     async def create_new_page_api(self, request : Request, CMS_service: CMSService, data: PageCreate_pdnt) -> Page_pdnt:
