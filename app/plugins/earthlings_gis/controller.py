@@ -5,10 +5,10 @@ from app.plugins.abc_controller import BasePluginController
 
 from ...config import AppSettings
 
-DG_TEMPLATES_DIR = "demo_gis/"
+DG_TEMPLATES_DIR = "earthlings_gis/"
 
 class Demo_GIS_Controller(BasePluginController):
-    path = "/demo_gis"
+    path = "/earthlings_gis"
 
     @get("/")
     async def user_homepage(self, app_settings: AppSettings) -> Template:
@@ -26,7 +26,7 @@ class Demo_GIS_Controller(BasePluginController):
             geoserver_cfg = {}
 
         return Template(
-            template_name = DG_TEMPLATES_DIR + "demo_gis.html",
+            template_name = DG_TEMPLATES_DIR + "earthlings_gis.html",
             context={ 'geoserver_cfg' : geoserver_cfg }
         )
 
