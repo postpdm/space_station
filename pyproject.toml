@@ -15,16 +15,19 @@ dynamic = ["dependencies"]
 dependencies = {file = ["requirements.txt"]}
 
 [tool.setuptools.packages.find]
-where = ["."]
+
+[tool.setuptools.packages.find]
+where = ["space_station"]
 include = ["app*"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"
-addopts = "--cov=space_station --cov-report=xml"
+addopts = "--cov=space_station/app --cov-report=xml" 
 testpaths = [
     "tests",
 ]
-pythonpath = ["."]
+pythonpath = ["space_station"] 
+
 filterwarnings = [
     "ignore::litestar.exceptions.LitestarDeprecationWarning",
     "ignore:.*was never awaited:RuntimeWarning",

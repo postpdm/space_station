@@ -33,7 +33,7 @@ jobs:
     # Step: Run tests and generate coverage report
     - name: Run tests with coverage
       env:
-        PYTHONPATH: ${{ github.workspace }}
+        PYTHONPATH: ${{ github.workspace }}/space_station
       run: |
         PYTHONPATH=. pytest
         coverage run -m pytest
