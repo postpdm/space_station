@@ -11,7 +11,6 @@ class TextFileService:
         p = "docs/cms/help.md"
 
         content = await Path(p).read_text(encoding="utf-8")
-        print( content )
 
         return { "id" : 'special_help',
                  "title": "This is Help!",
