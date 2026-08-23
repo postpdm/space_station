@@ -20,3 +20,8 @@ addopts = "--cov=space_station --cov-report=xml"
 testpaths = [
     "tests",
 ]
+pythonpath = "."
+filterwarnings = [
+    "ignore::litestar.exceptions.LitestarDeprecationWarning",
+    "ignore:.*was never awaited:RuntimeWarning",
+]
