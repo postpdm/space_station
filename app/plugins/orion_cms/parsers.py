@@ -1,0 +1,3 @@
+""" Parsers """
+
+CONST_PLAIN_MARKDOWN = 1911117
