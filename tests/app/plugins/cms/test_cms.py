@@ -1,6 +1,4 @@
 
-#, CONST_PLAIN_MARKDOWN
-
 import pytest
 from anyio import Path
 from app.plugins.cms.parsers import CONST_PLAIN_MARKDOWN

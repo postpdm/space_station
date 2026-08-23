@@ -14,6 +14,10 @@ dynamic = ["dependencies"]
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+
 [tool.pytest.ini_options]
 minversion = "7.0"
 addopts = "--cov=space_station --cov-report=xml"
