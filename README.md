@@ -2,6 +2,9 @@
 
 CMS for enterprise portals.
 
+[![Coverage Status](https://coveralls.io/repos/github/postpdm/space_station/badge.svg?branch=main)](https://coveralls.io/github/postpdm/space_station?branch=main)
+
+## Your business asks for an MVP
 ```mermaid
 flowchart TD
     A[Your business asks for an MVP] --> B{Is it simple?}
