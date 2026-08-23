@@ -1,6 +1,10 @@
 site_name: Space station
 theme:
-  name: readthedocs
-nav:
-  - Main: index.md
-  
+  name: material
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
