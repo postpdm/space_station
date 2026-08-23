@@ -6,7 +6,7 @@ from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 #from advanced_alchemy.extensions.litestar.session import SessionModelMixin
 
-from uuid import UUID
+from uuid import UUID, uuid4
 from typing import Annotated, Optional
 import datetime
 
@@ -15,6 +15,7 @@ import datetime
 class User(base.UUIDBase):
     user_login: Mapped[str] = mapped_column( unique=True) # unique
     user_name: Mapped[str]  # not unique
+    pseudo_name: Mapped[str] = mapped_column( default=str( uuid4() ) ) # not unique
 
 # User fav
 class UserFav(base.UUIDBase):
