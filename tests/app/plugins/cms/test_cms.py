@@ -1,8 +1,8 @@
 
 import pytest
 from anyio import Path
-from app.plugins.cms.parsers import CONST_PLAIN_MARKDOWN
-from app.plugins.cms.service_special import TextFileService, provide_file_service
+from app.plugins.orion_cms.parsers import CONST_PLAIN_MARKDOWN
+from app.plugins.orion_cms.service_special import TextFileService, provide_file_service
 
 # Turn anyio for pytest
 pytestmark = pytest.mark.anyio
