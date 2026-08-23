@@ -19,5 +19,5 @@ __pycache__/
 session_data
 
 # Tests
-
+coverage.xml
 .coverage

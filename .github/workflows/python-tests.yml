@@ -33,8 +33,7 @@ jobs:
     # Step: Run tests and generate coverage report
     - name: Run tests with coverage
       run: |
-        coverage run -m pytest
-        coverage xml  # generates coverage.xml
+        pytest
 
     # Step: Upload to Coveralls using Cobertura XML
     - name: Upload coverage to Coveralls
