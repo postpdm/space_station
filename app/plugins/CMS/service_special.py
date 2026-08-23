@@ -9,9 +9,7 @@ from anyio import Path
 from .parsers import CONST_PLAIN_MARKDOWN
 
 class TextFileService:
-    async def get_data(self) -> Any:
-        p = "docs/cms/help.md"
-
+    async def get_data(self, p) -> Any:
         content = await Path(p).read_text(encoding="utf-8")
 
         return { "id" : 'special_help',
@@ -20,5 +18,4 @@ class TextFileService:
                              ] }
 
 async def provide_file_service() -> TextFileService:
-    # storage_dir=Path("./data_files")
     return TextFileService()

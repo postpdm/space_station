@@ -102,7 +102,8 @@ class CMS_Controller(BasePluginController):
 
     @get("/get_special_page_api/{page_id:str}")
     async def get_special_page_api(self, file_service: TextFileService, page_id:str) -> Page_with_sections_pdnt:
-        obj = await file_service.get_data()
+        p = "docs/cms/help.md"
+        obj = await file_service.get_data( p )
         return obj
 
     @post(path="/new_page_api")
