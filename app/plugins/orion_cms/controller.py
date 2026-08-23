@@ -16,7 +16,7 @@ from advanced_alchemy.extensions.litestar import (
 
 from app.plugins.abc_controller import BasePluginController
 
-CMS_TEMPLATES_DIR = "cms/"
+CMS_TEMPLATES_DIR = "orion_cms/"
 
 from .service import CMSService, CMS_Section_Service
 from .schema import Page_pdnt, PageCreate_pdnt, Page_with_sections_pdnt, Page_Section_pdnt, Page_Section_Create_pdnt
@@ -102,7 +102,7 @@ class CMS_Controller(BasePluginController):
 
     @get("/get_special_page_api/{page_id:str}")
     async def get_special_page_api(self, file_service: TextFileService, page_id:str) -> Page_with_sections_pdnt:
-        p = "docs/cms/help.md"
+        p = "docs/orion_cms/help.md"
         obj = await file_service.get_data( p )
         return obj
 

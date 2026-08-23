@@ -1,6 +1,6 @@
 # Help
 
-**Content Management System** (CMS) contain list of pages. Each page contain title (plain text) and list of sections.
+**Orion** Content Management System (CMS) contain list of pages. Each page contain title (plain text) and list of sections.
 
 Each section is a markdown text, with Mermaid diagram support.
 
