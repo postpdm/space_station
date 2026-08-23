@@ -29,16 +29,17 @@ jobs:
         python -m pip install pytest pytest-cov
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip install -e .
-    
+
     # Step: Run tests and generate coverage report
     - name: Run tests with coverage
       run: |
         coverage run -m pytest
         coverage xml  # generates coverage.xml
-    
+
     # Step: Upload to Coveralls using Cobertura XML
     - name: Upload coverage to Coveralls
       uses: coverallsapp/github-action@v2
       with:
         format: cobertura
         file: coverage.xml
+        base-path: ./app
