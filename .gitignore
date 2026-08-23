@@ -17,3 +17,7 @@ __pycache__/
 
 # session_data folder (if File_Storage used)
 session_data
+
+# Tests
+
+.coverage

@@ -13,18 +13,14 @@ dynamic = ["dependencies"]
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 
-# Исправленный блок: ищем пакеты прямо в корне
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["app*"]
-
 [tool.pytest.ini_options]
 minversion = "7.0"
-addopts = "--cov=app --cov-report=xml"
-testpaths = [
-    "tests",
-]
+
 pythonpath = ["."]
+testpaths = ["tests"]
+
+addopts = "--cov=app --cov-report=xml"
+
 filterwarnings = [
     "ignore::litestar.exceptions.LitestarDeprecationWarning",
     "ignore:.*was never awaited:RuntimeWarning",
