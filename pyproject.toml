@@ -8,24 +8,23 @@ version = "0.0.1"
 description = "Space Station project"
 readme = "README.md"
 requires-python = ">=3.10"
-
 dynamic = ["dependencies"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 
+# Исправленный блок: ищем пакеты прямо в корне
 [tool.setuptools.packages.find]
-where = ["space_station"]
+where = ["."]
 include = ["app*"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"
-addopts = "--cov=space_station/app --cov-report=xml" 
+addopts = "--cov=app --cov-report=xml"
 testpaths = [
     "tests",
 ]
-pythonpath = ["space_station"] 
-
+pythonpath = ["."]
 filterwarnings = [
     "ignore::litestar.exceptions.LitestarDeprecationWarning",
     "ignore:.*was never awaited:RuntimeWarning",
