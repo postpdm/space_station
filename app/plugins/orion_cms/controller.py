@@ -122,4 +122,10 @@ class CMS_Controller(BasePluginController):
 
         obj = await CMS_Section_Service.create( section_data_dict )
         return CMS_Section_Service.to_schema(obj, schema_type=Page_Section_pdnt)
+
+    @get("/get_statistics_api")
+    async def get_statistics_api(self, request : Request ) -> str:
+        return '0 is ZERO'
+
+
 #
