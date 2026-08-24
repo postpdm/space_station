@@ -14,7 +14,8 @@
 	<link rel="stylesheet" href="{{ url_for_static_asset('static', file_path='pico/2.1.1/pico.classless.min.css') }}">
 	{% endif %}
 
-
+    {% block extra_header %}
+	{% endblock %}
   </head>
 
   <body>
