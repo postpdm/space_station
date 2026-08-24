@@ -2,6 +2,20 @@
 
 {% block title %}CMS stat{% endblock %}
 
+{% block extra_header %}
+
+    <!-- Chartist.js -->
+	{% if USE_CDN %}
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chartist/dist/chartist.min.css">
+		<script src="https://cdn.jsdelivr.net/npm/chartist/dist/chartist.min.js') }}"></script>
+	{% else %}
+		<link rel="stylesheet" href="{{ url_for_static_asset('static', file_path='charts/chartist/0.11.4/chartist.min.css') }}">
+		<script src="{{ url_for_static_asset('static', file_path='charts/chartist/0.11.4/chartist.min.js') }}"></script>
+	{% endif %}
+
+{% endblock %}
+
+
 {% block body %}
       <section id="CMS">
 <h1>Statistics</h1>
@@ -22,13 +36,19 @@
 	  </tbody>
 	  </table>
 
+
+  <div id="chart" class="ct-chart"></div>
+
     <p><button onclick="loadPages()">Refresh statistics</button></p>
 
       </section>
 
 <script>
 async function loadPages() {
-
+	
+	const labels = [];
+    const series = [];
+	
 	fetch('/cms/get_statistics_api_page_count')
 	  .then(response => response.json())
 	  .then(data => {
@@ -45,7 +65,9 @@ async function loadPages() {
 	  .then(response => response.json())
 	  .then(data => {
 		const tableBody = document.getElementById('statistic_page_by_day_div');
+		
 		tableBody.innerHTML = '';
+		
 
 		data.forEach(item => {
 		  const row = `
@@ -55,12 +77,44 @@ async function loadPages() {
 			</tr>
 		  `;
 		  tableBody.innerHTML += row;
+		  
 		});
+
+		data.sort((a, b) => new Date(a.day) - new Date(b.day));
+		const labels = data.map(item => item.day);
+		const series = [data.map(item => item.count)];
+
+		new Chartist.Bar('#chart', {
+		  labels,
+		  series
+		}, {
+		  fullWidth: true,
+		  chartPadding: { right: 20, left: 10 },
+		  axisX: {
+			labelInterpolationFnc: function(value) {
+			  const d = new Date(value);
+			  return d.toLocaleDateString('ru-RU', {
+				day: '2-digit',
+				month: '2-digit',
+				year: 'numeric'
+			  });
+			}
+		  },
+		  axisY: {
+			onlyInteger: true,
+			offset: 40
+		  }
+		});
+
+	
 
 	  })
 	  .catch(error => {
-		document.getElementById('errors2').textContent = 'Fail!';
+		document.getElementById('errors2').textContent = 'Fail!' + error;
 	  });
+
+
+    
 
 };
 
