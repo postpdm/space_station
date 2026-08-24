@@ -26,13 +26,26 @@ class CMS_Section_Service(service.SQLAlchemyAsyncRepositoryService[CMS_Page_Sect
     model_type = CMS_Page_Section_Model
 
 class CMS_ReportService:
+    """CMS complex analytics"""
     def __init__(self, db_session: AsyncSession) -> None:
         self.session = db_session
 
-    async def get_complex_analytics(self) -> int:
+    async def get_page_count(self) -> int:
         query = select(func.count()).select_from(CMS_Page_Model)
         result = await self.session.scalar(query)
         return result
+    
+    async def get_page_by_day_count(self) -> int:
+        date_col = func.date(CMS_Page_Model.created_at).label("day")
+        stmt = (
+            select(date_col, func.count(CMS_Page_Model.id).label("count"))
+            .group_by(date_col)
+            .order_by(date_col.desc())
+        )
+        
+        result = await self.session.execute(stmt)
+        return [{"day": row.day, "count": row.count} for row in result.all()]
+        
 
 async def provide_cms_report_service(db_session: AsyncSession) -> CMS_ReportService:
     return CMS_ReportService(db_session=db_session)

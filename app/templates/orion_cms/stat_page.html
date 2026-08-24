@@ -6,43 +6,72 @@
       <section id="CMS">
 <h1>Statistics</h1>
 
-	<p>Total page count: <div id="statistic_div"></div></p>
-		
-    <p><button onclick="loadPages()">Refresh statistics</button></p>
-    
+	<p>Total page count: <div id="statistic_page_count_div"></div></p>
 
+	<p>Page by days:</p>
+
+	  <table border="1">
+	  <thead>
+		<tr>
+		  <th>Day</th>
+		  <th>Count</th>
+		</tr>
+	  </thead>
+	  <tbody id="statistic_page_by_day_div">
+		<!-- data -->
+	  </tbody>
+	  </table>
+
+    <p><button onclick="loadPages()">Refresh statistics</button></p>
 
       </section>
 
-    <script>
-      
-	  async function loadPages() {
+<script>
+async function loadPages() {
 
-fetch('/cms/get_statistics_api')
-  .then(response => response.json())
-  .then(data => {
-    // print
-	const listBody = document.getElementById('statistic_div');
+	fetch('/cms/get_statistics_api_page_count')
+	  .then(response => response.json())
+	  .then(data => {
+		// print
+		const countBody = document.getElementById('statistic_page_count_div');
+		// delete list content
+		countBody.innerHTML = data;
+	  })
+	  .catch(error => {
+		document.getElementById('errors2').textContent = 'Fail!';
+	  });
 
-// delete list content
-listBody.innerHTML = data;
+	fetch('/cms/get_statistics_api_page_created_by_day')
+	  .then(response => response.json())
+	  .then(data => {
+		const tableBody = document.getElementById('statistic_page_by_day_div');
+		tableBody.innerHTML = '';
 
-// array
+		data.forEach(item => {
+		  const row = `
+			<tr>
+			  <td>${item.day}</td>
+			  <td>${item.count}</td>
+			</tr>
+		  `;
+		  tableBody.innerHTML += row;
+		});
 
+	  })
+	  .catch(error => {
+		document.getElementById('errors2').textContent = 'Fail!';
+	  });
 
-
-
-  })
-  .catch(error => {
-    document.getElementById('news-list').textContent = 'Fail!';
-  });
-
-			};
+};
 
 window.onload = loadPages;
 
 </script>
 
+<div id="errors1"></div>
+<div id="errors2"></div>
 
 
-{% endblock %}
+
+
+	  {% endblock %}

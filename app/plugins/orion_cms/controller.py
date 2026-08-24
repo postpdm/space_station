@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from typing import Annotated
+from typing import Annotated, List
 
 from litestar import Controller, get, post, Request
 from litestar.response import Template
@@ -19,7 +19,7 @@ from app.plugins.abc_controller import BasePluginController
 CMS_TEMPLATES_DIR = "orion_cms/"
 
 from .service import CMSService, CMS_Section_Service, CMS_ReportService, provide_cms_report_service
-from .schema import Page_pdnt, PageCreate_pdnt, Page_with_sections_pdnt, Page_Section_pdnt, Page_Section_Create_pdnt, Orion_Pages_Stat_pdnt
+from .schema import Page_pdnt, PageCreate_pdnt, Page_with_sections_pdnt, Page_Section_pdnt, Page_Section_Create_pdnt, Orion_Pages_Stat_Count_pdnt, Orion_Pages_Stat_By_Day_pdnt
 
 from .parsers import CONST_PLAIN_MARKDOWN
 
@@ -131,9 +131,12 @@ class CMS_Controller(BasePluginController):
         obj = await CMS_Section_Service.create( section_data_dict )
         return CMS_Section_Service.to_schema(obj, schema_type=Page_Section_pdnt)
 
-    @get("/get_statistics_api")
-    async def get_statistics_api(self, cms_report_service: CMS_ReportService ) -> Orion_Pages_Stat_pdnt:
-        return cms_report_service.get_complex_analytics()
+    @get("/get_statistics_api_page_count")
+    async def get_statistics_api_page_count(self, cms_report_service: CMS_ReportService ) -> Orion_Pages_Stat_Count_pdnt:
+        return cms_report_service.get_page_count()
 
+    @get("/get_statistics_api_page_created_by_day")
+    async def get_statistics_api_page_created_by_day(self, cms_report_service: CMS_ReportService ) -> List[Orion_Pages_Stat_By_Day_pdnt]:
+        return cms_report_service.get_page_by_day_count()
 
 #

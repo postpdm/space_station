@@ -25,19 +25,14 @@ class Page_with_sections_pdnt(BaseModel):
 
 class PageCreate_pdnt(BaseModel):
     title: str
-    #content : str
-    #published_dt: Optional[datetime.datetime] = None
-
-
-
-#class NewsUpdate_pdnt(BaseModel):
-#    title: str
-#    content : str
-#    published_dt: Optional[datetime.datetime] = None
 
 
 # Statistics
-class Orion_Pages_Stat_pdnt(BaseModel):
+class Orion_Pages_Stat_Count_pdnt(BaseModel):
     total_page_count : int
+
+class Orion_Pages_Stat_By_Day_pdnt(BaseModel):
+    day : datetime.date
+    count : int
 
 #
