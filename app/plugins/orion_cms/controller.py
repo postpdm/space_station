@@ -18,8 +18,8 @@ from app.plugins.abc_controller import BasePluginController
 
 CMS_TEMPLATES_DIR = "orion_cms/"
 
-from .service import CMSService, CMS_Section_Service
-from .schema import Page_pdnt, PageCreate_pdnt, Page_with_sections_pdnt, Page_Section_pdnt, Page_Section_Create_pdnt
+from .service import CMSService, CMS_Section_Service, CMS_ReportService, provide_cms_report_service
+from .schema import Page_pdnt, PageCreate_pdnt, Page_with_sections_pdnt, Page_Section_pdnt, Page_Section_Create_pdnt, Orion_Pages_Stat_pdnt
 
 from .parsers import CONST_PLAIN_MARKDOWN
 
@@ -44,6 +44,7 @@ class CMS_Controller(BasePluginController):
         ),
 
         "file_service": Provide(provide_file_service),
+        "cms_report_service": Provide(provide_cms_report_service)
     }
 
     @get("/")
@@ -124,8 +125,8 @@ class CMS_Controller(BasePluginController):
         return CMS_Section_Service.to_schema(obj, schema_type=Page_Section_pdnt)
 
     @get("/get_statistics_api")
-    async def get_statistics_api(self, request : Request ) -> str:
-        return '0 is ZERO'
+    async def get_statistics_api(self, cms_report_service: CMS_ReportService ) -> Orion_Pages_Stat_pdnt:
+        return cms_report_service.get_complex_analytics()
 
 
 #
