@@ -1,0 +1,48 @@
+{% extends 'orion_cms/base.html' %}
+
+{% block title %}CMS stat{% endblock %}
+
+{% block body %}
+      <section id="CMS">
+<h1>Statistics</h1>
+
+	<p>Total page count: <div id="statistic_div"></div></p>
+		
+    <p><button onclick="loadPages()">Refresh statistics</button></p>
+    
+
+
+      </section>
+
+    <script>
+      
+	  async function loadPages() {
+
+fetch('/cms/get_statistics_api')
+  .then(response => response.json())
+  .then(data => {
+    // print
+	const listBody = document.getElementById('statistic_div');
+
+// delete list content
+listBody.innerHTML = data;
+
+// array
+
+
+
+
+  })
+  .catch(error => {
+    document.getElementById('news-list').textContent = 'Fail!';
+  });
+
+			};
+
+window.onload = loadPages;
+
+</script>
+
+
+
+{% endblock %}

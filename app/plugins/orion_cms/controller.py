@@ -64,12 +64,19 @@ class CMS_Controller(BasePluginController):
         )
 
     @get("/special/help")
-    async def view_page_spetial_help(self) -> Template:
+    async def view_page_special_help(self) -> Template:
         return Template(
             template_name = CMS_TEMPLATES_DIR + "view_page.html",
             context={ 'special_page' : True,
                       'page_id' : SPECIAL_HELP_PAGE,
                       'Enable_edit_flag' : False }
+        )
+    
+    @get("/special/stat")
+    async def view_page_special_stat(self) -> Template:
+        return Template(
+            template_name = CMS_TEMPLATES_DIR + "stat_page.html",
+            context={ }
         )
 
     @get("/admin_panel")
