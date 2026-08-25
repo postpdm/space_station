@@ -36,10 +36,10 @@ class CustomAuthenticationMiddleware(AbstractAuthenticationMiddleware):
 # For case then middleware raise NotAuthorizedException, redirect to login page
 def auth_exception_handler(request: Request, exception: Exception) -> Redirect:
     next_url = request.url.path
-    #request.session["next_url"] = request.url.path
-    request.set_session( { "next_url" : request.url.path } )
-            
-    return Redirect(path= "/users/login")
+    if next_url:
+        return Redirect( path = "/users/login?return_path="+next_url)
+    else:
+        return Redirect( path = "/users/login" )
 
 # you can optionally exclude certain paths from authentication.
 # the following excludes all routes mounted at or under `/schema*`

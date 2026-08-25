@@ -32,7 +32,7 @@
 	<h2>Client request get you auth user name</h2>
 	
     <h2>Check your login and name is correct and press enter. You can't change the login.</h2>
-    <form action="/users/login_form" method="POST">
+    <form action="/users/login_form{%if return_path %}?return_path={{return_path}}{% endif %}" method="POST">
         <input type="hidden" name="user_login" id="user_login" required readonly="readonly">
         <input type="hidden" name="user_name" id="user_name" required readonly="readonly">
         

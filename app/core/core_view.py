@@ -5,7 +5,8 @@ from typing import Annotated
 import httpx
 
 from litestar import Controller, Litestar, Request, delete, get, patch, post # we don't like "put"
-from litestar.params import Dependency, PathParameter
+from litestar.params import Dependency, PathParameter, FromQuery
+
 from litestar.response import Template, Redirect
 
 from litestar.params import URLEncodedBody
@@ -44,7 +45,7 @@ class UserController(Controller):
         request.set_session( { "user_id" : user_id, "user_login": user_login, "user_name": user_name })
 
     @get("/login", exclude_from_auth=True) # exclude from auth require, elsewhere middleware redirect as infinitely
-    async def login_page( self, app_settings: AppSettings, user_service: UserService, request: Request ) -> Template:
+    async def login_page( self, app_settings: AppSettings, user_service: UserService, request: Request, return_path: FromQuery[str | None] = None ) -> Template:
         try:
             if app_settings.AM_I_USER_URL:
                 am_i_user_url = app_settings.AM_I_USER_URL
@@ -79,8 +80,14 @@ class UserController(Controller):
                     user, res = await user_service.get_or_create_user( user_login, user_name )
                     if user:
                         await self.set_session( user.id, user_login, user_name )
-
-                    return Redirect(path='/')
+                    
+                    redirect_target = return_path
+                    
+                    # check for evil Redirect attack
+                    if not redirect_target.startswith("/"):
+                        redirect_target = "/"                     
+                        
+                    return Redirect(path=redirect_target)
 
                     #return Template(
                     #    template_name = STAR_FORTRESS_TEMPLATES_DIR + "profile.html",
@@ -89,7 +96,7 @@ class UserController(Controller):
             else:
                 return Template(
                     template_name = "login.html",
-                    context={ 'server_request' : server_request, 'am_i_user_url' : am_i_user_url, 'am_i_user_login_field' : am_i_user_login_field, 'am_i_user_name_field' : am_i_user_name_field }
+                    context={ 'return_path': return_path, 'server_request' : server_request, 'am_i_user_url' : am_i_user_url, 'am_i_user_login_field' : am_i_user_login_field, 'am_i_user_name_field' : am_i_user_name_field }
                     )
         except:
             return Template(
@@ -101,15 +108,15 @@ class UserController(Controller):
 
 
     @post("/login_form", exclude_from_auth=True) # exclude from auth require, elsewhere middleware redirect as infinitely
-    async def login_form( self, request: Request, user_service: UserService, data: URLEncodedBody[UserForm] ) -> UserForm:
+    async def login_form( self, request: Request, user_service: UserService, data: URLEncodedBody[UserForm], return_path: FromQuery[str | None] = None ) -> UserForm:
+        print(request.session)
 
         # check or create
         user, res = await user_service.get_or_create_user( data.user_login, data.user_name )
 
         if user:
             await self.set_session( request, user.id, user.user_login, user.user_name  )
-
-        redirect_target = request.session.pop("next_url", "/")
+        redirect_target = return_path
 
         # check for evil Redirect attack
         if not redirect_target.startswith("/"):
