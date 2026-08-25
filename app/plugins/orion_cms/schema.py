@@ -35,4 +35,7 @@ class Orion_Pages_Stat_By_Day_pdnt(BaseModel):
     day : datetime.date
     count : int
 
+class Orion_Manuscript_CodeRequest_pdnt(BaseModel):
+    code : str
+
 #

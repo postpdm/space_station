@@ -2,7 +2,7 @@ from uuid import UUID
 
 from typing import Annotated, List
 
-from litestar import Controller, get, post, Request
+from litestar import Controller, get, post, Request, Response
 from litestar.response import Template
 from litestar.params import Dependency, PathParameter
 
@@ -19,7 +19,7 @@ from app.plugins.abc_controller import BasePluginController
 CMS_TEMPLATES_DIR = "orion_cms/"
 
 from .service import CMSService, CMS_Section_Service, CMS_ReportService, provide_cms_report_service
-from .schema import Page_pdnt, PageCreate_pdnt, Page_with_sections_pdnt, Page_Section_pdnt, Page_Section_Create_pdnt, Orion_Pages_Stat_Count_pdnt, Orion_Pages_Stat_By_Day_pdnt
+from .schema import Page_pdnt, PageCreate_pdnt, Page_with_sections_pdnt, Page_Section_pdnt, Page_Section_Create_pdnt, Orion_Pages_Stat_Count_pdnt, Orion_Pages_Stat_By_Day_pdnt, Orion_Manuscript_CodeRequest_pdnt
 
 from .parsers import CONST_PLAIN_MARKDOWN
 
@@ -71,7 +71,7 @@ class CMS_Controller(BasePluginController):
                       'page_id' : SPECIAL_HELP_PAGE,
                       'Enable_edit_flag' : False }
         )
-    
+
     @get("/special/stat")
     async def view_page_special_stat(self) -> Template:
         return Template(
@@ -138,5 +138,14 @@ class CMS_Controller(BasePluginController):
     @get("/get_statistics_api_page_created_by_day")
     async def get_statistics_api_page_created_by_day(self, cms_report_service: CMS_ReportService ) -> List[Orion_Pages_Stat_By_Day_pdnt]:
         return cms_report_service.get_page_by_day_count()
+
+    @post("/build_component")
+    async def build_component(self, data : Orion_Manuscript_CodeRequest_pdnt ) -> Response:
+        try:
+            code = data.code
+            component_hmtl_str = '<table border="2"><tbody><tr><td>Component</td></tr></tbody></table>'
+            return Response( content = component_hmtl_str, media_type = "text/html", status_code = 200 )
+        except Exeption as e:
+            return Response( content = 'Error building component', media_type = "text/html", status_code = 500 )
 
 #

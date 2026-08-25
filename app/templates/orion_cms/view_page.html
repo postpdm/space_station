@@ -79,7 +79,7 @@ pie title Pets adopted by volunteers
     "Cats" : 85
     "Rats" : 15
 ```
-	
+
           </pre>
         <a href="https://mermaid.js.org/ecosystem/tutorials.html">Read more about Mermaid syntax.</a>
 		</details>
@@ -111,11 +111,47 @@ pie title Pets adopted by volunteers
   renderer.code = function({ text, lang }) {
     if (lang === 'mermaid') {
       return `<pre class="mermaid">${text}</pre>`;
-    }
+    };
+    if (lang === 'orion_manuscript') {
+      return `<pre class="orion_manuscript">${text}</pre>`;
+    };
+
     return `<pre><code>${text}</code></pre>`;
   };
   marked.setOptions({ renderer });
-  
+
+  async function search_box( container ){
+        // get all code blocks
+		const boxBlocks = container.querySelectorAll('.orion_manuscript');
+        for (const boxB of boxBlocks) {
+		    // get each code block
+			const code=boxB.textContent;
+			if (code!='') {
+			    try {
+				   //console.log( code );
+				   const response = await fetch( '/cms/build_component', {
+				       method: 'POST',
+					   headers : { 'Content-Type': 'application/json' },
+					   body : JSON.stringify({code}) } );
+
+				   if (!response.ok) throw new Error('Server error!');
+				   const componentHTML = await response.text();
+				   const pre = boxB.closest('pre');
+				   if (pre) {
+				       const wrapper = document.createElement('div');
+					   wrapper.innerHTML = componentHTML;
+					   pre.replaceWith(wrapper.firstElementChild || wrapper );
+				   } else {
+				       const wrapper = document.createElement('div');
+					   wrapper.innerHTML = componentHTML;
+					   boxB.replaceWith(wrapper.firstElementChild || wrapper );
+				   };
+				} catch (e) {
+					console.error( 'Error processing code block', e );
+				};
+			};
+		};
+	};
   async function search_mermaid( container ){
         const mermaidBlocks = container.querySelectorAll('.mermaid');
         if (mermaidBlocks.length > 0) {
@@ -158,6 +194,8 @@ async function fetchAndDisplayRecord() {
 			};
 		container.innerHTML += `</div>`;
 
+		// proceed Orion manuscript boxes
+		search_box( container );
 		// Search for all Mermaid blocks in sections
 		search_mermaid( container );
 
@@ -180,6 +218,8 @@ fetchAndDisplayRecord();
     const markdownText = editor.value;
     preview.innerHTML = marked.parse(markdownText);
 
+	// proceed Orion manuscript boxes
+	search_box( preview );
 	// Search for all Mermaid blocks in preview
 	search_mermaid( preview );
 
