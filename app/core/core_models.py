@@ -15,6 +15,7 @@ import datetime
 class User(base.UUIDBase):
     user_login: Mapped[str] = mapped_column( unique=True) # unique
     user_name: Mapped[str]  # not unique
+    is_bot : Mapped[bool] = mapped_column( default=False )
     pseudo_name: Mapped[str] = mapped_column( default=str( uuid4() ) ) # not unique
 
 # User fav
