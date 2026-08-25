@@ -93,7 +93,7 @@ async function loadPages() {
 		  axisX: {
 			labelInterpolationFnc: function(value) {
 			  const d = new Date(value);
-			  return d.toLocaleDateString('ru-RU', {
+			  return d.toLocaleDateString({{i18n}}'en-EN', {
 				day: '2-digit',
 				month: '2-digit',
 				year: 'numeric'
