@@ -25,63 +25,11 @@
         <h2>Add new section</h2>
         <details>
           <summary>View available options for markdown syntax &#9660;</summary>
-          <pre>
-# Heading 1
-## Heading 2
-### Heading 3
-#### Heading 4
-##### Heading 5
-###### Heading 6
-
-Text Formatting
-
-Bold: Wrap text in two asterisks **text** or two underscores __text__.
-Italic: Wrap text in one asterisk *text* or one underscore _text_.
-Strikethrough: Wrap text in two tildes ~~text~~.
-Combined: Wrap text in three asterisks ***text*** for bold and italic.
-Line Break: Add two spaces at the end of a line and hit Enter.
-
-- Item 1
-- Item 2
-  - Sub-item (Indent with 2 or 4 spaces)
-
-1. First item
-2. Second item
-3. Third item
-
-Insert hyperlink
-[Space station](https://github.com/postpdm/space_station/)
-
-> This is a blockquote.
-> It can span multiple lines.
-
-Horizontal Rules
-Insert three or more asterisks ***, hyphens ---, or underscores ___ on a line by themselves to create a divider.
-
-Tables
-| Left Aligned | Center Aligned | Right Aligned |
-| :---         |     :---:      |          ---: |
-| Text         | More Text      | $100          |
-
-          </pre>
+          {% include 'orion_cms/include_markdown_help.html' %}
         </details>
         <details>
           <summary>View available options for mermaid syntax &#9660;</summary>
-          <pre>
-```mermaid
-flowchart LR
-    Start --> Stop
-```
-
-```mermaid
-pie title Pets adopted by volunteers
-    "Dogs" : 386
-    "Cats" : 85
-    "Rats" : 15
-```
-
-          </pre>
-        <a href="https://mermaid.js.org/ecosystem/tutorials.html">Read more about Mermaid syntax.</a>
+          {% include 'orion_cms/include_mermaid_help.html' %}
 		</details>
       </section>
       <!-- ./ Accordions -->
@@ -89,7 +37,7 @@ pie title Pets adopted by volunteers
 <form id="new_page_section_Form">
 
     <div>
-        <label for="content">Content (markdown with mermaid supported). Start to type, preview is available.</label>
+        <label for="content">Content (markdown with mermaid supported). Start to type, preview is available bellow.</label>
         <textarea id="content" required placeholder="Enter the markdown content" rows="5" cols="55"></textarea>
     </div>
 
