@@ -42,6 +42,13 @@ class Star_Fortress_Controller(Controller):
             template_name = STAR_FORTRESS_TEMPLATES_DIR + "hull.html",
             context={ 'installed_plugin_names' : plugin_names, 'cached_plugins' : cached_plugins }
         )
+    
+    @get('/wilderness_unvoid')
+    async def sf_wilderness_unvoid(self, ) -> Template:
+        return Template(
+            template_name = STAR_FORTRESS_TEMPLATES_DIR + "wilderness_unvoid.html",
+            context={ }
+            )
 
     @get('/profile')
     async def sf_profile(self, request: Request, ) -> Template:
