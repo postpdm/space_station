@@ -9,15 +9,18 @@ Use this specific alias when displaying various statistics, rankings, product an
 
 ## Wilderness Unvoid
 
-Your system shines with clear architecture. Users are happy, your devops are proud.
+Your system shines with a clear architecture. Users are happy, and your DevOps team is proud.
 
 But **the unknown whispers of unnatural things**.
 
-Your system are sorround of unknown software, chanells, foreruners legacy artifacts, abandoned DB's and another strange things.
+Your space station are surrounded by unknown software, channels, forerunner legacy artifacts, abandoned databases, and other strange things.
 
-    Why your lake storage are unavailable at a half moon?
-	Why config contain commentary "Run only between 2 PM and 5 PM", writed down of dead man hands?
-	Why? Many enterprise network mannerisms is beyond human ken
+	Why is your data lake storage unavailable at a half moon? 
+	
+	Why does the config contain the comment "Run only between 2 PM and 5 PM," written down by a dead man's hands? 
+	
+	Why is table metadata marked as "not deprecated"? 
+	
+Many enterprise network mannerisms are beyond human ken.
 
-
-Space station should be prepared to collect and isolate the outer artifacts, keys for forbidden gates and maps of abhabitate dungeons.
+The space station should be prepared to collect and isolate outer artifacts, keys to forbidden gates, and maps of uninhabited dungeons.
