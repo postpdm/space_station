@@ -27,6 +27,7 @@ class CMS_Page_Section_Model(base.UUIDAuditBase):
 
     content: Mapped[str]
     content_type: Mapped[int]
+    position : Mapped[int] = mapped_column( default=0 )
    
     page_id: Mapped[UUID] = mapped_column(ForeignKey("cms_page.id"))
     page: Mapped[CMS_Page_Model] = relationship( back_populates="sections", lazy="joined", innerjoin=True, viewonly=True)
