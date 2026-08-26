@@ -159,7 +159,7 @@ class CMS_Controller(BasePluginController):
             code = data.code
             component_hmtl_str = await execute_orion_manusctript( code )
             return Response( content = component_hmtl_str, media_type = "text/html", status_code = 200 )
-        except Exeption as e:
+        except Exception as e:
             return Response( content = 'Error building component', media_type = "text/html", status_code = 500 )
 
 #
