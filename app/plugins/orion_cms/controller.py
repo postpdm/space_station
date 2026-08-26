@@ -21,7 +21,7 @@ CMS_TEMPLATES_DIR = "orion_cms/"
 from .service import CMSService, CMS_Section_Service, CMS_ReportService, provide_cms_report_service
 from .schema import Page_pdnt, PageCreate_pdnt, PageUpdate_pdnt, Page_with_sections_pdnt, Page_Section_pdnt, Page_Section_Create_pdnt, Orion_Pages_Stat_Count_pdnt, Orion_Pages_Stat_By_Day_pdnt, Orion_Manuscript_CodeRequest_pdnt
 
-from .parsers import CONST_PLAIN_MARKDOWN
+from .parsers import CONST_PLAIN_MARKDOWN, execute_orion_manusctript
 
 from .service_special import provide_file_service, TextFileService
 
@@ -157,7 +157,7 @@ class CMS_Controller(BasePluginController):
     async def build_component(self, data : Orion_Manuscript_CodeRequest_pdnt ) -> Response:
         try:
             code = data.code
-            component_hmtl_str = '<table border="2"><tbody><tr><td>Component</td></tr></tbody></table>'
+            component_hmtl_str = await execute_orion_manusctript( code )
             return Response( content = component_hmtl_str, media_type = "text/html", status_code = 200 )
         except Exeption as e:
             return Response( content = 'Error building component', media_type = "text/html", status_code = 500 )

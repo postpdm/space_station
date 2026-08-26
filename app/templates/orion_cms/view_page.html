@@ -32,13 +32,17 @@
           <summary>View available options for mermaid syntax &#9660;</summary>
           {% include 'orion_cms/include_mermaid_help.html' %}
 		</details>
+        <details>
+          <summary>View available options for Orion Manuscript syntax &#9660;</summary>
+          {% include 'orion_cms/include_orion_manuscript_help.html' %}
+		</details>
       </section>
       <!-- ./ Accordions -->
 
 <form id="new_page_section_Form">
 
     <div>
-        <label for="content">Content (markdown with mermaid supported). Start to type, preview is available bellow.</label>
+        <label for="content">Content (Markdown with Mermaid and Orion manuscript supported). Start to type, preview is available bellow.</label>
         <textarea id="content" required placeholder="Enter the markdown content" rows="5" cols="55"></textarea>
     </div>
 
