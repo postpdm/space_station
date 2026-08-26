@@ -26,6 +26,8 @@ class Page_with_sections_pdnt(BaseModel):
 class PageCreate_pdnt(BaseModel):
     title: str
 
+class PageUpdate_pdnt(BaseModel):
+    title: str
 
 # Statistics
 class Orion_Pages_Stat_Count_pdnt(BaseModel):

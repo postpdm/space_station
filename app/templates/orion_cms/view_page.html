@@ -19,6 +19,7 @@
 {% endif %}
 
 {% if Enable_edit_flag %}
+    <p><a href="/cms/edit_page/{{page_id}}" role="button">Edit page title</a></p>
 <hr>
       <!-- Accordions -->
       <section id="accordion_markdown_help">
@@ -157,6 +158,7 @@ async function fetchAndDisplayRecord() {
 // Execute the function when the script runs
 fetchAndDisplayRecord();
 
+{% if Enable_edit_flag %}
 
   const editor = document.getElementById('content');
   const preview = document.getElementById('preview');
@@ -219,14 +221,11 @@ fetchAndDisplayRecord();
         }
     });
 
-
+{% endif %}
 
 </script>
 
 <div id="status"></div>
-
-
-
 
 </section>
 

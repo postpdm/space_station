@@ -19,7 +19,7 @@ from app.plugins.abc_controller import BasePluginController
 CMS_TEMPLATES_DIR = "orion_cms/"
 
 from .service import CMSService, CMS_Section_Service, CMS_ReportService, provide_cms_report_service
-from .schema import Page_pdnt, PageCreate_pdnt, Page_with_sections_pdnt, Page_Section_pdnt, Page_Section_Create_pdnt, Orion_Pages_Stat_Count_pdnt, Orion_Pages_Stat_By_Day_pdnt, Orion_Manuscript_CodeRequest_pdnt
+from .schema import Page_pdnt, PageCreate_pdnt, PageUpdate_pdnt, Page_with_sections_pdnt, Page_Section_pdnt, Page_Section_Create_pdnt, Orion_Pages_Stat_Count_pdnt, Orion_Pages_Stat_By_Day_pdnt, Orion_Manuscript_CodeRequest_pdnt
 
 from .parsers import CONST_PLAIN_MARKDOWN
 
@@ -100,7 +100,15 @@ class CMS_Controller(BasePluginController):
     async def new_page(self) -> Template:
         return Template(
             template_name = CMS_TEMPLATES_DIR + "new_page.html",
-            context={  }
+            context={ 'create_mode' : True, }
+        )
+
+    @get("/edit_page/{page_id:uuid}")
+    async def edit_page(self, CMS_service: CMSService, page_id:UUID) -> Template:
+        page = await CMS_service.get_one_or_none( id = page_id )
+        return Template(
+            template_name = CMS_TEMPLATES_DIR + "new_page.html",
+            context={ 'create_mode' : False, 'page_id' : page_id, 'page' : page }
         )
 
     @get("/get_page_api/{page_id:uuid}")
@@ -118,6 +126,12 @@ class CMS_Controller(BasePluginController):
     async def create_new_page_api(self, request : Request, CMS_service: CMSService, data: PageCreate_pdnt) -> Page_pdnt:
         """Create a new page."""
         obj = await CMS_service.create( data )
+        return CMS_service.to_schema(obj, schema_type=Page_pdnt)
+
+    @post(path="/update_page_api/{page_id:uuid}")
+    async def update_page_api(self, page_id:UUID, request : Request, CMS_service: CMSService, data: PageUpdate_pdnt) -> Page_pdnt:
+        """Updtate page."""
+        obj = await CMS_service.update(data, item_id=page_id, auto_commit=True)
         return CMS_service.to_schema(obj, schema_type=Page_pdnt)
 
     @post(path="/new_page_section_api/{page_id:uuid}")
