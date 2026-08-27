@@ -13,6 +13,7 @@ from advanced_alchemy.extensions.litestar import (
     providers,
     service,
 )
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.plugins.abc_controller import BasePluginController
 
@@ -154,10 +155,10 @@ class CMS_Controller(BasePluginController):
         return cms_report_service.get_page_by_day_count()
 
     @post("/build_component")
-    async def build_component(self, data : Orion_Manuscript_CodeRequest_pdnt ) -> Response:
+    async def build_component(self, data : Orion_Manuscript_CodeRequest_pdnt, db_session: AsyncSession ) -> Response:
         try:
             code = data.code
-            component_hmtl_str = await execute_orion_manusctript( code )
+            component_hmtl_str = await execute_orion_manusctript( code, db_session )
             return Response( content = component_hmtl_str, media_type = "text/html", status_code = 200 )
         except Exception as e:
             return Response( content = 'Error building component', media_type = "text/html", status_code = 500 )
