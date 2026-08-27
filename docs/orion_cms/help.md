@@ -116,7 +116,7 @@ Line  started with `select` mean SQL expression to fetch data.
 
 <pre>
 ``` orion_manuscript
-select count(id), date(created_at) from CMS_Page group by date(created_at)
+select count(id), date(created_at) from cms_page group by date(created_at)
 show table
 ```
 </pre>

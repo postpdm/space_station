@@ -10,6 +10,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from sqlalchemy import text
 
+from forbidden_scripts.forbidden_sql import *
+
+config_validator = SQLValidatorConfig(
+    allowed_tables={"cms_page", },
+    allowed_fields={"id", "title", "created_at"},
+    allow_star=False,
+    allowed_functions={"DATE","COUNT", "SUM", "MAX", "MIN"},
+    forbidden_functions={"SLEEP", "BENCHMARK"},
+    max_subquery_depth=1,
+    allow_cte=True,
+)
+
 async def build_select( sql : str ) -> sqla_select:
     return text( sql )
 
@@ -49,6 +61,9 @@ async def execute_orion_manusctript( code : str, db_session: AsyncSession ) -> s
         else:
             if (line.lower() ).startswith('select'):
                 try:
+                    # validate SQL string
+                    validator = SQLValidator(config_validator)
+                    validator.validate( line )
                     prepared_select = await build_select( line )
                 except Exception as e:
                     res = 'Error in SQL parsing ' + e
