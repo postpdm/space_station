@@ -47,6 +47,8 @@ Tables
 
 You can read more about [Markdown](https://en.wikipedia.org/wiki/Markdown).
 
+This is a **client-side rendering** component.
+
 ## Mermaid
 
 
@@ -101,6 +103,8 @@ timeline
     262 BC : Battle of Akragas
     241	BC : Treaty of Lutatius
 ```
+
+This is a **client-side rendering** component.
 
 ## Orion manuscript
 
