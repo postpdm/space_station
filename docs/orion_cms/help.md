@@ -2,7 +2,7 @@
 
 **Orion** Content Management System (CMS) contain list of pages. Each page contain title (plain text) and list of sections.
 
-Each section is a markdown text, with Mermaid diagram support.
+Each section is a markdown text, with Mermaid diagram support and Orion manuscript.
 
 ## Markdown tags
 ```
@@ -101,3 +101,20 @@ timeline
     262 BC : Battle of Akragas
     241	BC : Treaty of Lutatius
 ```
+
+## Orion manuscript
+
+Orion manuscript is a internal scripting language.
+
+Line  started with `select` mean SQL expression to fetch data.
+
+`show table` line mean insert the HTML table with `select` results. 
+
+<pre>
+``` orion_manuscript
+select count(id), date(created_at) from CMS_Page group by date(created_at)
+show table
+```
+</pre>
+
+This is a **server-side rendering** component.
