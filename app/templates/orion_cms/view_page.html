@@ -73,38 +73,65 @@
   };
   marked.setOptions({ renderer });
 
-  async function search_box( container ){
-        // get all code blocks
-		const boxBlocks = container.querySelectorAll('.orion_manuscript');
-        for (const boxB of boxBlocks) {
-		    // get each code block
-			const code=boxB.textContent;
-			if (code!='') {
-			    try {
-				   //console.log( code );
-				   const response = await fetch( '/cms/build_component', {
-				       method: 'POST',
-					   headers : { 'Content-Type': 'application/json' },
-					   body : JSON.stringify({code}) } );
+async function search_box(container) {
+    // Check infinite loops
+    let maxIterations = 5;
+    while (maxIterations-- > 0) {
+        const boxBlock = container.querySelector('.orion_manuscript');
+        if (!boxBlock) break;
 
-				   if (!response.ok) throw new Error('Server error!');
-				   const componentHTML = await response.text();
-				   const pre = boxB.closest('pre');
-				   if (pre) {
-				       const wrapper = document.createElement('div');
-					   wrapper.innerHTML = componentHTML;
-					   pre.replaceWith(wrapper.firstElementChild || wrapper );
-				   } else {
-				       const wrapper = document.createElement('div');
-					   wrapper.innerHTML = componentHTML;
-					   boxB.replaceWith(wrapper.firstElementChild || wrapper );
-				   };
-				} catch (e) {
-					console.error( 'Error processing code block', e );
-				};
-			};
-		};
-	};
+        const code = boxBlock.textContent;
+        if (!code) {
+            // delete empty lines
+            const pre = boxBlock.closest('pre');
+            if (pre) pre.remove();
+            else boxBlock.remove();
+            continue;
+        }
+
+        try {
+            const response = await fetch('/cms/build_component', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code })
+            });
+
+            if (!response.ok) throw new Error('Server error!');
+            const componentMarkdown = await response.text();
+
+            // Parse markdown
+            const parsedHTML = marked.parse(componentMarkdown);
+
+            // Contain
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = parsedHTML;
+            const fragment = document.createDocumentFragment();
+            while (tempDiv.firstChild) {
+                fragment.appendChild(tempDiv.firstChild);
+            }
+
+            // Replace <pre>
+            const pre = boxBlock.closest('pre');
+            if (pre) {
+                pre.replaceWith(fragment);
+            } else {
+                boxBlock.replaceWith(fragment);
+            }
+
+            // Search for mermaid blocks
+            await search_mermaid(container);
+        } catch (e) {
+            console.error('Error processing code block', e);
+            // Delete wrong box
+            const pre = boxBlock.closest('pre');
+            if (pre) pre.remove();
+            else boxBlock.remove();
+        }
+    }
+    if (maxIterations <= 0) {
+        console.warn('Maximum cycles orion_manuscript');
+    }
+};
   async function search_mermaid( container ){
         const mermaidBlocks = container.querySelectorAll('.mermaid');
         if (mermaidBlocks.length > 0) {
@@ -148,7 +175,7 @@ async function fetchAndDisplayRecord() {
 		container.innerHTML += `</div>`;
 
 		// proceed Orion manuscript boxes
-		search_box( container );
+		await search_box( container );
 		// Search for all Mermaid blocks in sections
 		search_mermaid( container );
 
@@ -173,7 +200,7 @@ fetchAndDisplayRecord();
     preview.innerHTML = marked.parse(markdownText);
 
 	// proceed Orion manuscript boxes
-	search_box( preview );
+	await search_box( preview );
 	// Search for all Mermaid blocks in preview
 	search_mermaid( preview );
 

@@ -32,6 +32,7 @@ async def execute_orion_manusctript( code : str, db_session: AsyncSession ) -> s
     dataset = None
 
     res = ''
+
     for line in code.splitlines():
         if line.lower() == 'show table':
             try:
@@ -51,11 +52,38 @@ async def execute_orion_manusctript( code : str, db_session: AsyncSession ) -> s
                 for row in dataset:
                     res += '<tr>'
                     row_dict = row._mapping
-                    for value in row:   
+                    for value in row:
                         res += '<td>' + str( value ) + '</td>'
                     res += '</tr>'
 
                 res += '</tbody></table>'
+                print(res)
+
+                res += """
+# hu' \n
+    
+```mermaid\n
+
+flowchart LR\n
+
+    Start --> Stop\n
+    
+```    \n
+
+     """ 
+     
+                res +="""
+
+```mermaid  \n
+pie title Pets adopted by volunteers \n
+    "Dogs" : 386\n
+    "Cats" : 85\n
+    "Rats" : 15\n
+```\n
+
+"""
+
+                print(res)
             except Exception as e:
                 res = 'Error in SQL execution ' + e
         else:
