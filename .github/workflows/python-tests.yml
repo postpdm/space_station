@@ -2,9 +2,9 @@ name: Python Package Tests
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, work ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, work ]
 
 jobs:
   test:
