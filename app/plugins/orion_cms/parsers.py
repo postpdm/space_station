@@ -26,6 +26,11 @@ async def build_select( sql : str ) -> sqla_select:
     return text( sql )
 
 async def execute_orion_manusctript( code : str, db_session: AsyncSession ) -> str:
+    async def execute_sql( sql : str ) -> tuple[ list, list ]:
+        query = await db_session.execute( sql )
+        headers = query.keys()
+        return headers, query.all()
+
     prepared_select = None
     executed = False
     query = None
@@ -38,54 +43,25 @@ async def execute_orion_manusctript( code : str, db_session: AsyncSession ) -> s
             try:
                 res = '<table border="2">'
                 if not executed:
-                    query = await db_session.execute( prepared_select )
-                    dataset = query.all()
+                    headers, dataset = await execute_sql( prepared_select )
+                    executed = True
                     res += '<thead><tr>'
 
                     # table headers
-                    headers = query.keys()
                     for header in headers:
                       res += '<th>' + header + '</th>'
 
-                    executed = True
                 res += '</tr></thead><tbody>'
                 for row in dataset:
                     res += '<tr>'
-                    row_dict = row._mapping
+                    
                     for value in row:
                         res += '<td>' + str( value ) + '</td>'
                     res += '</tr>'
 
                 res += '</tbody></table>'
-                print(res)
-
-                res += """
-# hu' \n
-    
-```mermaid\n
-
-flowchart LR\n
-
-    Start --> Stop\n
-    
-```    \n
-
-     """ 
-     
-                res +="""
-
-```mermaid  \n
-pie title Pets adopted by volunteers \n
-    "Dogs" : 386\n
-    "Cats" : 85\n
-    "Rats" : 15\n
-```\n
-
-"""
-
-                print(res)
             except Exception as e:
-                res = 'Error in SQL execution ' + e
+                res = 'Error in SQL execution ' + str( e )
         else:
             if (line.lower() ).startswith('select'):
                 try:
@@ -94,8 +70,29 @@ pie title Pets adopted by volunteers \n
                     validator.validate( line )
                     prepared_select = await build_select( line )
                 except Exception as e:
-                    res = 'Error in SQL parsing ' + e
+                    res = 'Error in SQL parsing ' + str( e )
             else:
-                res = 'Unknown command ' + line
+                if line.lower() == 'show graph':
+                    if not executed:
+                        dataset = await execute_sql( prepared_select )
+                        executed = True
+
+                    res += """
+```mermaid  \n
+pie title Pets adopted by volunteers \n
+"""
+                    for row in dataset:
+                        res += '    "Dogs " : 1 \n '
+                        #for value in row:
+                        #    res += '<td>' + str( value ) + '</td>'
+                        #res += '</tr>'
+
+                    res += """
+```\n
+
+"""
+
+                else:
+                    res = 'Unknown command "' + line + '"'
 
     return res
