@@ -6,4 +6,4 @@ advanced_alchemy
 pydantic
 pydantic_settings
 
-git+https://github.com/postpdm/space_station_stc.git
+space-station-stc @ git+https://github.com/postpdm/space_station_stc.git
