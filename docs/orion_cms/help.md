@@ -114,11 +114,21 @@ Line  started with `select` mean SQL expression to fetch data.
 
 `show table` line mean insert the HTML table with `select` results. 
 
+`show graph` line mean insert the Mermaid-formated chart with `select` results. 
+
 <pre>
 ``` orion_manuscript
 select count(id), date(created_at) from cms_page group by date(created_at)
 show table
 ```
 </pre>
+
+<pre>
+``` orion_manuscript
+select count(id) AS C, date(created_at) AS D from cms_page group by date(created_at)
+show graph
+```
+</pre>
+
 
 This is a **server-side rendering** component.
