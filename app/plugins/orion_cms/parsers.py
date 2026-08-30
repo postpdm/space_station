@@ -78,16 +78,13 @@ async def execute_orion_manusctript( code : str, db_session: AsyncSession ) -> s
                         executed = True
 
                     res += """\n
-```mermaid  \n
-pie title Pets adopted by volunteers \n
+```mermaid \n
+pie title Pie chart \n
 """
                     for row in dataset:
-                        res += '    "Dogs " : 1 \n '
-                        #for value in row:
-                        #    res += '<td>' + str( value ) + '</td>'
-                        #res += '</tr>'
+                        res += '    "' + str(row[1]) + '" : ' + str(row[0]) + ' \n '
 
-                    res += """
+                    res += """\n
 ```\n
 
 """

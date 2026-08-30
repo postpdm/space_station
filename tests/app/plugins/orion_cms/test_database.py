@@ -32,7 +32,7 @@ async def test_sql_parser_unknown_command(db_session: AsyncSession):
     assert component_str == 'Unknown command "abra-cadabra"'
 
 @pytest.mark.asyncio
-async def test_sql_parser_sql_command(db_session: AsyncSession):
+async def test_sql_parser_sql_command_show_html_table(db_session: AsyncSession):
     """Test Orion manuscript parser with sql command."""
     # Arrange
     new_page = CMS_Page_Model(title="New page to sql test")
@@ -42,6 +42,25 @@ async def test_sql_parser_sql_command(db_session: AsyncSession):
     code = 'select count(id) AS C from cms_page \n' + 'show table'
     component_str = await execute_orion_manusctript( code, db_session )
     assert component_str == '<table border="2"><thead><tr><th>C</th></tr></thead><tbody><tr><td>1</td></tr></tbody></table>'
+
+@pytest.mark.asyncio
+async def test_sql_parser_sql_command_show_mermaid_graph(db_session: AsyncSession):
+    """Test Orion manuscript parser with sql command."""
+    # Arrange
+    new_page = CMS_Page_Model(title="New page to sql test")
+    db_session.add(new_page)
+    await db_session.flush()  # Push to DB within the active transaction
+
+    code = 'select count(id), date(created_at) from cms_page group by date(created_at) \n' + 'show graph'
+    component_str = await execute_orion_manusctript( code, db_session )
+    
+    s = """\n
+```mermaid \n
+pie title Pie chart \n
+    "2026-08-30" : 1 \n \n\n```\n
+
+"""   
+    assert component_str == s 
 
 
 #@pytest.mark.asyncio
