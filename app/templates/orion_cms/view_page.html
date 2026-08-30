@@ -175,7 +175,7 @@ async function fetchAndDisplayRecord() {
 		container.innerHTML += `</div>`;
 
 		// proceed Orion manuscript boxes
-		await search_box( container );
+		search_box( container );
 		// Search for all Mermaid blocks in sections
 		search_mermaid( container );
 
@@ -200,7 +200,7 @@ fetchAndDisplayRecord();
     preview.innerHTML = marked.parse(markdownText);
 
 	// proceed Orion manuscript boxes
-	await search_box( preview );
+	search_box( preview );
 	// Search for all Mermaid blocks in preview
 	search_mermaid( preview );
 

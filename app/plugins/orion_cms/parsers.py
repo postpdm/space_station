@@ -74,10 +74,10 @@ async def execute_orion_manusctript( code : str, db_session: AsyncSession ) -> s
             else:
                 if line.lower() == 'show graph':
                     if not executed:
-                        dataset = await execute_sql( prepared_select )
+                        headers, dataset = await execute_sql( prepared_select )
                         executed = True
 
-                    res += """
+                    res += """\n
 ```mermaid  \n
 pie title Pets adopted by volunteers \n
 """
