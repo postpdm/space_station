@@ -3,6 +3,8 @@ from litestar.testing import AsyncTestClient
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
+from datetime import date
+
 from app.plugins.orion_cms.models import CMS_Page_Model
 from app.plugins.orion_cms.parsers import execute_orion_manusctript
 
@@ -54,10 +56,11 @@ async def test_sql_parser_sql_command_show_mermaid_graph(db_session: AsyncSessio
     code = 'select count(id), date(created_at) from cms_page group by date(created_at) \n' + 'show graph'
     component_str = await execute_orion_manusctript( code, db_session )
     
-    s = """\n
+    # use today
+    s = f"""\n
 ```mermaid \n
 pie title Pie chart \n
-    "2026-08-30" : 1 \n \n\n```\n
+    "{date.today()}" : 1 \n \n\n```\n
 
 """   
     assert component_str == s 
