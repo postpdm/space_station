@@ -131,7 +131,7 @@ class CMS_Controller(BasePluginController):
     ) -> service.OffsetPagination[Page_pdnt]:
         """List pages in current tree node."""
 
-        results, total = await CMS_service.get_many_and_count(*filters)
+        results, total = await CMS_service.get_many_and_count(*filters, tree_id=node_id)
         return CMS_service.to_schema(results, total, filters=filters, schema_type=Page_pdnt)
 
     @get("/new_tree_node")
