@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from sqlalchemy import text
 
-from forbidden_scripts.forbidden_sql import *
+from space_station_stc.forbidden_scripts.forbidden_sql import *
 
 config_validator = SQLValidatorConfig(
     allowed_tables={"cms_page", },
