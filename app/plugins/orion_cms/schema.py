@@ -4,6 +4,11 @@ from typing import Annotated, Optional, List
 
 from pydantic import BaseModel
 
+# Page tree object
+class Page_Tree_Node_pdnt(BaseModel):
+    id: Optional[UUID] = None
+    title: str
+
 # Main page object. Use it for light list of pages
 class Page_pdnt(BaseModel):
     id: Optional[UUID] = None
@@ -21,6 +26,13 @@ class Page_with_sections_pdnt(BaseModel):
     id: Optional[UUID] = None
     title: str
     sections: List[Page_Section_pdnt] = []
+
+
+class Tree_Node_Create_pdnt(BaseModel):
+    title: str
+
+class Tree_Node_Update_pdnt(BaseModel):
+    title: str
 
 
 class PageCreate_pdnt(BaseModel):

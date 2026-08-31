@@ -19,8 +19,8 @@ from app.plugins.abc_controller import BasePluginController
 
 CMS_TEMPLATES_DIR = "orion_cms/"
 
-from .service import CMSService, CMS_Section_Service, CMS_ReportService, provide_cms_report_service
-from .schema import Page_pdnt, PageCreate_pdnt, PageUpdate_pdnt, Page_with_sections_pdnt, Page_Section_pdnt, Page_Section_Create_pdnt, Orion_Pages_Stat_Count_pdnt, Orion_Pages_Stat_By_Day_pdnt, Orion_Manuscript_CodeRequest_pdnt
+from .service import CMSTreeService, CMSService, CMS_Section_Service, CMS_ReportService, provide_cms_report_service
+from .schema import Page_Tree_Node_pdnt, Page_pdnt, Tree_Node_Create_pdnt, Tree_Node_Update_pdnt, PageCreate_pdnt, PageUpdate_pdnt, Page_with_sections_pdnt, Page_Section_pdnt, Page_Section_Create_pdnt, Orion_Pages_Stat_Count_pdnt, Orion_Pages_Stat_By_Day_pdnt, Orion_Manuscript_CodeRequest_pdnt
 
 from .parsers import CONST_PLAIN_MARKDOWN, execute_orion_manusctript
 
@@ -33,6 +33,11 @@ class CMS_Controller(BasePluginController):
 
     # this mega structure just import 2 dependencies
     dependencies = {
+        **providers.create_service_dependencies(
+            CMSTreeService,
+            "cms_tree_service",
+            filters={"pagination_type": "limit_offset", "id_filter": UUID, "search": "title", "search_ignore_case": True},
+        ),
         **providers.create_service_dependencies(
             CMSService,
             "CMS_service",
@@ -53,6 +58,15 @@ class CMS_Controller(BasePluginController):
         return Template(
             template_name = CMS_TEMPLATES_DIR + "index.html",
             context={  }
+        )
+
+    @get("/tree_node_page/{tree_node_id:uuid}")
+    async def view_tree_node_page(self, tree_node_id:UUID) -> Template:
+        return Template(
+            template_name = CMS_TEMPLATES_DIR + "view_tree_node.html",
+            context={ 'special_page' : False,
+                      'tree_node_id' : tree_node_id,
+                      'Enable_edit_flag' : True }
         )
 
     @get("/page/{page_id:uuid}")
@@ -87,21 +101,59 @@ class CMS_Controller(BasePluginController):
     async def plugin_health(self) -> bool:
         return True
 
-    @get(path="/get_pages_api")
-    async def get_pages_api(
+    @get(path="/get_page_tree_api")
+    async def get_page_tree_api(
+        self,
+        cms_tree_service: CMSTreeService,
+        filters: Annotated[list[filters.FilterTypes], Dependency(skip_validation=True)],
+    ) -> service.OffsetPagination[Page_Tree_Node_pdnt]:
+        """Tree."""
+        results, total = await cms_tree_service.get_many_and_count(*filters)
+        return cms_tree_service.to_schema(results, total, filters=filters, schema_type=Page_Tree_Node_pdnt)
+
+    @get(path="/get_all_pages_api")
+    async def get_all_pages_api(
         self,
         CMS_service: CMSService,
         filters: Annotated[list[filters.FilterTypes], Dependency(skip_validation=True)],
     ) -> service.OffsetPagination[Page_pdnt]:
-        """List pages."""
+        """List all pages."""
         results, total = await CMS_service.get_many_and_count(*filters)
         return CMS_service.to_schema(results, total, filters=filters, schema_type=Page_pdnt)
 
-    @get("/new_page")
-    async def new_page(self) -> Template:
+
+    @get(path="/get_one_node_pages_api/{node_id:uuid}")
+    async def get_one_node_pages_api(
+        self,
+        node_id:UUID,
+        CMS_service: CMSService,
+        filters: Annotated[list[filters.FilterTypes], Dependency(skip_validation=True)],
+    ) -> service.OffsetPagination[Page_pdnt]:
+        """List pages in current tree node."""
+
+        results, total = await CMS_service.get_many_and_count(*filters)
+        return CMS_service.to_schema(results, total, filters=filters, schema_type=Page_pdnt)
+
+    @get("/new_tree_node")
+    async def new_tree_node(self) -> Template:
+        return Template(
+            template_name = CMS_TEMPLATES_DIR + "new_tree_node.html",
+            context={ 'create_mode' : True, }
+        )
+    @get("/edit_tree_node/{node_id:uuid}")
+    async def edit_tree_node(self, cms_tree_service: CMSTreeService, node_id:UUID) -> Template:
+        node = await cms_tree_service.get_one_or_none( id = node_id )
+        return Template(
+            template_name = CMS_TEMPLATES_DIR + "new_tree_node.html",
+            context={ 'create_mode' : False, 'node_id' : node_id, 'node' : node }
+        )
+
+
+    @get("/new_page/{tree_node_id:uuid}")
+    async def new_page(self, tree_node_id: UUID ) -> Template:
         return Template(
             template_name = CMS_TEMPLATES_DIR + "new_page.html",
-            context={ 'create_mode' : True, }
+            context={ 'create_mode' : True, 'tree_node_id' : tree_node_id }
         )
 
     @get("/edit_page/{page_id:uuid}")
@@ -123,10 +175,24 @@ class CMS_Controller(BasePluginController):
         obj = await file_service.get_data( p )
         return obj
 
-    @post(path="/new_page_api")
-    async def create_new_page_api(self, request : Request, CMS_service: CMSService, data: PageCreate_pdnt) -> Page_pdnt:
+    @post(path="/new_tree_node_api")
+    async def create_new_tree_node_api(self, request : Request, cms_tree_service: CMSTreeService, data: Tree_Node_Create_pdnt) -> Page_Tree_Node_pdnt:
+        """Create a new tree node."""
+        obj = await cms_tree_service.create( data )
+        return cms_tree_service.to_schema(obj, schema_type=Page_Tree_Node_pdnt)
+
+    @post(path="/update_tree_node_api/{node_id:uuid}")
+    async def update_tree_node_api(self, node_id:UUID, request : Request, cms_tree_service: CMSTreeService, data: Tree_Node_Update_pdnt) -> Page_Tree_Node_pdnt:
+        """Updtate tree node."""
+        obj = await cms_tree_service.update(data, item_id=node_id, auto_commit=True)
+        return cms_tree_service.to_schema(obj, schema_type=Page_Tree_Node_pdnt)
+
+    @post(path="/new_page_api/{node_id:uuid}")
+    async def create_new_page_api(self, node_id:UUID, request : Request, CMS_service: CMSService, data: PageCreate_pdnt) -> Page_pdnt:
         """Create a new page."""
-        obj = await CMS_service.create( data )
+        data_dict = data.model_dump()
+        data_dict[ "tree_id" ] = node_id
+        obj = await CMS_service.create( data_dict )
         return CMS_service.to_schema(obj, schema_type=Page_pdnt)
 
     @post(path="/update_page_api/{page_id:uuid}")

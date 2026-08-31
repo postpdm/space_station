@@ -1,17 +1,17 @@
 {% extends 'orion_cms/base.html' %}
 
-{% block title %}CMS - {% if create_mode %}new page{% else %}edit page{% endif %}{% endblock %}
+{% block title %}CMS - {% if create_mode %}new tree node{% else %}edit tree node{% endif %}{% endblock %}
 
 {% block body %}
 
 <section id="editor">
 
-{% if not create_mode %}<h1>{{page.title}}</h1>{% endif %}
+{% if not create_mode %}<h1>{{node.title}}</h1>{% endif %}
 
-<form id="new_page_Form">
+<form id="new_node_Form">
 	<div>
         <label for="title">Title:</label>
-        <input type="text" id="title" required placeholder="Enter the title" {% if not create_mode %}value="{{page.title}}"{% endif %}>
+        <input type="text" id="title" required placeholder="Enter the title" {% if not create_mode %}value="{{node.title}}"{% endif %}>
     </div>
     
     <button type="submit">{% if create_mode %}Create{% else %}Update{% endif %}</button>
@@ -19,7 +19,7 @@
 <script>
   
 
-    document.getElementById('new_page_Form').addEventListener('submit', async function(e) {
+    document.getElementById('new_node_Form').addEventListener('submit', async function(e) {
         e.preventDefault(); // cancel
 
         const statusDiv = document.getElementById('status');
@@ -37,9 +37,9 @@
         try {
             // POST API
 			{% if create_mode %}
-            const api_url = '/cms/new_page_api/{{tree_node_id}}';
+            const api_url = '/cms/new_tree_node_api';
 			{% else %}
-            const api_url = '/cms/update_page_api/{{page_id}}';
+            const api_url = '/cms/update_tree_node_api/{{node_id}}';
 			{% endif %}
 			
 			const response = await fetch( api_url, {
@@ -54,8 +54,8 @@
                 const result = await response.json();
                 statusDiv.textContent = 'Success!';
                 statusDiv.style.color = 'green';
-                document.getElementById('new_page_Form').reset(); // Clear form
-				window.location.href = `/cms/page/${result.id}`;
+                document.getElementById('new_node_Form').reset(); // Clear form
+				window.location.href = `/cms/tree_node_page/${result.id}`;
 						
             } else {
                 const errorText = await response.text();

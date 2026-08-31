@@ -6,18 +6,27 @@ from advanced_alchemy.extensions.litestar import (
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .models import CMS_Page_Model, CMS_Page_Section_Model
+from .models import CMS_Tree_Model, CMS_Page_Model, CMS_Page_Section_Model
 
 # CMS
 
+# Tree
+class CMSTreeRepository(repository.SQLAlchemyAsyncRepository[CMS_Tree_Model]):
+    model_type = CMS_Tree_Model
+
+class CMSTreeService(service.SQLAlchemyAsyncRepositoryService[CMS_Tree_Model]):
+    repository_type = CMSTreeRepository
+    model_type = CMS_Tree_Model
+
+# Pages
 class CMSRepository(repository.SQLAlchemyAsyncRepository[CMS_Page_Model]):
     model_type = CMS_Page_Model
-
 
 class CMSService(service.SQLAlchemyAsyncRepositoryService[CMS_Page_Model]):
     repository_type = CMSRepository
     model_type = CMS_Page_Model
 
+# Sections
 class CMS_Section_Repository(repository.SQLAlchemyAsyncRepository[CMS_Page_Section_Model]):
     model_type = CMS_Page_Section_Model
 
@@ -25,6 +34,8 @@ class CMS_Section_Service(service.SQLAlchemyAsyncRepositoryService[CMS_Page_Sect
     repository_type = CMS_Section_Repository
     model_type = CMS_Page_Section_Model
 
+
+# Reports
 class CMS_ReportService:
     """CMS complex analytics"""
     def __init__(self, db_session: AsyncSession) -> None:
