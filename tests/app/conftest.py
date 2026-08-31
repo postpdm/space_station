@@ -7,8 +7,6 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 from sqlalchemy.pool import StaticPool
 from advanced_alchemy.extensions.litestar import base
 
-from app.plugins.orion_cms.models import CMS_Page_Model
-
 DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
 # Setup the async SQLite in-memory engine

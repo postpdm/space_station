@@ -5,14 +5,34 @@ from sqlalchemy import select
 
 from datetime import date
 
-from app.plugins.orion_cms.models import CMS_Page_Model
+from app.plugins.orion_cms.models import CMS_Page_Model, CMS_Tree_Model
 from app.plugins.orion_cms.parsers import execute_orion_manusctript
+
+@pytest.mark.asyncio
+async def test_create_tree(db_session: AsyncSession):
+    """Test direct interaction with the database session."""
+    # Arrange
+    new_tree = CMS_Tree_Model( title="Volume1" )
+    db_session.add(new_tree)
+    await db_session.flush()  # Push to DB within the active transaction
+    
+    # Act
+    result = await db_session.execute(select(CMS_Tree_Model).where(CMS_Tree_Model.title == "Volume1"))
+    tree = result.scalar_one_or_none()
+
+    # Assert
+    assert tree is not None
+    assert tree.title == "Volume1"
 
 @pytest.mark.asyncio
 async def test_create_and_read_page(db_session: AsyncSession):
     """Test direct interaction with the database session."""
     # Arrange
-    new_page = CMS_Page_Model(title="New")
+    new_tree = CMS_Tree_Model( title="Volume1" )
+    db_session.add(new_tree)
+    await db_session.flush()  # Push to DB within the active transaction
+    
+    new_page = CMS_Page_Model(tree_id = new_tree.id, title="New")
     db_session.add(new_page)
     await db_session.flush()  # Push to DB within the active transaction
 
@@ -37,7 +57,11 @@ async def test_sql_parser_unknown_command(db_session: AsyncSession):
 async def test_sql_parser_sql_command_show_html_table(db_session: AsyncSession):
     """Test Orion manuscript parser with sql command."""
     # Arrange
-    new_page = CMS_Page_Model(title="New page to sql test")
+    new_tree = CMS_Tree_Model( title="Volume1" )
+    db_session.add(new_tree)
+    await db_session.flush()  # Push to DB within the active transaction
+
+    new_page = CMS_Page_Model( tree_id = new_tree.id, title="New page to sql test")
     db_session.add(new_page)
     await db_session.flush()  # Push to DB within the active transaction
 
@@ -49,7 +73,12 @@ async def test_sql_parser_sql_command_show_html_table(db_session: AsyncSession):
 async def test_sql_parser_sql_command_show_mermaid_graph(db_session: AsyncSession):
     """Test Orion manuscript parser with sql command."""
     # Arrange
-    new_page = CMS_Page_Model(title="New page to sql test")
+    new_tree = CMS_Tree_Model( title="Volume1" )
+    db_session.add(new_tree)
+   
+    await db_session.flush()  # Push to DB within the active transaction
+
+    new_page = CMS_Page_Model( title="New page to sql test", tree_id = new_tree.id )
     db_session.add(new_page)
     await db_session.flush()  # Push to DB within the active transaction
 
