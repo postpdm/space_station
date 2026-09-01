@@ -28,17 +28,6 @@ config_validator = SQLValidatorConfig(
 async def build_select( sql : str ) -> sqla_select:
     return text( sql )
 
-MERMAID_STR = """\n
-```mermaid \n
-pie title Pie chart 
-{% for i in dataset %}
-    "{{i.1}}" : {{i.0}} 
-{% endfor %} 
-```\n
-
-"""
-
-
 class Orion_ManuScript(ABC_STC_Script):
     """Orion manuscript class wrapper."""
 
@@ -96,10 +85,9 @@ class Orion_ManuScript(ABC_STC_Script):
         else:
             self.res_text = 'No dataset to show'
 
-    async def cmd_show_graph(self, args):
+    async def cmd_show_mermaid(self, args):
         if self.sql_executed:
-            
-            template_str = MERMAID_STR
+            template_str = "``` mermaid\n" + "\n".join( args ) + "\n```"
             template = Template(template_str)
 
             graph_str = template.render( { 'dataset' : self.dataset } )

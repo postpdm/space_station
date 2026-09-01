@@ -15,7 +15,7 @@ async def test_create_tree(db_session: AsyncSession):
     new_tree = CMS_Tree_Model( title="Volume1" )
     db_session.add(new_tree)
     await db_session.flush()  # Push to DB within the active transaction
-    
+
     # Act
     result = await db_session.execute(select(CMS_Tree_Model).where(CMS_Tree_Model.title == "Volume1"))
     tree = result.scalar_one_or_none()
@@ -31,7 +31,7 @@ async def test_create_and_read_page(db_session: AsyncSession):
     new_tree = CMS_Tree_Model( title="Volume1" )
     db_session.add(new_tree)
     await db_session.flush()  # Push to DB within the active transaction
-    
+
     new_page = CMS_Page_Model(tree_id = new_tree.id, title="New")
     db_session.add(new_page)
     await db_session.flush()  # Push to DB within the active transaction
@@ -50,7 +50,7 @@ async def test_sql_parser_unknown_command(db_session: AsyncSession):
 
     code = ': abra-cadabra'
     component_str = await execute_orion_manusctript( code, db_session )
-    
+
     assert component_str == 'Unknown command: abra-cadabra'
 
 @pytest.mark.asyncio
@@ -87,9 +87,17 @@ async def test_show_html_table_forgot_sql(db_session: AsyncSession):
 @pytest.mark.asyncio
 async def test_show_graph_forgot_sql(db_session: AsyncSession):
     """Test Orion manuscript parser without sql command."""
-    code = ': show graph'
+    code = ': show mermaid'
     component_str = await execute_orion_manusctript( code, db_session )
     assert component_str == 'No dataset to show'
+
+
+MERMAID_STR = """
+pie title Pie chart
+{% for i in dataset %}
+    "{{i.1}}" : {{i.0}}
+{% endfor %}
+"""
 
 @pytest.mark.asyncio
 async def test_sql_parser_sql_command_show_mermaid_graph(db_session: AsyncSession):
@@ -97,24 +105,23 @@ async def test_sql_parser_sql_command_show_mermaid_graph(db_session: AsyncSessio
     # Arrange
     new_tree = CMS_Tree_Model( title="Volume1" )
     db_session.add(new_tree)
-   
+
     await db_session.flush()  # Push to DB within the active transaction
 
     new_page = CMS_Page_Model( title="New page to sql test", tree_id = new_tree.id )
     db_session.add(new_page)
     await db_session.flush()  # Push to DB within the active transaction
 
-    code = ':sql \n select count(id), date(created_at) from cms_page group by date(created_at) \n' + ': show graph'
+    code = ':sql \n select count(id), date(created_at) from cms_page group by date(created_at) \n' + ': show mermaid \n' + MERMAID_STR
+
     component_str = await execute_orion_manusctript( code, db_session )
-    
+
     # use today
-    excpected = f"""\n
-```mermaid \n
-pie title Pie chart \n
-    "{date.today()}" : 1 \n \n```\n
-"""   
+    expected = f"""``` mermaid
+pie title Pie chart\n
+    "{date.today()}" : 1\n\n```"""
     
-    assert component_str == excpected 
+    assert component_str == expected
 
 
 #@pytest.mark.asyncio
