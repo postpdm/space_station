@@ -75,7 +75,7 @@ async def test_sql_parser_sql_command_show_html_table(db_session: AsyncSession):
 
     code = ': sql \n' + 'select count(id) AS C from cms_page \n' + ': show table'
     component_str = await execute_orion_manusctript( code, db_session )
-    assert component_str == '<table border="2"><thead><tr><th>C</th></tr></thead><tbody><tr><td>1</td></tr></tbody></table>'
+    assert component_str == '\n<table border="2"><thead><tr><th>C</th></tr></thead><tbody><tr><td>1</td></tr></tbody></table>\n'
 
 @pytest.mark.asyncio
 async def test_show_html_table_forgot_sql(db_session: AsyncSession):
@@ -117,9 +117,9 @@ async def test_sql_parser_sql_command_show_mermaid_graph(db_session: AsyncSessio
     component_str = await execute_orion_manusctript( code, db_session )
 
     # use today
-    expected = f"""``` mermaid
+    expected = f"""\n``` mermaid
 pie title Pie chart\n
-    "{date.today()}" : 1\n\n```"""
+    "{date.today()}" : 1\n\n```\n"""
     
     assert component_str == expected
 
