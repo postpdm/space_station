@@ -24,7 +24,7 @@ config_validator = SQLValidatorConfig(
 )
 
 async def build_select( sql : str ) -> sqla_select:
-    return text( " ".join(sql) )
+    return text( sql )
 
 class Orion_ManuScript(ABC_STC_Script):
     """Orion manuscript class wrapper."""
@@ -52,10 +52,14 @@ class Orion_ManuScript(ABC_STC_Script):
 
     async def cmd_sql(self, args):
         validator = SQLValidator(config_validator)
-        validator.validate( args )
-        self.builded_select = await build_select( args )
-        self.headers, self.dataset = await self.execute_sql( self.builded_select )
-        self.sql_executed = True
+        sql_code = " ".join( args )
+        try:
+            await validator.validate( sql_code )
+            self.builded_select = await build_select( sql_code )
+            self.headers, self.dataset = await self.execute_sql( self.builded_select )
+            self.sql_executed = True
+        except:
+            self.res_text = 'Fail to parse and execute SQL'
 
     async def cmd_show_table(self, args):
         if self.sql_executed:

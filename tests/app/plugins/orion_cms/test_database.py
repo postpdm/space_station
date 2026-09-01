@@ -54,6 +54,14 @@ async def test_sql_parser_unknown_command(db_session: AsyncSession):
     assert component_str == 'Unknown command: abra-cadabra'
 
 @pytest.mark.asyncio
+async def test_sql_parser_validate_sql(db_session: AsyncSession):
+    """Test Orion manuscript parser."""
+
+    code = ': sql\n DROP DATABASE'
+    component_str = await execute_orion_manusctript( code, db_session )
+    assert component_str == 'Fail to parse and execute SQL'
+
+@pytest.mark.asyncio
 async def test_sql_parser_sql_command_show_html_table(db_session: AsyncSession):
     """Test Orion manuscript parser with sql command."""
     # Arrange
