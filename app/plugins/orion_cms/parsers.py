@@ -79,7 +79,9 @@ class Orion_ManuScript(ABC_STC_Script):
                 table_str += '</tr>'
 
             table_str += '</tbody></table>'
-        self.res_text += table_str
+            self.res_text += table_str
+        else:
+            self.res_text = 'No dataset to show'
 
     async def cmd_show_graph(self, args):
         if self.sql_executed:
@@ -96,6 +98,8 @@ pie title Pie chart \n
 
 """
             self.res_text += graph_str
+        else:
+            self.res_text = 'No dataset to show'
 
 # Execute code as Orion manuscript and return text for web page
 async def execute_orion_manusctript( code : str, db_session: AsyncSession ) -> str:

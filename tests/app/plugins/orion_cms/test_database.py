@@ -78,6 +78,20 @@ async def test_sql_parser_sql_command_show_html_table(db_session: AsyncSession):
     assert component_str == '<table border="2"><thead><tr><th>C</th></tr></thead><tbody><tr><td>1</td></tr></tbody></table>'
 
 @pytest.mark.asyncio
+async def test_show_html_table_forgot_sql(db_session: AsyncSession):
+    """Test Orion manuscript parser without sql command."""
+    code = ': show table'
+    component_str = await execute_orion_manusctript( code, db_session )
+    assert component_str == 'No dataset to show'
+
+@pytest.mark.asyncio
+async def test_show_graph_forgot_sql(db_session: AsyncSession):
+    """Test Orion manuscript parser without sql command."""
+    code = ': show graph'
+    component_str = await execute_orion_manusctript( code, db_session )
+    assert component_str == 'No dataset to show'
+
+@pytest.mark.asyncio
 async def test_sql_parser_sql_command_show_mermaid_graph(db_session: AsyncSession):
     """Test Orion manuscript parser with sql command."""
     # Arrange
