@@ -81,7 +81,7 @@ class Orion_ManuScript(ABC_STC_Script):
                 table_str += '</tr>'
 
             table_str += '</tbody></table>'
-            self.res_text += table_str
+            self.res_text += '\n' + table_str + '\n'
         else:
             self.res_text = 'No dataset to show'
 
@@ -91,7 +91,7 @@ class Orion_ManuScript(ABC_STC_Script):
             template = Template(template_str)
 
             graph_str = template.render( { 'dataset' : self.dataset } )
-            self.res_text += graph_str
+            self.res_text += '\n' + graph_str + '\n'
         else:
             self.res_text = 'No dataset to show'
 
