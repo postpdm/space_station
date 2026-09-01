@@ -10,6 +10,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from sqlalchemy import text
 
+from jinja2 import Template
+
 from space_station_stc.forbidden_scripts.forbidden_sql import *
 from space_station_stc.orion_manuscript.abc_stc_script import ABC_STC_Script, UnknownCommandError
 
@@ -25,6 +27,17 @@ config_validator = SQLValidatorConfig(
 
 async def build_select( sql : str ) -> sqla_select:
     return text( sql )
+
+MERMAID_STR = """\n
+```mermaid \n
+pie title Pie chart 
+{% for i in dataset %}
+    "{{i.1}}" : {{i.0}} 
+{% endfor %} 
+```\n
+
+"""
+
 
 class Orion_ManuScript(ABC_STC_Script):
     """Orion manuscript class wrapper."""
@@ -85,18 +98,11 @@ class Orion_ManuScript(ABC_STC_Script):
 
     async def cmd_show_graph(self, args):
         if self.sql_executed:
-            graph_str = """\n
-```mermaid \n
-pie title Pie chart \n
-"""
+            
+            template_str = MERMAID_STR
+            template = Template(template_str)
 
-            for row in self.dataset:
-                graph_str += '    "' + str(row[1]) + '" : ' + str(row[0]) + ' \n '
-
-            graph_str += """\n
-```\n
-
-"""
+            graph_str = template.render( { 'dataset' : self.dataset } )
             self.res_text += graph_str
         else:
             self.res_text = 'No dataset to show'

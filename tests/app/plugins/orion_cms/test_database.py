@@ -108,13 +108,13 @@ async def test_sql_parser_sql_command_show_mermaid_graph(db_session: AsyncSessio
     component_str = await execute_orion_manusctript( code, db_session )
     
     # use today
-    s = f"""\n
+    excpected = f"""\n
 ```mermaid \n
 pie title Pie chart \n
-    "{date.today()}" : 1 \n \n\n```\n
-
+    "{date.today()}" : 1 \n \n```\n
 """   
-    assert component_str == s 
+    
+    assert component_str == excpected 
 
 
 #@pytest.mark.asyncio
