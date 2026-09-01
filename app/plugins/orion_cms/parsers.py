@@ -75,7 +75,7 @@ class Orion_ManuScript(ABC_STC_Script):
                 table_str += '</tr>'
 
             table_str += '</tbody></table>'
-        self.res_text = table_str
+        self.res_text += table_str
 
     async def cmd_show_graph(self, args):
         if self.sql_executed:
@@ -91,7 +91,7 @@ pie title Pie chart \n
 ```\n
 
 """
-            self.res_text = graph_str
+            self.res_text += graph_str
 
 # Execute code as Orion manuscript and return text for web page
 async def execute_orion_manusctript( code : str, db_session: AsyncSession ) -> str:
