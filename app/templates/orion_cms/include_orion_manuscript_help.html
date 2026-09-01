@@ -2,9 +2,12 @@ Orion manuscript is a internal scripting language
 
 <pre>
 ``` orion_manuscript
-select count(id), date(created_at) from cms_page group by date(created_at)
-show table
-show graph
+
+: sql
+select count(id) as a, date(created_at) as d from cms_page group by date(created_at)
+
+: show table 
+
 ```
 </pre>
 

@@ -110,25 +110,113 @@ This is a **client-side rendering** component.
 
 Orion manuscript is a internal scripting language.
 
-Line  started with `select` mean SQL expression to fetch data.
-
-`show table` line mean insert the HTML table with `select` results. 
-
-`show graph` line mean insert the Mermaid-formated chart with `select` results. 
-
-<pre>
-``` orion_manuscript
-select count(id), date(created_at) from cms_page group by date(created_at)
-show table
-```
-</pre>
-
-<pre>
-``` orion_manuscript
-select count(id) AS C, date(created_at) AS D from cms_page group by date(created_at)
-show graph
-```
-</pre>
-
-
 This is a **server-side rendering** component.
+
+Line started with `:` mean command to execute. Next lines after `:` command is arguments for command.
+
+### SQL
+`: sql` mean SQL expression to fetch data from DB. Arguments is a SQL script.
+
+<pre>
+``` orion_manuscript
+
+: sql
+select count(id) as a, date(created_at) as d from cms_page group by date(created_at)
+
+```
+</pre>
+
+`: sql` is a command to treat next line (lines) as SQL select code to execute. Only `select` is allowed.
+`select count(id) as a, date(created_at) as d from cms_page group by date(created_at)` is a SQL script (could be multiline). Case insensitive.
+
+
+<pre>
+``` orion_manuscript
+: sql
+SELECT count(id) AS a, 
+date(created_at) AS d 
+FROM cms_page GROUP BY date(created_at)
+```
+</pre>
+
+### Show table
+`: show table` line mean insert the HTML table with previous `sql` results. No arguments required. Of course in previous block you should execute the SQL to fetch data to show.
+
+<pre>
+``` orion_manuscript
+
+: sql
+select count(id) as a, date(created_at) as d from cms_page group by date(created_at)
+
+: show table
+```
+</pre>
+
+
+### Show mermaid
+`: show mermeid` mean insert the Mermaid-formated chart previous `sql` results. You can compose the mermaid body with Jinja template language (also supported).
+
+
+<pre>
+``` orion_manuscript
+
+: sql
+select count(id) as a, date(created_at) as d from cms_page group by date(created_at)
+
+: show mermaid
+
+    pie title Pie chart
+{% for i in dataset %}
+    "{{i.d}}" : {{i.a}}
+{% endfor %}
+
+```
+</pre>
+
+You can't insert mermaid opening and closing tags, becouse you alrady in `orion_manuscript` block. CMS add whis tags by itself. Don't be missunderstud with separated mermaid block.
+Write a chart type (`pie`), title (`title`) and data for loop with plain text and Jinja commands.
+
+You can use any [Jinja](https://jinja.palletsprojects.com/en/stable/templates/) options, except `import` and `include`.
+
+
+
+You can use any Mermaid chart's types.
+
+<pre>
+``` orion_manuscript
+
+: sql
+
+SELECT count(id) AS a, date(created_at) AS d FROM cms_page GROUP BY date(created_at)
+
+: show mermaid
+timeline
+	title Pages as timeline
+{% for i in dataset %}
+    {{i.0}} : {{i.1}}
+{% endfor %}
+```
+</pre>
+
+**Important**! Datset fetched with SQL command live only in one section!
+
+#### Accessing dataset in Jinja template
+
+In mermaid code `dataset` variable always contain a sql results (if exists).
+
+`i` is just a loop row variable, you can use any name.
+
+Values an accessible by index:
+<pre>
+{% for i in dataset %}
+    {{i.0}} : {{i.1}}
+{% endfor %}
+</pre>
+
+or by SQL field name:
+
+<pre>
+{% for i in dataset %}
+    {{i.d}} : {{i.a}}
+{% endfor %}
+</pre>
