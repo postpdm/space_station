@@ -1,6 +1,6 @@
 # Help
 
-**Orion** Content Management System (CMS) contain list of pages. Each page contain title (plain text) and list of sections.
+**Orion** Content Management System (CMS) contain list of pages, grouped to Page Tree. Each page contain title (plain text) and list of sections.
 
 Each section is a markdown text, with Mermaid diagram support and Orion manuscript.
 
@@ -154,7 +154,7 @@ select count(id) as a, date(created_at) as d from cms_page group by date(created
 
 
 ### Show mermaid
-`: show mermeid` mean insert the Mermaid-formated chart previous `sql` results. You can compose the mermaid body with Jinja template language (also supported).
+`: show mermeid` mean insert the Mermaid-formated chart from previous `sql` results. You can compose the mermaid body with Jinja template language (also supported).
 
 
 <pre>
@@ -173,10 +173,10 @@ select count(id) as a, date(created_at) as d from cms_page group by date(created
 ```
 </pre>
 
-You can't insert mermaid opening and closing tags, becouse you alrady in `orion_manuscript` block. CMS add whis tags by itself. Don't be missunderstud with separated mermaid block.
+You can't insert mermaid opening and closing tags, becouse you alrady in `orion_manuscript` block. So you don't. CMS add whis tags by itself. Don't be missunderstud with separated mermaid block.
 Write a chart type (`pie`), title (`title`) and data for loop with plain text and Jinja commands.
 
-You can use any [Jinja](https://jinja.palletsprojects.com/en/stable/templates/) options, except `import` and `include`.
+You can use any [Jinja](https://jinja.palletsprojects.com/en/stable/templates/) options, except `import` and `include` (becouse CMS render template from memory and have no option to load it from disk).
 
 
 
@@ -198,7 +198,7 @@ timeline
 ```
 </pre>
 
-**Important**! Datset fetched with SQL command live only in one section!
+**Important**! Dataset fetched from SQL command live only in one section! You should generate table and graph in a same section as a SQL.
 
 #### Accessing dataset in Jinja template
 
