@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
 
 from space_station_stc.forbidden_scripts.forbidden_sql import *
+from space_station_stc.orion_manuscript.abc_stc_script import ABC_STC_Script, UnknownCommandError
 
 config_validator = SQLValidatorConfig(
     allowed_tables={"cms_page", },
@@ -23,73 +24,85 @@ config_validator = SQLValidatorConfig(
 )
 
 async def build_select( sql : str ) -> sqla_select:
-    return text( sql )
+    return text( " ".join(sql) )
 
-async def execute_orion_manusctript( code : str, db_session: AsyncSession ) -> str:
-    async def execute_sql( sql : str ) -> tuple[ list, list ]:
-        query = await db_session.execute( sql )
+class Orion_ManuScript(ABC_STC_Script):
+    """Orion manuscript class wrapper."""
+
+    builded_select : sqla_select
+    sql_executed : bool
+    headers : list
+    dataset : list
+    res_text : str
+
+    db_session: AsyncSession
+
+    async def execute_sql( self, sql : str ) -> tuple[ list, list ]:
+        query = await self.db_session.execute( sql )
         headers = query.keys()
         return headers, query.all()
 
-    prepared_select = None
-    executed = False
-    query = None
-    dataset = None
+    def __init__(self, db_session: AsyncSession ):
+        self.calls = []  # record calls for assertions
+        self.res_text = ""
+        self.sql_executed = False
+        self.headers = []
+        self.dataset = []
+        self.db_session = db_session
 
-    res = ''
+    async def cmd_sql(self, args):
+        validator = SQLValidator(config_validator)
+        validator.validate( args )
+        self.builded_select = await build_select( args )
+        self.headers, self.dataset = await self.execute_sql( self.builded_select )
+        self.sql_executed = True
 
-    for line in code.splitlines():
-        if line.lower() == 'show table':
-            try:
-                res = '<table border="2">'
-                if not executed:
-                    headers, dataset = await execute_sql( prepared_select )
-                    executed = True
-                    res += '<thead><tr>'
+    async def cmd_show_table(self, args):
+        if self.sql_executed:
+            table_str = '<table border="2">'
+            table_str += '<thead><tr>'
 
-                    # table headers
-                    for header in headers:
-                      res += '<th>' + header + '</th>'
+            # table headers
+            for header in self.headers:
+              table_str += '<th>' + header + '</th>'
 
-                res += '</tr></thead><tbody>'
-                for row in dataset:
-                    res += '<tr>'
-                    
-                    for value in row:
-                        res += '<td>' + str( value ) + '</td>'
-                    res += '</tr>'
+            table_str += '</tr></thead><tbody>'
+            for row in self.dataset:
+                table_str += '<tr>'
 
-                res += '</tbody></table>'
-            except Exception as e:
-                res = 'Error in SQL execution ' + str( e )
-        else:
-            if (line.lower() ).startswith('select'):
-                try:
-                    # validate SQL string
-                    validator = SQLValidator(config_validator)
-                    validator.validate( line )
-                    prepared_select = await build_select( line )
-                except Exception as e:
-                    res = 'Error in SQL parsing ' + str( e )
-            else:
-                if line.lower() == 'show graph':
-                    if not executed:
-                        headers, dataset = await execute_sql( prepared_select )
-                        executed = True
+                for value in row:
+                    table_str += '<td>' + str( value ) + '</td>'
+                table_str += '</tr>'
 
-                    res += """\n
+            table_str += '</tbody></table>'
+        self.res_text = table_str
+
+    async def cmd_show_graph(self, args):
+        if self.sql_executed:
+            graph_str = """\n
 ```mermaid \n
 pie title Pie chart \n
 """
-                    for row in dataset:
-                        res += '    "' + str(row[1]) + '" : ' + str(row[0]) + ' \n '
 
-                    res += """\n
+            for row in self.dataset:
+                graph_str += '    "' + str(row[1]) + '" : ' + str(row[0]) + ' \n '
+
+            graph_str += """\n
 ```\n
 
 """
+            self.res_text = graph_str
 
-                else:
-                    res = 'Unknown command "' + line + '"'
+# Execute code as Orion manuscript and return text for web page
+async def execute_orion_manusctript( code : str, db_session: AsyncSession ) -> str:
 
-    return res
+    if code == "":
+        return ""
+
+    om_script = Orion_ManuScript( db_session )
+
+    try:
+        await om_script.interpret(code)
+        return om_script.res_text
+    except Exception as e:
+        return str(e)

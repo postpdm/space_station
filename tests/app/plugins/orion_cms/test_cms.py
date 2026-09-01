@@ -1,4 +1,3 @@
-
 import pytest
 from anyio import Path
 from app.plugins.orion_cms.parsers import CONST_PLAIN_MARKDOWN
@@ -6,7 +5,6 @@ from app.plugins.orion_cms.service_special import TextFileService, provide_file_
 
 # Turn anyio for pytest
 pytestmark = pytest.mark.anyio
-
 
 async def test_text_file_service_get_data(tmp_path):
     # anyio.Path
