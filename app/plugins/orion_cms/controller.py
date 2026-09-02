@@ -20,7 +20,7 @@ from app.plugins.abc_controller import BasePluginController
 CMS_TEMPLATES_DIR = "orion_cms/"
 
 from .service import CMSTreeService, CMSService, CMS_Section_Service, CMS_ReportService, provide_cms_report_service
-from .schema import Page_Tree_Node_pdnt, Page_pdnt, Tree_Node_Create_pdnt, Tree_Node_Update_pdnt, PageCreate_pdnt, PageUpdate_pdnt, Page_with_sections_pdnt, Page_Section_pdnt, Page_Section_Create_pdnt, Orion_Pages_Stat_Count_pdnt, Orion_Pages_Stat_By_Day_pdnt, Orion_Manuscript_CodeRequest_pdnt
+from .schema import Page_Tree_Node_pdnt, Page_pdnt, Tree_Node_Create_pdnt, Tree_Node_Update_pdnt, PageCreate_pdnt, PageUpdate_pdnt, Page_with_sections_pdnt, Page_Section_pdnt, Page_Section_Create_pdnt,Page_Section_Update_pdnt, Orion_Pages_Stat_Count_pdnt, Orion_Pages_Stat_By_Day_pdnt, Orion_Manuscript_CodeRequest_pdnt
 
 from .parsers import CONST_PLAIN_MARKDOWN, execute_orion_manusctript
 
@@ -211,6 +211,13 @@ class CMS_Controller(BasePluginController):
 
         obj = await CMS_Section_Service.create( section_data_dict )
         return CMS_Section_Service.to_schema(obj, schema_type=Page_Section_pdnt)
+        
+    @post(path="/update_page_section_api/{section_id:uuid}")
+    async def update_page_section_eapi(self, section_id:UUID, request : Request, CMS_Section_Service: CMS_Section_Service, data: Page_Section_Update_pdnt) -> Page_Section_pdnt:
+        """Updtate page."""
+        obj = await CMS_Section_Service.update(data, item_id=section_id, auto_commit=True)
+        return CMS_Section_Service.to_schema(obj, schema_type=Page_Section_pdnt)
+
 
     @get("/get_statistics_api_page_count")
     async def get_statistics_api_page_count(self, cms_report_service: CMS_ReportService ) -> Orion_Pages_Stat_Count_pdnt:

@@ -6,6 +6,9 @@
 
 <section id="editor">
 
+{% if Enable_edit_flag %}
+    <p><a href="/cms/edit_page/{{page_id}}" role="button">Edit page title</a></p>
+{% endif %}
     <div id="record-container">Loading data...</div>
 
 <!-- Include marked.umd.js -->
@@ -19,11 +22,10 @@
 {% endif %}
 
 {% if Enable_edit_flag %}
-    <p><a href="/cms/edit_page/{{page_id}}" role="button">Edit page title</a></p>
-<hr>
+	<hr>
       <!-- Accordions -->
       <section id="accordion_markdown_help">
-        <h2>Add new section</h2>
+        <h2 id="edit_section_caption">Add new section</h2>
         <details>
           <summary>View available options for markdown syntax &#9660;</summary>
           {% include 'orion_cms/include_markdown_help.html' %}
@@ -40,13 +42,12 @@
       <!-- ./ Accordions -->
 
 <form id="new_page_section_Form">
-
     <div>
         <label for="content">Content (Markdown with Mermaid and Orion manuscript supported). Start to type, preview is available bellow.</label>
-        <textarea id="content" required placeholder="Enter the markdown content" rows="5" cols="55"></textarea>
+	    <textarea id="content" required placeholder="Enter the markdown content" rows="5" cols="55"></textarea>
     </div>
 
-    <button type="submit">Add new section</button>
+    <button type="submit" id="add_section">Add new section</button>
 </form>
 
 	<!-- The live preview box -->
@@ -55,6 +56,9 @@
 {% endif %}
 
 <script>
+  var sections;
+  var add_mode = true;
+  var id_section_to_change = '';
 
   // turn off auto start
   mermaid.initialize({ startOnLoad: false });
@@ -169,8 +173,11 @@ async function fetchAndDisplayRecord() {
                 <h2>Title: ${record.title}</h2>
                 <h3>Record ID: ${record.id}</h3>
         `;
-	    for (const section of record.sections) {
-		container.innerHTML += marked.parse( section.content );
+
+		sections = record.sections;
+		for (const section of sections) {
+			section_id = section.id;
+			container.innerHTML += marked.parse( section.content ) {% if Enable_edit_flag %}+ '<button onclick="edit_section(\''  + String(section_id) + '\')">Edit section (' + section_id + ')</button><hr>' {% endif %};
 			};
 		container.innerHTML += `</div>`;
 
@@ -193,6 +200,24 @@ fetchAndDisplayRecord();
 
   const editor = document.getElementById('content');
   const preview = document.getElementById('preview');
+  const edit_section_caption_el = document.getElementById('edit_section_caption');
+  const add_section_b = document.getElementById('add_section');
+
+
+  async function edit_section( id_section ) {
+
+	add_mode = false;
+	id_section_to_change = id_section;
+
+	section = sections.find( item => item.id === id_section );
+	edit_section_caption_el.innerText = 'Edit section';
+	add_section_b.innerText = 'Post section ' + String( id_section_to_change );
+	editor.value = section.content;
+	editor.focus();
+	editor.setSelectionRange(0,0);
+	const event = new Event( 'input', {bubbles:true} );
+	editor.dispatchEvent(event);
+	};
 
   // Update preview on input
   editor.addEventListener('input', () => {
@@ -226,7 +251,9 @@ fetchAndDisplayRecord();
 
         try {
             // POST API
-            const response = await fetch('/cms/new_page_section_api/{{page_id}}', {
+            if ( add_mode ) { post_url = '/cms/new_page_section_api/{{page_id}}' } else { post_url = '/cms/update_page_section_api/' + String(id_section_to_change) };
+
+			const response = await fetch( post_url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -240,6 +267,13 @@ fetchAndDisplayRecord();
                 statusDiv.style.color = 'green';
                 document.getElementById('new_page_section_Form').reset(); // Clear form
                 document.getElementById('preview').innerHTML = '';
+
+				add_mode = true;
+				id_section_to_change = '';
+
+				edit_section_caption_el.innerText = 'Add new section';
+				add_section_b.innerText = 'Add section';
+
 				fetchAndDisplayRecord();
             } else {
                 const errorText = await response.text();

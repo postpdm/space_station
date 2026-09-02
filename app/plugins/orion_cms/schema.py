@@ -18,14 +18,22 @@ class Page_Section_pdnt(BaseModel):
     content : str
     content_type : int
 
+class Page_Section_View_pdnt(BaseModel):
+    id : UUID
+    content : str
+    content_type : int
+
 class Page_Section_Create_pdnt(BaseModel):
     content : str
 
-# Main page with sections. Use it for one page with sub sections
+class Page_Section_Update_pdnt(BaseModel):
+    content : str
+
+# Main page with sections. Use it to get one page with all sub sections
 class Page_with_sections_pdnt(BaseModel):
     id: Optional[UUID] = None
     title: str
-    sections: List[Page_Section_pdnt] = []
+    sections: List[Page_Section_View_pdnt] = []
 
 
 class Tree_Node_Create_pdnt(BaseModel):
