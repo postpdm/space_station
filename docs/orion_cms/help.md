@@ -114,7 +114,7 @@ This is a **server-side rendering** component.
 
 Line started with `:` mean command to execute. Next lines after `:` command is arguments for command.
 
-Code can contain comments, after # chatacter was ignored.
+Code can contain comments, text after `#` chatacter was ignored.
 
 ### SQL
 `: sql` mean SQL expression to fetch data from DB. Arguments is a SQL script.
