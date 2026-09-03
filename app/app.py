@@ -27,7 +27,7 @@ settings = get_settings()
 #    exclude=["/health"] # Allow load balancer checks
 #)
 
-plugins_list = get_all_ss_plugins()
+plugins_list = get_all_ss_plugins( settings )
 
 app = Litestar( debug=settings.litestar_debug, # Hard disable debug mode in prod!
                 # allowed_hosts=host_config,

@@ -1,4 +1,4 @@
-from pydantic import Field, HttpUrl
+from pydantic import Field, HttpUrl, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Class for reading of environment file
@@ -12,6 +12,18 @@ class AppSettings(BaseSettings):
     #allowed_hosts: list[str]
     #database_url: str
     
+    # plugins
+    plugin_packages: list[str] | None = None
+    
+    @field_validator("plugin_packages", mode="before")
+    @classmethod
+    def split_packages_string(cls, value: any) -> list[str]:
+        """Convert str to list."""
+        if isinstance(value, str):
+            # .split() delete spaces
+            return value.split()
+        return value
+        
     # Auth section
     AM_I_USER_URL : str
     AM_I_USER_LOGIN_FIELD : str
