@@ -114,13 +114,15 @@ This is a **server-side rendering** component.
 
 Line started with `:` mean command to execute. Next lines after `:` command is arguments for command.
 
+Code can contain comments, after # chatacter was ignored.
+
 ### SQL
 `: sql` mean SQL expression to fetch data from DB. Arguments is a SQL script.
 
 <pre>
 ``` orion_manuscript
 
-: sql
+: sql # prepare SQL
 select count(id) as a, date(created_at) as d from cms_page group by date(created_at)
 
 ```
@@ -132,7 +134,8 @@ select count(id) as a, date(created_at) as d from cms_page group by date(created
 
 <pre>
 ``` orion_manuscript
-: sql
+: sql # prepare SQL
+# multiline query code
 SELECT count(id) AS a, 
 date(created_at) AS d 
 FROM cms_page GROUP BY date(created_at)
@@ -145,10 +148,10 @@ FROM cms_page GROUP BY date(created_at)
 <pre>
 ``` orion_manuscript
 
-: sql
+: sql # prepare SQL
 select count(id) as a, date(created_at) as d from cms_page group by date(created_at)
 
-: show table
+: show table # execute SQL and show results as html table
 ```
 </pre>
 
@@ -160,11 +163,11 @@ select count(id) as a, date(created_at) as d from cms_page group by date(created
 <pre>
 ``` orion_manuscript
 
-: sql
+: sql # prepare SQL
 select count(id) as a, date(created_at) as d from cms_page group by date(created_at)
 
-: show mermaid
-
+: show mermaid # execute SQL and show results as mermaid graph
+# mermaid code compose with Jinja template tags
     pie title Pie chart
 {% for i in dataset %}
     "{{i.d}}" : {{i.a}}
