@@ -5,7 +5,9 @@ import inspect
 
 from litestar.plugins import InitPlugin
 
-from .abc_plugin import BasePlugin
+from space_station_stc.hull.plugin_abc.abc_plugin import BasePlugin
+
+from ..config import STATIC_DIR
 
 def discover_local_plugins() -> list[InitPlugin]:
     """Find and load all local space station plugins from code base."""
@@ -31,6 +33,7 @@ def discover_local_plugins() -> list[InitPlugin]:
                 ):
                     check_id = getattr(attr, 'fplugin_id')
                     for c in plugins:
+                        c.fstatic_dir = STATIC_DIR
                         if c.fplugin_id == check_id:
                             raise Exception('Plugin ID is not unique, can not install')
                             

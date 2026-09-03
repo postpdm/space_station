@@ -6,7 +6,7 @@ from litestar.response import Template
 
 from litestar.exceptions import NotFoundException
   
-from app.plugins.abc_controller import BasePluginController
+from space_station_stc.hull.plugin_abc.abc_controller import BasePluginController
 
 DOPS_TEMPLATES_DIR = "dummy_one_page_static/"
 

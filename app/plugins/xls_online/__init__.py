@@ -4,7 +4,7 @@ from litestar.config.app import AppConfig
 
 from .controller import XLS_Online_Controller
 # take abstract
-from app.plugins.abc_plugin import BasePlugin
+from space_station_stc.hull.plugin_abc.abc_plugin import BasePlugin
 
 class XLS_Online_Plugin(BasePlugin):
     # add routing

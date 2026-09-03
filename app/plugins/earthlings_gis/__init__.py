@@ -4,7 +4,7 @@ from litestar.config.app import AppConfig
 
 from .controller import Demo_GIS_Controller
 # take abstract
-from app.plugins.abc_plugin import BasePlugin
+from space_station_stc.hull.plugin_abc.abc_plugin import BasePlugin
 
 class Demo_GIS_Plugin(BasePlugin):
     # add routing

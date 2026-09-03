@@ -1,7 +1,7 @@
 from litestar import Controller, get
 from litestar.response import Template
 
-from app.plugins.abc_controller import BasePluginController
+from space_station_stc.hull.plugin_abc.abc_controller import BasePluginController
 
 XLS_TEMPLATES_DIR = "xls_online/"
 

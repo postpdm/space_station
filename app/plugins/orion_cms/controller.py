@@ -15,7 +15,7 @@ from advanced_alchemy.extensions.litestar import (
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.plugins.abc_controller import BasePluginController
+from space_station_stc.hull.plugin_abc.abc_controller import BasePluginController
 
 CMS_TEMPLATES_DIR = "orion_cms/"
 
