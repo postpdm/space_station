@@ -5,6 +5,8 @@ import inspect
 
 from litestar.plugins import InitPlugin
 
+from rich import print as rich_p
+
 from space_station_stc.hull.plugin_abc.abc_plugin import BasePlugin
 
 def discover_local_plugins( static_dir : str, plugin_packages : list ) -> list[InitPlugin]:
@@ -35,7 +37,7 @@ def discover_local_plugins( static_dir : str, plugin_packages : list ) -> list[I
                     plugins.append(attr())
 
         except Exception as e:
-            print(f"Error load plugin {module_name}: {e}")
+            rich_p(f"[red]Error[/red] load plugin {module_name}: [red]{e}[/red]")
 
     plugins_dir = Path(__file__).parent
 
@@ -51,7 +53,7 @@ def discover_local_plugins( static_dir : str, plugin_packages : list ) -> list[I
         for pp in plugin_packages:
             spec = importlib.util.find_spec(pp)
             if spec is None:
-                print(f"Error load plugin from package {pp}!")
+                rich_p(f"[red]Error[/red] load plugin from package [red]{pp}[/red]!")
             else:
                 check_module( pp )
 
