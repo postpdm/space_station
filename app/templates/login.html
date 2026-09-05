@@ -30,30 +30,54 @@
 {% else %}
 
 	<h2>Client request get you auth user name</h2>
-	
+
     <h2>Check your login and name is correct and press enter. You can't change the login.</h2>
     <form action="/users/login_form{%if return_path %}?return_path={{return_path}}{% endif %}" method="POST">
         <input type="hidden" name="user_login" id="user_login" required readonly="readonly">
         <input type="hidden" name="user_name" id="user_name" required readonly="readonly">
-        
-		<input type="text" name="user_login" id="v_user_login" disabled readonly="readonly">
-        <input type="text" 	name="user_name" id="v_user_name" disabled readonly="readonly">
 
-        <button type="submit">Enter</button>
+		<input type="text" name="user_login" id="v_user_login" disabled readonly="readonly">
+        <input type="text" name="user_name" id="v_user_name" disabled readonly="readonly">
+
+        <button type="submit" disabled id="Login_Button">Enter</button>
     </form>
-	
+	<div id="status"></div>
 	<script>
 
 	async function getField( ) {
+	  status_l = document.getElementById('status');
+	  login_b = document.getElementById('Login_Button');
+	  login_b.disabled = true;
+	  document.getElementById('user_login').value = '';
+	  document.getElementById('user_name').value = '';
+	  document.getElementById('v_user_login').value = '';
+	  document.getElementById('v_user_name').value = '';
+
+
+	  try {
+
 	  const response = await fetch( "{{am_i_user_url}}", { credentials: 'include' } );
+
+	  // Check if the server response is successful (status 200-299)
+      if (!response.ok) {
+            throw new Error(`Network error: ${response.status} ${response.statusText}`);
+        };
 	  const data = await response.json();
 
 	  document.getElementById('user_login').value = data["{{am_i_user_login_field}}"];
 	  document.getElementById('user_name').value = data["{{am_i_user_name_field}}"];
 	  document.getElementById('v_user_login').value = data["{{am_i_user_login_field}}"];
 	  document.getElementById('v_user_name').value = data["{{am_i_user_name_field}}"];
+	  login_b.disabled = false;
+	  status_l.innerText = '';
 	}
-
+    catch (error) {
+        // Handle network failures or JSON parsing errors
+	    const s = 'Failed to fetch user data: ' + String( error );
+		status_l.innerText = s;
+        console.error(s);
+    }
+};
 	getField( );
 
 	</script>
