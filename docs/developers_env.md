@@ -2,6 +2,7 @@
 
 Install python
 Create virtual env (recomended)
+Install dependecies (`requirements.txt`).
 
 Run local in developer debug mode
 

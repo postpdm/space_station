@@ -1,6 +1,7 @@
 litestar[jinja]
 aiosqlite
 uuid-utils
+cryptography
 sqlalchemy
 advanced_alchemy
 pydantic
