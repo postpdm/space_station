@@ -24,3 +24,7 @@ Your space station are surrounded by unknown software, channels, forerunner lega
 Many enterprise network mannerisms are beyond human ken.
 
 The space station should be prepared to collect and isolate outer artifacts, keys to forbidden gates, and maps of uninhabited dungeons.
+
+## Cage
+
+Space station has a special controller named Cage. This is a simulator of external API calls for testing purposes. You can address your requests here instead of touching the real API.

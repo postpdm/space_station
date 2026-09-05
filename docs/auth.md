@@ -6,7 +6,7 @@ Public methods (exclude_from_auth=True)
 
 /users/login_form
 
-/users/fake_user
+/cage/fake_user
 
 and `/favicon.ico` :)
 

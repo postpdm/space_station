@@ -14,6 +14,8 @@ from .core.core_config import db_plugin, session_config_b, session_store_config 
 from .core.core_view import NewsController, UserController, UserFavController
 from .core.core_auth import auth_mw, auth_exception_handler
 
+from .core.cage.cage_view import  CageController
+
 from .plugins import get_all_ss_plugins
 
 from .views import favicon
@@ -47,7 +49,7 @@ app = Litestar( debug=settings.litestar_debug, # Hard disable debug mode in prod
                 exception_handlers={NotAuthorizedException: auth_exception_handler},
 
                 route_handlers=[ favicon,
-                                 UserController, UserFavController, User_Portal_Controller, Star_Fortress_Controller, NewsController],
+                                 UserController, UserFavController, User_Portal_Controller, Star_Fortress_Controller, NewsController, CageController],
                 template_config=template_config,
                 static_files_config=[static_config],
                 plugins=[db_plugin] + plugins_list,

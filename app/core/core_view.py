@@ -50,7 +50,7 @@ class UserController(Controller):
             if app_settings.AM_I_USER_URL:
                 am_i_user_url = app_settings.AM_I_USER_URL
             else:
-                am_i_user_url = 'http://127.0.0.1:8000/users/fake_user'
+                am_i_user_url = 'http://127.0.0.1:8000/cage/fake_user'
 
             if app_settings.AM_I_USER_LOGIN_FIELD:
                 am_i_user_login_field = app_settings.AM_I_USER_LOGIN_FIELD
@@ -122,13 +122,6 @@ class UserController(Controller):
         if not redirect_target.startswith("/"):
             redirect_target = "/"
         return Redirect(path=redirect_target)
-
-    @get('/fake_user', exclude_from_auth=True)
-    async def get_fake_user(self) -> dict[str, str]:
-        """Fake method for local testing purposes"""
-        # Litestar automatically converts this dict to a JSON response
-        return { "id": "123", "userLogin": "fake_domain\\fake_user", "userName": "Mr. Fake User jr.", 'some_key' : 'some_string' }
-
 
     @get(path="/list_users")
     async def list_users(
