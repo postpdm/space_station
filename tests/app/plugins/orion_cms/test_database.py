@@ -1,5 +1,4 @@
 import pytest
-from litestar.testing import AsyncTestClient
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
@@ -112,6 +111,8 @@ async def test_sql_parser_sql_command_show_mermaid_graph(db_session: AsyncSessio
     db_session.add(new_page)
     await db_session.flush()  # Push to DB within the active transaction
 
+    today = str( new_page.created_at.date() )
+
     code = ':sql \n select count(id), date(created_at) from cms_page group by date(created_at) \n' + ': show mermaid \n' + MERMAID_STR
 
     component_str = await execute_orion_manusctript( code, db_session )
@@ -119,14 +120,6 @@ async def test_sql_parser_sql_command_show_mermaid_graph(db_session: AsyncSessio
     # use today
     expected = f"""\n``` mermaid
 pie title Pie chart\n
-    "{date.today()}" : 1\n\n```\n"""
-    
+    "{today}" : 1\n\n```\n"""
+
     assert component_str == expected
-
-
-#@pytest.mark.asyncio
-#async def test_api_endpoint(client: AsyncTestClient):
-#    """Test a Litestar endpoint using the overridden dependency session."""
-#    response = await client.get("/users")
-#    assert response.status_code == 200
-#    assert response.json() == [{"id": 1, "name": "Test User"}]

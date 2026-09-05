@@ -1,5 +1,4 @@
 import pytest
-from litestar.testing import AsyncTestClient
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
