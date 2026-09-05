@@ -11,7 +11,7 @@ from functools import partial
 from .config import template_config, static_config, get_settings
 from .user_portal.up_views import User_Portal_Controller
 from .star_fortress.sf_views import Star_Fortress_Controller
-from .core.core_config import db_plugin, session_config_b, session_store_config # session_backend 
+from .core.core_config import db_plugin, session_config_b, session_store_config # session_backend
 from .core.core_view import NewsController, UserController, UserFavController
 from .core.core_auth import auth_mw, auth_exception_handler
 
@@ -19,7 +19,16 @@ from .plugins import get_all_ss_plugins
 
 from .views import favicon
 
+from .star_fortress.inner_circle.context import db_encryption_key
+
 settings = get_settings()
+
+if settings.inner_circle_key:
+    db_encryption_key.set( settings.inner_circle_key )
+    print( db_encryption_key.get( settings.inner_circle_key ) )
+else:
+    print("Secrets settings not found!")
+    raise SystemExit(1)
 
 # Security: Limit domains to prevent HTTP Host Header attacks
 # host_config = AllowedHostsConfig(

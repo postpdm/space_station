@@ -21,4 +21,4 @@ See `.env.example` file for example.
 
 # Prepare prod
 
-Copy `.env.example` to `.env` file and set up your production settings.
+Copy `.env.example` to `.env` file and set up your development or production settings.

@@ -1,13 +1,16 @@
 import pytest
 
+import secrets
+
 from app.config import AppSettings
 from app.plugins import get_all_ss_plugins
 
 @pytest.mark.asyncio
 async def test_package_settings():
     """Test package settings."""
-
-    fake_env_data = {"plugin_packages": "some_package_name"}
+    
+    hex_key = secrets.token_hex(16)
+    fake_env_data = {"plugin_packages": "some_package_name", "inner_circle_key" : hex_key }
 
     # Init config
     test_config = AppSettings(**fake_env_data)
@@ -18,7 +21,8 @@ async def test_package_settings():
 async def test_loader():
     """Test plugin loader."""
 
-    fake_env_data = {"plugin_packages": "ABRACADABRA_package"}
+    hex_key = secrets.token_hex(16)
+    fake_env_data = {"plugin_packages": "ABRACADABRA_package", "inner_circle_key" : hex_key }
 
     # Init config
     test_config = AppSettings(**fake_env_data)

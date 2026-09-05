@@ -1,6 +1,8 @@
 from litestar import Controller, Request, get
 from litestar.response import Template
 
+from .inner_circle import models
+
 STAR_FORTRESS_TEMPLATES_DIR = "star_fortress/"
 
 class Star_Fortress_Controller(Controller):
