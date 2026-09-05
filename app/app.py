@@ -7,7 +7,6 @@ from litestar.exceptions.http_exceptions import NotAuthorizedException
 
 from functools import partial
 
-
 from .config import template_config, static_config, get_settings
 from .user_portal.up_views import User_Portal_Controller
 from .star_fortress.sf_views import Star_Fortress_Controller
@@ -25,7 +24,6 @@ settings = get_settings()
 
 if settings.inner_circle_key:
     db_encryption_key.set( settings.inner_circle_key )
-    print( db_encryption_key.get( settings.inner_circle_key ) )
 else:
     print("Secrets settings not found!")
     raise SystemExit(1)
