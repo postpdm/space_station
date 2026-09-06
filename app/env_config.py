@@ -14,7 +14,8 @@ class AppSettings(BaseSettings):
     #secret_key: str
     #allowed_hosts: list[str]
     #database_url: str
-
+    USE_CDN : bool = False
+    
     # plugins
     plugin_packages: list[str] | None = None
 

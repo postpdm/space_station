@@ -7,13 +7,28 @@ from functools import lru_cache
 
 from .env_config import AppSettings
 
+USE_CDN = False
+
+@lru_cache()
+def get_settings() -> AppSettings:
+    """Returns a cached settings instance to prevent repeated parsing."""
+    a_s = AppSettings()
+    global USE_CDN 
+    USE_CDN = a_s.USE_CDN
+    return a_s
+
 # Define the path to your templates directory
 TEMPLATE_DIR = Path(__file__).parent / "templates"
+
+def engine_callback(jinja_engine: JinjaTemplateEngine) -> JinjaTemplateEngine:
+    jinja_engine.engine.globals["USE_CDN"] = USE_CDN
+    return jinja_engine
 
 # Configure the template engine
 template_config = TemplateConfig(
     directory=TEMPLATE_DIR,
     engine=JinjaTemplateEngine,
+    engine_callback=engine_callback,
 )
 
 
@@ -28,9 +43,5 @@ static_config = StaticFilesConfig(
     name='static',
 )
 
-@lru_cache()
-def get_settings() -> AppSettings:
-    """Returns a cached settings instance to prevent repeated parsing."""
-    return AppSettings()
-    
+
 #
