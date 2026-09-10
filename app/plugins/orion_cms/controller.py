@@ -31,7 +31,7 @@ SPECIAL_HELP_PAGE = 'help'
 class CMS_Controller(BasePluginController):
     path = "/cms"
 
-    # this mega structure just import 2 dependencies
+    # this mega structure just import dependencies
     dependencies = {
         **providers.create_service_dependencies(
             CMSTreeService,
