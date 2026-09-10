@@ -1,6 +1,6 @@
-import datetime
+from datetime import datetime
 from uuid import UUID
-from typing import Annotated, Optional, List
+from typing import Optional
 
 from pydantic import BaseModel, SecretStr
 
@@ -9,5 +9,6 @@ class ExternalDB_pdnt(BaseModel):
     id: Optional[UUID] = None
     resource_name: str
     connection_string : SecretStr
-    expires_at : str
+    expires_at : datetime
+    
 #

@@ -13,12 +13,75 @@
     </div>
 	
     <div class="cyber-form-group">
-        <label for="content">Connection_string:</label>
+        <label for="connection_string">Connection_string:</label>
         <textarea id="connection_string" required placeholder="Enter the connection string" rows="5" cols="55" class="cyber-input"></textarea>
     </div>
     
+	<div class="cyber-form-group">
+        <label for="expires_at">Expire date time:</label>
+        <!-- current time -->
+        <input type="datetime-local" class="cyber-input" id="expires_at" required>
+    </div>
+
 
     <button type="submit">Send</button>
 </form>
+
+<div id="status"></div>
+
+<script>
+    // Current date time
+    document.getElementById('expires_at').value = new Date().toISOString().slice(0, 16);
+
+    document.getElementById('external_db_Form').addEventListener('submit', async function(e) {
+        e.preventDefault(); // cancel
+
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = 'Sending...';
+        statusDiv.style.color = 'black';
+
+        // Get elements
+        const resource_name = document.getElementById('resource_name').value;
+        const connection_string = document.getElementById('connection_string').value;
+        const localDate = document.getElementById('expires_at').value;
+
+        // Date time set to ISO (YYYY-MM-DDTHH:mm:ssZ)
+        const expires_at = new Date(localDate).toISOString();
+
+        // payload
+        const payload = {
+            resource_name: resource_name,
+			connection_string : connection_string,
+            expires_at: expires_at
+        };
+
+        try {
+            // POST API
+            const response = await fetch('/star_fortress/wilderness_unvoid/inner_circle/reg_new_external_db', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                statusDiv.textContent = 'Success!';
+                statusDiv.style.color = 'green';
+                //document.getElementById('external_db_Form').reset(); // Clear form
+                document.getElementById('expires_at').value = new Date().toISOString().slice(0, 16);
+            } else {
+                const errorText = await response.text();
+                statusDiv.textContent = `Server fail: ${response.status} - ${errorText}`;
+                statusDiv.style.color = 'red';
+            }
+        } catch (error) {
+            statusDiv.textContent = `Network fail: ${error.message}`;
+            statusDiv.style.color = 'red';
+        }
+    });
+</script>
+
 
 {% endblock %}
