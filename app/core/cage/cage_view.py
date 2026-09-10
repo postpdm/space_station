@@ -1,4 +1,4 @@
-from litestar import Controller, Litestar, Request, delete, get, patch, post # we don't like "put"
+from litestar import Controller, get
 
 class CageController(Controller):
     path = "/cage"
