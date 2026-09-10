@@ -1,0 +1,24 @@
+{% extends 'star_fortress/base.html' %}
+{% block title %}
+    Star fortress - Space station admin portal
+{% endblock %}
+{% block body %}
+
+<h1>Wilderness unvoid - add new external db</h1>
+
+<form id="external_db_Form">
+	<div class="cyber-form-group">
+        <label for="resource_name">Resource name:</label>
+        <input type="text" class="cyber-input" id="resource_name" required placeholder="Enter the resource name">
+    </div>
+	
+    <div class="cyber-form-group">
+        <label for="content">Connection_string:</label>
+        <textarea id="connection_string" required placeholder="Enter the connection string" rows="5" cols="55" class="cyber-input"></textarea>
+    </div>
+    
+
+    <button type="submit">Send</button>
+</form>
+
+{% endblock %}
