@@ -19,12 +19,11 @@ def setup_test_encryption_key():
     # generate temporal secret for test usecase
     hex_key = secrets.token_hex(16)
     # set test key
-    #token = db_encryption_key.set( lambda: SecretStr( hex_key ) )
     token = db_encryption_key.set( SecretStr( hex_key ) )
     yield
     # reset token after use
     db_encryption_key.reset(token)
-    
+
 @pytest.mark.asyncio
 async def test_externalcredential_model(db_session: AsyncSession):
     """Test direct interaction with the database session."""
@@ -43,3 +42,20 @@ async def test_externalcredential_model(db_session: AsyncSession):
     assert ec is not None
     assert ec.resource_name == expected_res_name
     assert ec.connection_string == expected_url
+
+@pytest.mark.asyncio
+async def test_externalcredential_model_try_nonunique(db_session: AsyncSession):
+    """Test direct interaction with the database session."""
+    # Arrange
+    expected_res_name = "my_secret_db"
+    expected_url = "ftp://some_where.galaxy"
+    new_ec = ExternalDB( resource_name = expected_res_name, connection_string = expected_url, expires_at = datetime.now( timezone.utc ) )
+    db_session.add(new_ec)
+    await db_session.flush()  # Push to DB within the active transaction
+
+    # Act
+    new_ec = ExternalDB( resource_name = expected_res_name, connection_string = expected_url, expires_at = datetime.now( timezone.utc ) )
+    db_session.add(new_ec)
+
+    with pytest.raises(IntegrityError):
+        await db_session.flush()  # Push to DB within the active transaction
