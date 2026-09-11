@@ -71,7 +71,8 @@
                 statusDiv.style.color = 'green';
                 //document.getElementById('external_db_Form').reset(); // Clear form
                 document.getElementById('expires_at').value = new Date().toISOString().slice(0, 16);
-            } else {
+				window.location.href = `/star_fortress/wilderness_unvoid/view_external_db/${result.id}`;
+			} else {
                 const errorText = await response.text();
                 statusDiv.textContent = `Server fail: ${response.status} - ${errorText}`;
                 statusDiv.style.color = 'red';

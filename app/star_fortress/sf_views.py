@@ -79,6 +79,14 @@ class Star_Fortress_Controller(Controller):
             context={ }
             )
 
+    @get('/wilderness_unvoid/view_external_db/{external_db_id:uuid}')
+    async def sf_wilderness_unvoid_view_external_db(self, external_db_id : UUID, externaldbservice : ExternalDBService ) -> Template:
+        external_db = await externaldbservice.get( external_db_id )
+        return Template(
+            template_name = STAR_FORTRESS_TEMPLATES_DIR + "wilderness_unvoid_view_external_db.html",
+            context={ "external_db" : external_db }
+            )
+
     @post(path="/wilderness_unvoid/inner_circle/reg_new_external_db")
     async def reg_new_external_db(self, request : Request, externaldbservice : ExternalDBService, data: ExternalDB_pdnt) -> ExternalDB_pdnt:
         """Reg a new external db."""

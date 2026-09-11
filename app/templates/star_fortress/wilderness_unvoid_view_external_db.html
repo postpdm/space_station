@@ -1,0 +1,30 @@
+{% extends 'star_fortress/base.html' %}
+{% block title %}
+    Star fortress - Space station admin portal
+{% endblock %}
+{% block body %}
+
+<h1>Wilderness unvoid - view external db connection</h1>
+
+<table>
+<tbody>
+<tr>
+<td>UUID</td>
+<td>{{external_db.id}}</td>
+</tr>
+<tr>
+<td>Resource name</td>
+<td>{{external_db.resource_name}}</td>
+</tr>
+<tr>
+<td>Connection string</td>
+<td>{{external_db.connection_string}}</td>
+</tr>
+<tr>
+<td>Expires at</td>
+<td>{{external_db.expires_at}}</td>
+</tr>
+</tbody>
+</table>
+
+{% endblock %}

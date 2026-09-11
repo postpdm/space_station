@@ -49,12 +49,10 @@
   <tbody>
   {% for edb in external_db %}
     <tr>
-      <td>{{edb.resource_name}}</td>
+      <td><a href="/star_fortress/wilderness_unvoid/view_external_db/{{edb.id}}">{{edb.resource_name}}</a></td>
 	  <td>
       <img src="{{url_for_static_asset('static', file_path='cosmos/yautja_symbols.svg') }}" alt="secret" width="100%" style="max-width: 150px;">
       </td>
-
-
 	  <td>{{edb.expires_at}}</td>
     </tr>
   {% endfor %}
