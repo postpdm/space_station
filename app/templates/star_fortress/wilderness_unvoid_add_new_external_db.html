@@ -4,7 +4,13 @@
 {% endblock %}
 {% block body %}
 
-<h1>Wilderness unvoid - add new external db</h1>
+<h1>Wilderness unvoid - 
+{% if external_db %}
+edit
+{% else %}
+add new 
+{% endif %}
+external db</h1>
 
 <form id="external_db_Form">
 	<div class="cyber-form-group">
@@ -23,8 +29,13 @@
         <input type="datetime-local" class="cyber-input" id="expires_at" required>
     </div>
 
-
-    <button type="submit">Send</button>
+    <button type="submit">
+{% if external_db %}
+Update
+{% else %}
+Create 
+{% endif %}
+	</button>
 </form>
 
 <div id="status"></div>
