@@ -74,7 +74,13 @@ Create
 
         try {
             // POST API
-            const response = await fetch('/star_fortress/wilderness_unvoid/inner_circle/reg_new_external_db', {
+			{% if external_db %}
+				post_url = '/star_fortress/wilderness_unvoid/inner_circle/update_external_db/{{external_db.id}}';
+			{% else %}
+				post_url = '/star_fortress/wilderness_unvoid/inner_circle/reg_new_external_db';
+			{% endif %}
+
+            const response = await fetch( post_url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
