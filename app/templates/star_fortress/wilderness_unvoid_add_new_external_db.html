@@ -4,25 +4,26 @@
 {% endblock %}
 {% block body %}
 
-<h1>Wilderness unvoid - 
+<h1>Wilderness unvoid -
 {% if external_db %}
 edit
 {% else %}
-add new 
+add new
 {% endif %}
 external db</h1>
 
 <form id="external_db_Form">
 	<div class="cyber-form-group">
         <label for="resource_name">Resource name:</label>
-        <input type="text" class="cyber-input" id="resource_name" required placeholder="Enter the resource name">
+        <input type="text" class="cyber-input" id="resource_name" required placeholder="Enter the resource name"
+{% if external_db %} value='{{external_db.resource_name}}'{% endif %} >
     </div>
-	
+
     <div class="cyber-form-group">
         <label for="connection_string">Connection_string:</label>
-        <textarea id="connection_string" required placeholder="Enter the connection string" rows="5" cols="55" class="cyber-input"></textarea>
+        <textarea id="connection_string" required placeholder="Enter the connection string" rows="5" cols="55" class="cyber-input">{% if external_db %}{{external_db.connection_string}}{% endif %}</textarea>
     </div>
-    
+
 	<div class="cyber-form-group">
         <label for="expires_at">Expire date time:</label>
         <!-- current time -->
@@ -33,7 +34,7 @@ external db</h1>
 {% if external_db %}
 Update
 {% else %}
-Create 
+Create
 {% endif %}
 	</button>
 </form>
@@ -41,8 +42,13 @@ Create
 <div id="status"></div>
 
 <script>
-    // Current date time
-    document.getElementById('expires_at').value = new Date().toISOString().slice(0, 16);
+	{% if external_db %}
+		const dt = new Date( '{{external_db.expires_at}}' );
+	{% else %}
+		// Current date time
+		dt = new Date();
+	{% endif %}
+    document.getElementById('expires_at').value = dt.toISOString().slice(0, 16);
 
     document.getElementById('external_db_Form').addEventListener('submit', async function(e) {
         e.preventDefault(); // cancel
