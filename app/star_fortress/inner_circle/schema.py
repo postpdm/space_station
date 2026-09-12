@@ -2,13 +2,13 @@ from datetime import datetime
 from uuid import UUID
 from typing import Optional
 
-from pydantic import BaseModel, SecretStr
+from pydantic import BaseModel
 
-# Page tree object
+# External db connection object
 class ExternalDB_pdnt(BaseModel):
     id: Optional[UUID] = None
     resource_name: str
-    connection_string : SecretStr
+    connection_string : str
     expires_at : datetime
     
 #
