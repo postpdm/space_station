@@ -11,6 +11,8 @@ class ExternalDB(UUIDAuditBase):
 
     resource_name: Mapped[str] = mapped_column(unique=True)  # "analytics_postgres" or "ducklake"
     
+    description: Mapped[str]
+    
     # Advanced-Alchemy encrypted
     connection_string: Mapped[str] = mapped_column(EncryptedString( key = lambda: db_encryption_key.get().get_secret_value() ) )
     

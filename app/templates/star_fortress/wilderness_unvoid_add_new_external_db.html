@@ -20,6 +20,11 @@ external db</h1>
     </div>
 
     <div class="cyber-form-group">
+        <label for="description">Description:</label>
+        <textarea id="description" required placeholder="Enter the description" rows="5" cols="55" class="cyber-input">{% if external_db %}{{external_db.description}}{% endif %}</textarea>
+    </div>
+
+    <div class="cyber-form-group">
         <label for="connection_string">Connection_string (DATABASE_URL, something like <i>"postgresql+asyncpg://user:password@localhost:5432/dbname"</i> or <i>sqlite+aiosqlite:///:memory:</i>:</label>
         <textarea id="connection_string" required placeholder="Enter the connection string" rows="5" cols="55" class="cyber-input">{% if external_db %}{{external_db.connection_string}}{% endif %}</textarea>
     </div>
@@ -59,6 +64,7 @@ Create
 
         // Get elements
         const resource_name = document.getElementById('resource_name').value;
+        const description = document.getElementById('description').value;
         const connection_string = document.getElementById('connection_string').value;
         const localDate = document.getElementById('expires_at').value;
 
@@ -68,6 +74,7 @@ Create
         // payload
         const payload = {
             resource_name: resource_name,
+            description: description,
 			connection_string : connection_string,
             expires_at: expires_at
         };

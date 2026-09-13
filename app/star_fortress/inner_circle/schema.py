@@ -8,6 +8,7 @@ from pydantic import BaseModel
 class ExternalDB_pdnt(BaseModel):
     id: Optional[UUID] = None
     resource_name: str
+    description: str
     connection_string : str
     expires_at : datetime
 
