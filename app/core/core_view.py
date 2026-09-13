@@ -41,8 +41,8 @@ class UserController(Controller):
         filters={"pagination_type": "limit_offset", "id_filter": UUID, "search": "user_name", "search_ignore_case": True},
     )
 
-    async def set_session( self, request: Request, user_id : UUID, user_login : str, user_name : str ) -> None:
-        request.set_session( { "user_id" : user_id, "user_login": user_login, "user_name": user_name })
+    async def set_session( self, request: Request, user_id : UUID, user_login : str, user_name : str, arch_tech_priest : bool ) -> None:
+        request.set_session( { "user_id" : user_id, "user_login": user_login, "user_name": user_name, "arch_tech_priest" : arch_tech_priest })
 
     @get("/login", exclude_from_auth=True) # exclude from auth require, elsewhere middleware redirect as infinitely
     async def login_page( self, app_settings: AppSettings, user_service: UserService, request: Request, return_path: FromQuery[str | None] = None ) -> Template:
@@ -79,7 +79,7 @@ class UserController(Controller):
                     # check or create
                     user, res = await user_service.get_or_create_user( user_login, user_name )
                     if user:
-                        await self.set_session( user.id, user_login, user_name )
+                        await self.set_session( user.id, user_login, user_name, user.is_arch_tech_priest )
                     
                     redirect_target = return_path
                     
@@ -115,7 +115,7 @@ class UserController(Controller):
         user, res = await user_service.get_or_create_user( data.user_login, data.user_name )
 
         if user:
-            await self.set_session( request, user.id, user.user_login, user.user_name  )
+            await self.set_session( request, user.id, user.user_login, user.user_name, user.is_arch_tech_priest )
         redirect_target = return_path
 
         # check for evil Redirect attack

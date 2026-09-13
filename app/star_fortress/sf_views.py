@@ -14,12 +14,15 @@ from .inner_circle import models
 from .inner_circle.schema import ExternalDB_pdnt, ExternalDB_Check_pdnt
 from .inner_circle.service import ExternalDBService
 
+from .guards import admin_guard
+
 STAR_FORTRESS_TEMPLATES_DIR = "star_fortress/"
 
 from app.core.core_ext_db_service import check_ext_db_connection
 
 class Star_Fortress_Controller(Controller):
     path = "/star_fortress"
+    guards = [admin_guard]
 
     # this mega structure just import dependencies
     dependencies = {
