@@ -1,0 +1,85 @@
+{# ============================ #}
+{# 1. Macros for the 6 symbols  #}
+{# ============================ #}
+{% macro symbol_0() %}
+    <path d="M 15 10 L 45 40 L 15 70" />
+    <path d="M 45 10 L 45 90" stroke-width="5" />
+    <circle cx="75" cy="25" r="6" fill="#00FF00" stroke="none" />
+    <circle cx="75" cy="65" r="6" fill="#00FF00" stroke="none" />
+{% endmacro %}
+
+{% macro symbol_1() %}
+    <path d="M 10 50 L 35 10 L 60 30" />
+    <path d="M 20 90 L 55 90 L 65 50" stroke-width="5" />
+    <circle cx="35" cy="50" r="6" fill="#00FF00" stroke="none" />
+{% endmacro %}
+
+{% macro symbol_2() %}
+    <path d="M 15 10 L 30 35 M 45 60 L 60 85" />
+    <path d="M 60 10 L 45 35 M 30 60 L 15 85" />
+    <path d="M 37 15 L 37 45" stroke-width="7" />
+    <circle cx="37" cy="65" r="7" fill="#00FF00" stroke="none" />
+{% endmacro %}
+
+{% macro symbol_3() %}
+    <path d="M 10 25 L 25 85 L 40 45 L 55 85 L 70 25" />
+    <circle cx="40" cy="15" r="6" fill="#00FF00" stroke="none" />
+{% endmacro %}
+
+{% macro symbol_4() %}
+    <path d="M 20 10 L 20 90 M 50 10 L 50 90" />
+    <path d="M 10 40 L 60 40" stroke-width="4" />
+    <circle cx="20" cy="110" r="6" fill="#00FF00" stroke="none" />
+    <circle cx="50" cy="110" r="6" fill="#00FF00" stroke="none" />
+{% endmacro %}
+
+{% macro symbol_5() %}
+    <path d="M 50 10 L 15 35 L 50 60 L 15 85" stroke-width="7" />
+    <circle cx="60" cy="48" r="6" fill="#00FF00" stroke="none" />
+{% endmacro %}
+
+{# Dispatcher: call the right symbol by its index #}
+{% macro render_symbol(i) %}
+    {%- if   i == 0 -%}{{ symbol_0() }}
+    {%- elif i == 1 -%}{{ symbol_1() }}
+    {%- elif i == 2 -%}{{ symbol_2() }}
+    {%- elif i == 3 -%}{{ symbol_3() }}
+    {%- elif i == 4 -%}{{ symbol_4() }}
+    {%- elif i == 5 -%}{{ symbol_5() }}
+    {%- endif -%}
+{% endmacro %}
+
+{# ==================================================== #}
+{# 2. Manual shuffle using the `random` filter          #}
+{#    (pick a random index, remove it, repeat)          #}
+{# ==================================================== #}
+{% set pool  = [0, 1, 2, 3, 4, 5] %}
+{% set order = [] %}
+
+{% for _ in range(6) %}
+    {% set pick = pool | random %}
+    {% set _ = order.append(pick) %}
+    {% set pool = pool | reject('equalto', pick) | list %}
+{% endfor %}
+
+{# ==================================================== #}
+{# 3. Fixed slot positions in the SVG canvas            #}
+{# ==================================================== #}
+{% set slots = [[50,60], [200,60], [350,60], [500,60], [650,60], [800,60]] %}
+
+{# ==================================================== #}
+{# 4. The SVG itself                                    #}
+{# ==================================================== #}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 250" width="100%" height="100%">
+    <g stroke="#00FF00" stroke-width="6" stroke-linecap="square"
+       stroke-linejoin="miter" fill="none">
+
+        {% for i in order %}
+            {% set slot = slots[loop.index0] %}
+            <g transform="translate({{ slot[0] }}, {{ slot[1] }})">
+                {{ render_symbol(i) }}
+            </g>
+        {% endfor %}
+
+    </g>
+</svg>

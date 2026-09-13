@@ -132,6 +132,13 @@ class Star_Fortress_Controller(Controller):
             return Response( content={"status": "success"}, status_code=HTTP_200_OK )
         else:
             return Response( content={"status": "error", "details": message }, status_code=HTTP_422_UNPROCESSABLE_ENTITY )
+
+    @get('/yautja_symbols.svg')
+    async def yautja_symbols(self ) -> Template:
+        return Template(
+            template_name = STAR_FORTRESS_TEMPLATES_DIR + "yautja_symbols.svg",
+            media_type="image/svg+xml",            
+            )
         
     @get('/profile')
     async def sf_profile(self, request: Request, ) -> Template:

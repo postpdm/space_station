@@ -53,7 +53,7 @@
       <td><a href="/star_fortress/wilderness_unvoid/view_external_db/{{edb.id}}">{{edb.resource_name}}</a></td>
 	  <td>{{edb.description}}</td>
 	  <td>
-      <img src="{{url_for_static_asset('static', file_path='cosmos/yautja_symbols.svg') }}" alt="secret" width="100%" style="max-width: {{ range(145, 201) | random }}px;">
+      <img src="/star_fortress/yautja_symbols.svg?v={{edb.resource_name}}" alt="secret" width="100%" style="max-width: {{ range(145, 201) | random }}px;">
       </td>
 	  <td>{{edb.expires_at}}</td>
     </tr>
