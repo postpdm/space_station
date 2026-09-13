@@ -52,3 +52,12 @@ Solution (plugin) should have unique UUID, fixed in	`__init__.py`. Do not change
 Solution developers of static sites with access to core API or another solutions API should manage the API KEY. 
 
 Full stack plugins may publish it's own API with API KEY only.
+
+# External databases
+
+In Wilderness unvoid section you can register the external databases and check the connection from server. Registration is simple with following arguments:
+
+resource_name
+description
+connection_string
+expires_at
