@@ -1,4 +1,3 @@
-from typing import Optional
 from advanced_alchemy.extensions.litestar import (
     repository,
     service,

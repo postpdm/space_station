@@ -1,7 +1,8 @@
 from uuid import UUID
 
 from litestar import Controller, Request, get, post
-from litestar.response import Template
+from litestar.response import Template, Response
+from litestar.status_codes import HTTP_200_OK, HTTP_422_UNPROCESSABLE_ENTITY
 
 from advanced_alchemy.extensions.litestar import (
     filters,
@@ -10,10 +11,12 @@ from advanced_alchemy.extensions.litestar import (
 )
 
 from .inner_circle import models
-from .inner_circle.schema import ExternalDB_pdnt
+from .inner_circle.schema import ExternalDB_pdnt, ExternalDB_Check_pdnt
 from .inner_circle.service import ExternalDBService
 
 STAR_FORTRESS_TEMPLATES_DIR = "star_fortress/"
+
+from app.core.core_ext_db_service import check_ext_db_connection
 
 class Star_Fortress_Controller(Controller):
     path = "/star_fortress"
@@ -112,6 +115,21 @@ class Star_Fortress_Controller(Controller):
         obj = await externaldbservice.update(data, item_id=external_db_id, auto_commit=True)
         return externaldbservice.to_schema(obj, schema_type=ExternalDB_pdnt)
 
+    @post('/wilderness_unvoid/inner_circle/check_external_db/{external_db_id:uuid}')
+    async def check_external_db(
+        self,
+        external_db_id:UUID,
+        externaldbservice : ExternalDBService,
+        data: ExternalDB_Check_pdnt,
+    ) -> Response:
+        """Check external db."""
+        obj = await externaldbservice.get( item_id=external_db_id )
+        success, message = await check_ext_db_connection( obj.connection_string )
+        if success:
+            return Response( content={"status": "success"}, status_code=HTTP_200_OK )
+        else:
+            return Response( content={"status": "error", "details": message }, status_code=HTTP_422_UNPROCESSABLE_ENTITY )
+        
     @get('/profile')
     async def sf_profile(self, request: Request, ) -> Template:
 

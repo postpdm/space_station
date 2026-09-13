@@ -20,7 +20,7 @@ external db</h1>
     </div>
 
     <div class="cyber-form-group">
-        <label for="connection_string">Connection_string:</label>
+        <label for="connection_string">Connection_string (DATABASE_URL, something like <i>"postgresql+asyncpg://user:password@localhost:5432/dbname"</i> or <i>sqlite+aiosqlite:///:memory:</i>:</label>
         <textarea id="connection_string" required placeholder="Enter the connection string" rows="5" cols="55" class="cyber-input">{% if external_db %}{{external_db.connection_string}}{% endif %}</textarea>
     </div>
 
