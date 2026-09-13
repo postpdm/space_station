@@ -57,7 +57,9 @@ Full stack plugins may publish it's own API with API KEY only.
 
 In Wilderness unvoid section you can register the external databases and check the connection from server. Registration is simple with following arguments:
 
-resource_name
-description
-connection_string
-expires_at
+| Argument | Mean |
+| :---     | :---: |
+| resource name | |
+| description | |
+| connection string | |
+| expires at | |
