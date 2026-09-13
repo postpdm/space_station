@@ -30,7 +30,7 @@ async def test_externalcredential_model(db_session: AsyncSession):
     # Arrange
     expected_res_name = "my_secret_db"
     expected_url = "ftp://some_where.galaxy"
-    new_ec = ExternalDB( resource_name = expected_res_name, connection_string = expected_url, expires_at = datetime.now( timezone.utc ) )
+    new_ec = ExternalDB( resource_name = expected_res_name, description='test', connection_string = expected_url, expires_at = datetime.now( timezone.utc ) )
     db_session.add(new_ec)
     await db_session.flush()  # Push to DB within the active transaction
 
@@ -49,7 +49,7 @@ async def test_externalcredential_model_try_nonunique(db_session: AsyncSession):
     # Arrange
     expected_res_name = "my_secret_db"
     expected_url = "ftp://some_where.galaxy"
-    new_ec = ExternalDB( resource_name = expected_res_name, connection_string = expected_url, expires_at = datetime.now( timezone.utc ) )
+    new_ec = ExternalDB( resource_name = expected_res_name, description='test', connection_string = expected_url, expires_at = datetime.now( timezone.utc ) )
     db_session.add(new_ec)
     await db_session.flush()  # Push to DB within the active transaction
 
