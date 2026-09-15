@@ -19,7 +19,7 @@ from advanced_alchemy.extensions.litestar import (
 
 from .core_service import UserService, UserFav_Service, NewsService
 from .core_models import User, UserFav, GNN_Article_Model
-from .core_schema import News_pdnt, NewsCreate_pdnt, NewsUpdate_pdnt, User_pdnt, UserCreate_pdnt, UserUpdate_pdnt, UserFav_pdnt, UserFavCreate_pdnt
+from .core_schema import News_pdnt, NewsCreate_pdnt, NewsUpdate_pdnt, User_augment_pdnt, User_pdnt, UserCreate_pdnt, UserUpdate_pdnt, UserFav_pdnt, UserFavCreate_pdnt
 
 from ..config import AppSettings
 
@@ -128,10 +128,10 @@ class UserController(Controller):
         self,
         user_service: UserService,
         filters: Annotated[list[filters.FilterTypes], Dependency(skip_validation=True)],
-    ) -> service.OffsetPagination[User_pdnt]:
+    ) -> service.OffsetPagination[User_augment_pdnt]:
         """List users."""
         results, total = await user_service.get_many_and_count(*filters)
-        return user_service.to_schema(results, total, filters=filters, schema_type=User_pdnt)
+        return user_service.to_schema(results, total, filters=filters, schema_type=User_augment_pdnt)
 
 # User fav
 class UserFavController(Controller):
