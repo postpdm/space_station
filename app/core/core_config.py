@@ -33,6 +33,7 @@ session_config_b = ServerSideSessionConfig(
     max_age=60*60*24,  
 )
 
+# The one shared registry used by plugins.
 sql_registry = SQLConnectionRegistry()
 
 def build_sqlalchemy_fab(
