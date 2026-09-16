@@ -30,4 +30,4 @@ async def test_loader():
     assert test_config.plugin_packages == ['ABRACADABRA_package']
 
     # 5 standart plugins are exist
-    assert len( get_all_ss_plugins( test_config ) ) == 5
+    assert len( get_all_ss_plugins( test_config, None ) ) == 6

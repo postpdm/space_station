@@ -16,4 +16,7 @@ class Dummy_One_Page_Static_Plugin(BasePlugin):
 
     fstatic_req = [ 'cosmos/cosmic_racoon_slide_rule.jpeg', 'math/mathlive/0.110.0/mathlive.js', 'math/mathlive/0.110.0/esm.js' ]
 
+    def health(self) -> bool :
+        return True
+        
 #

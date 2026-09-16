@@ -13,5 +13,8 @@ class Mini_Game_Plugin(BasePlugin):
     fuser_title = 'Tic-tac-toe'
     fuser_description = 'Tic-tac-toe mini game'
     fplugin_id = UUID( 'a52e8c19-7f34-4b12-9c88-54e1a0b3f892' )
+    
+    def health(self) -> bool :
+        return True
 
 #

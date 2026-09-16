@@ -16,4 +16,8 @@ class Demo_GIS_Plugin(BasePlugin):
     fplugin_id = UUID( '7c1b3f54-2e91-4a43-8f5b-12d8a9f03cde' )
 
     fstatic_req = [ 'ol/ol.css', 'ol/ol.js' ]
+
+    def health(self) -> bool :
+        return True
+
 #
