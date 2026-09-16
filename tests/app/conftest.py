@@ -86,6 +86,9 @@ class NoSqlPlugin(BasePlugin):
     fuser_title = "NoSQL"
     fuser_description = "Plugin without SQL"
 
+    def health(self) -> bool :
+        return True
+
 
 class SqlPlugin(BasePlugin):
     """Plugin declaring a single known connection."""
@@ -93,6 +96,9 @@ class SqlPlugin(BasePlugin):
     fuser_title = "SQL"
     fuser_description = "Plugin with one SQL connection"
     fsql_connections = ["report_database"]
+
+    def health(self) -> bool :
+        return True
 
 
 class GhostSqlPlugin(BasePlugin):
@@ -102,6 +108,8 @@ class GhostSqlPlugin(BasePlugin):
     fuser_description = "Plugin asking for a non-existent connection"
     fsql_connections = ["ghost_db"]
 
+    def health(self) -> bool :
+        return True
 
 class MultiSqlPlugin(BasePlugin):
     """Plugin declaring two connections, used in multi-name tests."""
@@ -110,6 +118,8 @@ class MultiSqlPlugin(BasePlugin):
     fuser_description = "Plugin with two SQL connections"
     fsql_connections = ["report_database", "audit_db"]
 
+    def health(self) -> bool :
+        return True
 
 # ----------------------------------------------------------------------
 # Dynamic plugin class factory - for tests that need a unique UUID
@@ -121,22 +131,21 @@ def make_plugin_class():
         name: str,
         plugin_id: UUID | None = None,
         sql: list[str] | None = None,
+        *,
+        abstract: bool = False,
     ) -> type[BasePlugin]:
         ns: dict = {
-            "fplugin_id": plugin_id or UUID(int=0).__class__(  # fresh uuid4
-                # use uuid4() from stdlib
-                __import__("uuid").uuid4().int,
-                version=4,
-            ),
+            "fplugin_id": plugin_id or uuid.uuid4(),
             "fuser_title": name,
             "fuser_description": f"{name} description",
         }
         if sql is not None:
             ns["fsql_connections"] = sql
+        if not abstract:
+            ns["health"] = lambda self: True
         return type(name, (BasePlugin,), ns)
 
     return _make
-
 
 # ----------------------------------------------------------------------
 # Fake engine / sessionmaker / bundle
