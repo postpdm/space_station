@@ -5,6 +5,7 @@ from litestar.plugins.sqlalchemy import SQLAlchemyAsyncConfig, SQLAlchemyPlugin
 from advanced_alchemy.extensions.litestar import AsyncSessionConfig
 #from advanced_alchemy.extensions.litestar.session import SQLAlchemyAsyncSessionBackend
 from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy import select
 
 from litestar.middleware.session.server_side import ServerSideSessionConfig
 
@@ -36,34 +37,66 @@ session_config_b = ServerSideSessionConfig(
 # The one shared registry used by plugins.
 sql_registry = SQLConnectionRegistry()
 
-def build_sqlalchemy_fab(
+async def build_sqlalchemy_fab(
     *,
-    report_database_url: str | None = None,
-    audit_database_url: str | None = None,
-    # ... whatever your real factory takes ...
+    registry: SQLConnectionRegistry | None = None,
+    fail_fast: bool = True,
 ) -> SQLConnectionRegistry:
     """
-    Build SQLAlchemy engines/sessionmakers for the whole application and
-    register them in the shared registry under logical names that plugins
-    use in their `fsql_connections` declarations.
+    Read every row from `external_db` and register a lazy AsyncEngine
+    under `resource_name`.
+
+    Contract:
+      - The PRIMARY database is touched exactly once: one short-lived
+        session, one SELECT. No writes, no extra transactions.
+      - External databases are NOT contacted here. create_async_engine()
+        only builds the engine object and its pool; the first TCP
+        connection happens later, on the first session.execute().
     """
+    reg = registry or sql_registry
 
-    report_database_url = "sqlite+aiosqlite:///:memory:"
+    # One short-lived session against the PRIMARY database.
+    async with alchemy_config.get_session() as session:
+        result = await session.execute(select(ExternalDB))
+        rows = result.scalars().all()
 
-    # Register the report database, if configured.
-    if report_database_url:
-        report_engine = create_async_engine(report_database_url)
-        sql_registry.register_engine("report_database", report_engine)
+    for row in rows:
+        # EncryptedString decrypts transparently on attribute access.
+        try:
+            dsn = row.connection_string            
+        except Exception as exc:
+            if fail_fast:
+                raise
+            print(
+                f"[sql_registry] cannot decrypt DSN for "
+                f"'{row.resource_name}': {exc}"
+            )
+            continue
 
-    # Register the audit database, if configured.
-    if audit_database_url:
-        audit_engine = create_async_engine(audit_database_url)
-        sql_registry.register_engine("audit_db", audit_engine)
+        if not dsn:
+            if fail_fast:
+                raise RuntimeError(
+                    f"Empty connection_string for '{row.resource_name}'"
+                )
+            print(
+                f"[sql_registry] empty connection_string for "
+                f"'{row.resource_name}', skipping"
+            )
+            continue
 
-    # ... register any other named connections your factory knows about ...
+        try:
+            engine = create_async_engine(dsn)          # lazy, no TCP
+            reg.register_engine(row.resource_name, engine)
+        except Exception as exc:
+            if fail_fast:
+                raise
+            print(
+                f"[sql_registry] cannot create engine for "
+                f"'{row.resource_name}': {exc}"
+            )
 
-    return sql_registry
-
+    print(f"[sql_registry] registered: {reg.all_names()}")
+    return reg
 
 # session store
 

@@ -36,15 +36,33 @@ else:
 #    allowed_hosts=settings.allowed_hosts,
 #    exclude=["/health"] # Allow load balancer checks
 #)
-build_sqlalchemy_fab()
 
-plugins_list = get_all_ss_plugins( settings, sql_registry )
+# Discover plugins. The registry is intentionally empty here:
+#    plugin bundles will be resolved in on_startup, after reading
+#    the primary database.
+plugins_list = get_all_ss_plugins( settings, None )
+
+# Build lazy SQL DI providers from fsql_connections (names only).
+# Safe to call before the registry is populated.
+plugin_sql_deps = build_global_sql_dependencies(plugins_list)
+
+
+# on_startup: read external_db, build lazy engines, hand bundles out.
+# No external DB is contacted here.
+async def init_plugin_sql_connections() -> None:
+    await build_sqlalchemy_fab(registry=sql_registry, fail_fast=True)
+
+    for plugin in plugins_list:
+        if hasattr(plugin, "fsql_connections"):
+            plugin.fsql_provided = sql_registry.resolve(
+                list(plugin.fsql_connections)
+            )
+
+    validate_plugin_connections(plugins_list, sql_registry)
+
 
 #print("Registered SQL names:", sql_registry.all_names())
 
-validate_plugin_connections(plugins_list, sql_registry)
-
-plugin_sql_deps = build_global_sql_dependencies(plugins_list)
 
 app = Litestar( debug=settings.litestar_debug, # Hard disable debug mode in prod!
                 # allowed_hosts=host_config,
@@ -64,6 +82,7 @@ app = Litestar( debug=settings.litestar_debug, # Hard disable debug mode in prod
                 template_config=template_config,
                 static_files_config=[static_config],
                 plugins=[db_plugin] + plugins_list,
+                on_startup=[init_plugin_sql_connections],
                 on_shutdown=[sql_registry.dispose_all],
     )
 
