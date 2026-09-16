@@ -50,15 +50,14 @@ plugin_sql_deps = build_global_sql_dependencies(plugins_list)
 # on_startup: read external_db, build lazy engines, hand bundles out.
 # No external DB is contacted here.
 async def init_plugin_sql_connections() -> None:
-    await build_sqlalchemy_fab(registry=sql_registry, fail_fast=True)
+    await build_sqlalchemy_fab(registry=sql_registry)
 
     for plugin in plugins_list:
         if hasattr(plugin, "fsql_connections"):
             plugin.fsql_provided = sql_registry.resolve(
                 list(plugin.fsql_connections)
             )
-
-    validate_plugin_connections(plugins_list, sql_registry)
+            plugin.check_sql_connections()
 
 app = Litestar( debug=settings.litestar_debug, # Hard disable debug mode in prod!
                 # allowed_hosts=host_config,

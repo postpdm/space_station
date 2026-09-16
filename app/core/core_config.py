@@ -6,6 +6,8 @@ from advanced_alchemy.extensions.litestar import AsyncSessionConfig
 #from advanced_alchemy.extensions.litestar.session import SQLAlchemyAsyncSessionBackend
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy import select
+from sqlalchemy.engine import make_url
+from sqlalchemy.exc import ArgumentError
 
 from litestar.middleware.session.server_side import ServerSideSessionConfig
 
@@ -13,6 +15,8 @@ from litestar.stores.file import FileStore
 
 """Core configuration: DB plugin, sessions, and SQL connection registry."""
 from litestar.plugins.sqlalchemy import SQLAlchemyPlugin, SQLAlchemySyncConfig
+
+from rich import print as rich_p
 
 from space_station_stc.hull.plugin_abc.sql_registry import SQLConnectionRegistry
 from app.star_fortress.inner_circle.models import ExternalDB   # external databases list
@@ -31,7 +35,7 @@ db_plugin = SQLAlchemyPlugin(config=alchemy_config )
 
 # Session configuration
 session_config_b = ServerSideSessionConfig(
-    max_age=60*60*24,  
+    max_age=60*60*24,
 )
 
 # The one shared registry used by plugins.
@@ -40,62 +44,81 @@ sql_registry = SQLConnectionRegistry()
 async def build_sqlalchemy_fab(
     *,
     registry: SQLConnectionRegistry | None = None,
-    fail_fast: bool = True,
 ) -> SQLConnectionRegistry:
     """
-    Read every row from `external_db` and register a lazy AsyncEngine
-    under `resource_name`.
-
-    Contract:
-      - The PRIMARY database is touched exactly once: one short-lived
-        session, one SELECT. No writes, no extra transactions.
-      - External databases are NOT contacted here. create_async_engine()
-        only builds the engine object and its pool; the first TCP
-        connection happens later, on the first session.execute().
+    Read external_db and register a lazy AsyncEngine per resource_name.
+    Broken rows are logged to the console (in red) and skipped; the
+    function never raises, so the application can still start and let
+    the admin fix the data via the UI.
     """
     reg = registry or sql_registry
 
     # One short-lived session against the PRIMARY database.
-    async with alchemy_config.get_session() as session:
-        result = await session.execute(select(ExternalDB))
-        rows = result.scalars().all()
+    try:
+        async with alchemy_config.get_session() as session:
+            result = await session.execute(select(ExternalDB))
+            rows = result.scalars().all()
+    except Exception as exc:
+        rich_p(
+            f"[red][sql_registry] FATAL: cannot read external_db "
+            f"from primary DB: {type(exc).__name__}: {exc}[/red]"
+        )
+        return reg
 
     for row in rows:
-        # EncryptedString decrypts transparently on attribute access.
+        name = row.resource_name
+
+        # Decrypt DSN.
         try:
-            dsn = row.connection_string            
+            dsn = row.connection_string
         except Exception as exc:
-            if fail_fast:
-                raise
-            print(
-                f"[sql_registry] cannot decrypt DSN for "
-                f"'{row.resource_name}': {exc}"
+            rich_p(
+                f"[red][sql_registry] '{name}': cannot decrypt DSN: "
+                f"{type(exc).__name__}: {exc}[/red]"
             )
             continue
 
-        if not dsn:
-            if fail_fast:
-                raise RuntimeError(
-                    f"Empty connection_string for '{row.resource_name}'"
-                )
-            print(
-                f"[sql_registry] empty connection_string for "
-                f"'{row.resource_name}', skipping"
+        # Reject empty values.
+        if not dsn or not dsn.strip():
+            rich_p(f"[red][sql_registry] '{name}': empty connection_string[/red]")
+            continue
+
+        # Validate URL syntax (pure parser, no side effects).
+        try:
+            make_url(dsn)
+        except ArgumentError as exc:
+            rich_p(
+                f"[red][sql_registry] '{name}': invalid URL syntax "
+                f"({dsn!r}): {exc}[/red]"
             )
             continue
 
+        # Build the engine. Still lazy: no TCP connection here.
         try:
-            engine = create_async_engine(dsn)          # lazy, no TCP
-            reg.register_engine(row.resource_name, engine)
-        except Exception as exc:
-            if fail_fast:
-                raise
-            print(
-                f"[sql_registry] cannot create engine for "
-                f"'{row.resource_name}': {exc}"
+            engine = create_async_engine(dsn)
+        except (ArgumentError, ModuleNotFoundError, ImportError) as exc:
+            rich_p(
+                f"[red][sql_registry] '{name}': cannot create engine: "
+                f"{type(exc).__name__}: {exc}[/red]"
+            )
+            continue
+
+        if reg.has(name):
+            rich_p(
+                f"[yellow][sql_registry] '{name}': duplicate "
+                f"resource_name, overwriting[/yellow]"
             )
 
-    print(f"[sql_registry] registered: {reg.all_names()}")
+        reg.register_engine(name, engine)
+
+    if reg.all_names():
+        rich_p(
+            f"[sql_registry] registered connections: "
+            f"{reg.all_names()}"
+        )
+    else:
+        rich_p("[red][sql_registry] no external connections registered[/red]")
+
     return reg
 
 # session store
