@@ -4,6 +4,7 @@ from litestar.plugins.sqlalchemy import SQLAlchemyAsyncConfig, SQLAlchemyPlugin
 
 from advanced_alchemy.extensions.litestar import AsyncSessionConfig
 #from advanced_alchemy.extensions.litestar.session import SQLAlchemyAsyncSessionBackend
+from sqlalchemy.ext.asyncio import create_async_engine
 
 from litestar.middleware.session.server_side import ServerSideSessionConfig
 
@@ -13,15 +14,23 @@ from litestar.stores.file import FileStore
 from litestar.plugins.sqlalchemy import SQLAlchemyPlugin, SQLAlchemySyncConfig
 
 from space_station_stc.hull.plugin_abc.sql_registry import SQLConnectionRegistry
+from app.star_fortress.inner_circle.models import ExternalDB   # external databases list
 
 #from .core_models import WebSession
 
-# database
+# Primary application DB config
 alchemy_config = SQLAlchemyAsyncConfig(
     connection_string="sqlite+aiosqlite:///space_station.sqlite",
     before_send_handler="autocommit",
     session_config=AsyncSessionConfig(expire_on_commit=False),
     create_all=True,
+)
+
+db_plugin = SQLAlchemyPlugin(config=alchemy_config )
+
+# Session configuration
+session_config_b = ServerSideSessionConfig(
+    max_age=60*60*24,  
 )
 
 sql_registry = SQLConnectionRegistry()
@@ -37,9 +46,8 @@ def build_sqlalchemy_fab(
     register them in the shared registry under logical names that plugins
     use in their `fsql_connections` declarations.
     """
-    from sqlalchemy.ext.asyncio import create_async_engine
 
-    report_database_url = "sqlite+aiosqlite:///rep.sqlite"
+    report_database_url = "sqlite+aiosqlite:///:memory:"
 
     # Register the report database, if configured.
     if report_database_url:
@@ -55,14 +63,9 @@ def build_sqlalchemy_fab(
 
     return sql_registry
 
-db_plugin = SQLAlchemyPlugin(config=alchemy_config )
 
 # session store
 
-# Session configuration
-session_config_b = ServerSideSessionConfig(
-    max_age=60*60*24,  
-)
 
 session_store_config = { "sessions" : FileStore(path=Path("session_data"), create_directories=True ) }
 

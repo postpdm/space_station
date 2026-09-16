@@ -24,42 +24,45 @@ REPORTS_TEMPLATES_DIR = "reports/"
 class Reports_Controller(BasePluginController):
     path = "/reports"
 
-    @get("/report")
-    async def get_report(
-        self,        
+    @get("/")
+    async def user_homepage(
+        self,
         sql_report_database_session: NamedDependency[async_sessionmaker],
-    ) -> dict:
+    ) -> Template:
         async with sql_report_database_session() as session:
             # get connection
-            #async with await session.connection() as conn:                
+            #async with await session.connection() as conn:
                 # create report table if not exists
             create_table_query = text("""
                     CREATE TABLE IF NOT EXISTS reports (
-                        id SERIAL PRIMARY KEY,
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
                         product_name VARCHAR(255) NOT NULL,
                         quantity INT NOT NULL,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     );
                 """)
-                
+
                 # create table
             await session.execute(create_table_query)
-                
+            insert_query = text("""                    
+                    INSERT INTO reports (product_name, quantity)
+                    VALUES
+                        ('Mouse', 10),
+                        ('Mice', 25),
+                        ('Dog', 40);
+                """)
+            await session.execute(insert_query)
+
                 # commit
-            await session.commit()            
-            
-            
+            await session.commit()
+
+
             query = text("SELECT * FROM reports")
             result = await session.execute(query)
-            data = result.scalars().all()
-        return { "data" : data }
-
-
-    @get("/")
-    async def user_homepage(self) -> Template:
+            data = result.all()
         return Template(
             template_name = REPORTS_TEMPLATES_DIR + "index.html",
-            context={  }
+            context={ "data" : data }
         )
 
     @get("/admin_panel")
