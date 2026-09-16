@@ -241,3 +241,22 @@ def make_external_row():
     def _make(name: str, dsn: str | None):
         return FakeExternalDBRow(name=name, dsn=dsn)
     return _make
+
+
+import re
+
+_ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
+
+
+@pytest.fixture
+def plain_out():
+    """
+    Return a helper that turns captured stdout into a plain string:
+    strips ANSI color codes and collapses all whitespace (including
+    line breaks inserted by rich's wrapping) into single spaces.
+
+    Use it in tests that assert on substrings of rich-formatted output.
+    """
+    def _plain(text: str) -> str:
+        return " ".join(_ANSI_RE.sub("", text).split())
+    return _plain
