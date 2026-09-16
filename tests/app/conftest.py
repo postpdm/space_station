@@ -147,6 +147,19 @@ def make_plugin_class():
 
     return _make
 
+# tests/app/conftest.py
+@pytest.fixture
+def make_plugin_instance():
+    """Instantiate a plugin class and pre-init f_init_error_log."""
+    def _make(cls):
+        instance = cls()
+        # BasePlugin.on_app_init / check_sql_connections expect this to exist.
+        # In production the loader relies on on_app_init being called first;
+        # in tests we set it explicitly.
+        instance.f_init_error_log = ""
+        return instance
+    return _make
+
 # ----------------------------------------------------------------------
 # Fake engine / sessionmaker / bundle
 # ----------------------------------------------------------------------
