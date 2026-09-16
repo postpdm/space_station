@@ -4,7 +4,7 @@ from litestar.config.app import AppConfig
 
 from .controller import CMS_Controller
 # take abstract
-from app.plugins.abc_plugin import BasePlugin
+from space_station_stc.hull.plugin_abc.abc_plugin import BasePlugin
 
 class CMS_Plugin(BasePlugin):
     # add routing
@@ -21,5 +21,8 @@ class CMS_Plugin(BasePlugin):
                     'charts/chartist/0.11.4/chartist.min.css',
                     'charts/chartist/0.11.4/chartist.min.js'
     ]
+
+    def health(self) -> bool :
+        return True
 
 #

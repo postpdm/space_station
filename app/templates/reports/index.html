@@ -1,0 +1,20 @@
+<h1>Reports</h1>
+
+<table border="1">
+<theader>
+<th>id</th>
+<th>product name</th>
+<th>quantity</th>
+<th>created at</th>
+</theader>
+<tbody>
+{% for d in data %}
+<tr>
+<td>{{d.id}}</td>
+<td>{{d.product_name}}</td>
+<td>{{d.quantity}}</td>
+<td>{{d.created_at}}</td>
+</tr>
+</tbody>
+{% endfor %}
+</table>

@@ -1,6 +1,6 @@
 from litestar.connection import ASGIConnection
 from litestar.middleware.base import DefineMiddleware
-from litestar import Request, get, post
+from litestar import Request, get
 from litestar.response import Redirect, Template
 
 from litestar.middleware import (

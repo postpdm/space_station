@@ -1,0 +1,62 @@
+{% extends 'orion_cms/base.html' %}
+
+{% block title %}CMS{% endblock %}
+
+{% block body %}
+      <section id="CMS">
+<h1>Enterprise CMS</h1>
+
+		<h2>Pages</h2>
+		{{tree_node_id}}
+	<ul id="page_list"></ul>
+    <p><button onclick="loadPages()">Read pages</button></p>
+    <p><a href="/cms/new_page/{{tree_node_id}}" role="button">New page</a></p>
+    <p><a href="/cms/edit_tree_node/{{tree_node_id}}" role="button">Edit tree node</a></p>
+
+      </section>
+
+    <script>
+
+	  async function loadPages() {
+
+fetch('/cms/get_one_node_pages_api/{{tree_node_id}}')
+  .then(response => response.json())
+  .then(data => {
+    // print
+	const listBody = document.getElementById('page_list');
+
+// delete list content
+listBody.innerHTML = '';
+
+// array
+data.items.forEach(item => {
+
+
+      const li = document.createElement('li');
+	  const link = document.createElement('a');
+	  link.href = `/cms/page/${item.id}`;
+
+      link.textContent = item.title;
+	  li.appendChild(link);
+      listBody.appendChild(li);
+
+
+  });
+
+
+
+
+  })
+  .catch(error => {
+    document.getElementById('news-list').textContent = 'Fail!';
+  });
+
+			};
+
+window.onload = loadPages;
+
+</script>
+
+
+
+{% endblock %}

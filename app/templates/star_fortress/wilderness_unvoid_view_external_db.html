@@ -1,0 +1,85 @@
+{% extends 'star_fortress/base.html' %}
+{% block title %}
+    Star fortress - Space station admin portal
+{% endblock %}
+{% block body %}
+
+<h1>Wilderness unvoid - view external db connection</h1>
+
+<table>
+<tbody>
+<tr>
+<td>UUID</td>
+<td>{{external_db.id}}</td>
+</tr>
+<tr>
+<td>Resource name</td>
+<td>{{external_db.resource_name}}</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>{{external_db.description}}</td>
+</tr>
+<tr>
+<td>Connection string</td>
+<td><img src="{{url_for_static_asset('static', file_path='cosmos/yautja_symbols.svg') }}" alt="secret" width="100%" style="max-width: 150px;"></td>
+</tr>
+<tr>
+<td>Expires at</td>
+<td>{{external_db.expires_at}}</td>
+</tr>
+</tbody>
+</table>
+
+<form action="/star_fortress/wilderness_unvoid/edit_external_db/{{external_db.id}}/" method="get">
+  <button type="submit">Edit external DB</button>
+</form>
+<hr>
+<button type="submit" id="test_connection">Test connection</button>
+<div id="status"></div>
+
+
+<script>
+
+    document.getElementById('test_connection').addEventListener('click', async function(e) {
+        e.preventDefault(); // cancel
+
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = 'Checking...';
+        statusDiv.style.color = 'black';
+
+        // payload
+        const payload = {
+                    };
+
+        try {
+            // GET API
+			check_url = '/star_fortress/wilderness_unvoid/inner_circle/check_external_db/{{external_db.id}}';
+			
+            const response = await fetch( check_url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                statusDiv.textContent = 'Success!' + JSON.stringify( result, null, 2);
+                statusDiv.style.color = 'green';
+                
+			} else {
+                const errorText = await response.text();
+                statusDiv.textContent = `Server fail: ${response.status} - ${errorText}`;
+                statusDiv.style.color = 'red';
+            }
+        } catch (error) {
+            statusDiv.textContent = `Network fail: ${error.message}`;
+            statusDiv.style.color = 'red';
+        }
+    });
+</script>
+
+
+{% endblock %}

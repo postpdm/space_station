@@ -19,7 +19,7 @@ from advanced_alchemy.extensions.litestar import (
 
 from .core_service import UserService, UserFav_Service, NewsService
 from .core_models import User, UserFav, GNN_Article_Model
-from .core_schema import News_pdnt, NewsCreate_pdnt, NewsUpdate_pdnt, User_pdnt, UserCreate_pdnt, UserUpdate_pdnt, UserFav_pdnt, UserFavCreate_pdnt
+from .core_schema import News_pdnt, NewsCreate_pdnt, NewsUpdate_pdnt, User_augment_pdnt, User_pdnt, UserCreate_pdnt, UserUpdate_pdnt, UserFav_pdnt, UserFavCreate_pdnt
 
 from ..config import AppSettings
 
@@ -41,8 +41,8 @@ class UserController(Controller):
         filters={"pagination_type": "limit_offset", "id_filter": UUID, "search": "user_name", "search_ignore_case": True},
     )
 
-    async def set_session( self, request: Request, user_id : UUID, user_login : str, user_name : str ) -> None:
-        request.set_session( { "user_id" : user_id, "user_login": user_login, "user_name": user_name })
+    async def set_session( self, request: Request, user_id : UUID, user_login : str, user_name : str, arch_tech_priest : bool ) -> None:
+        request.set_session( { "user_id" : user_id, "user_login": user_login, "user_name": user_name, "arch_tech_priest" : arch_tech_priest })
 
     @get("/login", exclude_from_auth=True) # exclude from auth require, elsewhere middleware redirect as infinitely
     async def login_page( self, app_settings: AppSettings, user_service: UserService, request: Request, return_path: FromQuery[str | None] = None ) -> Template:
@@ -50,7 +50,7 @@ class UserController(Controller):
             if app_settings.AM_I_USER_URL:
                 am_i_user_url = app_settings.AM_I_USER_URL
             else:
-                am_i_user_url = 'http://127.0.0.1:8000/users/fake_user'
+                am_i_user_url = 'http://127.0.0.1:8000/cage/fake_user'
 
             if app_settings.AM_I_USER_LOGIN_FIELD:
                 am_i_user_login_field = app_settings.AM_I_USER_LOGIN_FIELD
@@ -79,7 +79,7 @@ class UserController(Controller):
                     # check or create
                     user, res = await user_service.get_or_create_user( user_login, user_name )
                     if user:
-                        await self.set_session( user.id, user_login, user_name )
+                        await self.set_session( user.id, user_login, user_name, user.is_arch_tech_priest )
                     
                     redirect_target = return_path
                     
@@ -115,7 +115,7 @@ class UserController(Controller):
         user, res = await user_service.get_or_create_user( data.user_login, data.user_name )
 
         if user:
-            await self.set_session( request, user.id, user.user_login, user.user_name  )
+            await self.set_session( request, user.id, user.user_login, user.user_name, user.is_arch_tech_priest )
         redirect_target = return_path
 
         # check for evil Redirect attack
@@ -123,22 +123,15 @@ class UserController(Controller):
             redirect_target = "/"
         return Redirect(path=redirect_target)
 
-    @get('/fake_user', exclude_from_auth=True)
-    async def get_fake_user(self) -> dict[str, str]:
-        """Fake method for local testing purposes"""
-        # Litestar automatically converts this dict to a JSON response
-        return { "id": "123", "userLogin": "fake_domain\\fake_user", "userName": "Mr. Fake User jr.", 'some_key' : 'some_string' }
-
-
     @get(path="/list_users")
     async def list_users(
         self,
         user_service: UserService,
         filters: Annotated[list[filters.FilterTypes], Dependency(skip_validation=True)],
-    ) -> service.OffsetPagination[User_pdnt]:
+    ) -> service.OffsetPagination[User_augment_pdnt]:
         """List users."""
         results, total = await user_service.get_many_and_count(*filters)
-        return user_service.to_schema(results, total, filters=filters, schema_type=User_pdnt)
+        return user_service.to_schema(results, total, filters=filters, schema_type=User_augment_pdnt)
 
 # User fav
 class UserFavController(Controller):

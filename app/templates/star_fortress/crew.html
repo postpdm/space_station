@@ -13,6 +13,8 @@
     <tr>
       <th>Login</th>
       <th>Name</th>
+      <th>Mechanoid</th>
+      <th>Arch tech-priest</th>
     </tr>
   </thead>
   <tbody id="table-body">
@@ -39,6 +41,8 @@ data.items.forEach(item => {
     <tr>
       <td>${item.user_login}</td>
       <td>${item.user_name}</td>
+      <td>${item.is_mechanoid}</td>
+      <td>${item.is_arch_tech_priest}</td>
     </tr>
   `;
   tableBody.innerHTML += row;

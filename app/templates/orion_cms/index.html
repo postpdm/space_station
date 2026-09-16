@@ -6,10 +6,11 @@
       <section id="CMS">
 <h1>Enterprise CMS</h1>
 
-	<ul id="page_list"></ul>
+	<h2>Tree</h2>
+	<ul id="page_tree"></ul>
 		
-    <p><button onclick="loadPages()">Read pages</button></p>
-    <p><a href="/cms/new_page" role="button">New page</a></p>
+    <p><button onclick="loadTree()">Read pages tree</button></p>
+    <p><a href="/cms/new_tree_node" role="button">New node</a></p>
 
 
 
@@ -17,13 +18,13 @@
 
     <script>
       
-	  async function loadPages() {
+	  async function loadTree() {
 
-fetch('/cms/get_pages_api')
+fetch('/cms/get_page_tree_api')
   .then(response => response.json())
   .then(data => {
     // print
-	const listBody = document.getElementById('page_list');
+	const listBody = document.getElementById('page_tree');
 
 // delete list content
 listBody.innerHTML = '';
@@ -34,7 +35,7 @@ data.items.forEach(item => {
 
       const li = document.createElement('li');
 	  const link = document.createElement('a');
-	  link.href = `/cms/page/${item.id}`; 
+	  link.href = `/cms/tree_node_page/${item.id}`; 
 		
       link.textContent = item.title;
 	  li.appendChild(link);
@@ -48,12 +49,12 @@ data.items.forEach(item => {
 
   })
   .catch(error => {
-    document.getElementById('news-list').textContent = 'Fail!';
+    document.getElementById('page_tree').textContent = 'Fail!';
   });
 
 			};
 
-window.onload = loadPages;
+window.onload = loadTree;
 
 </script>
 

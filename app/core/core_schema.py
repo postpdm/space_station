@@ -4,6 +4,12 @@ from typing import Annotated, Optional
 
 from pydantic import BaseModel
 
+class User_augment_pdnt(BaseModel):
+    user_login : str
+    user_name : str
+    is_mechanoid : bool
+    is_arch_tech_priest : bool
+
 class User_pdnt(BaseModel):
     user_login : str
     user_name : str

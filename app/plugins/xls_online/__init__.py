@@ -4,7 +4,7 @@ from litestar.config.app import AppConfig
 
 from .controller import XLS_Online_Controller
 # take abstract
-from app.plugins.abc_plugin import BasePlugin
+from space_station_stc.hull.plugin_abc.abc_plugin import BasePlugin
 
 class XLS_Online_Plugin(BasePlugin):
     # add routing
@@ -16,5 +16,8 @@ class XLS_Online_Plugin(BasePlugin):
     fplugin_id = UUID( 'b29e71f4-3d8b-4b11-a083-725281729bfa' )
     
     fstatic_req = [ 'xls/xlsx.full.min.js' ]
+    
+    def health(self) -> bool :
+        return True
 
 #

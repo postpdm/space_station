@@ -37,7 +37,7 @@
         try {
             // POST API
 			{% if create_mode %}
-            const api_url = '/cms/new_page_api';
+            const api_url = '/cms/new_page_api/{{tree_node_id}}';
 			{% else %}
             const api_url = '/cms/update_page_api/{{page_id}}';
 			{% endif %}

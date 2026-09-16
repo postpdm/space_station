@@ -40,11 +40,11 @@ or
 
 - [x] auth
 - [x] Base CMS
-- [ ] Interactive CMS
+- [x] Interactive CMS
 - [ ] Common tickets and forum
 - [x] Global db
 - [ ] Global ref books
-- [ ] Local db's
+- [x] External db's
 - [x] Pods for internal solutions
 - [x] Pods for static solutions
 - [ ] Subscribe solution for ref book broadcasting

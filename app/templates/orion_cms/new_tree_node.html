@@ -1,0 +1,80 @@
+{% extends 'orion_cms/base.html' %}
+
+{% block title %}CMS - {% if create_mode %}new tree node{% else %}edit tree node{% endif %}{% endblock %}
+
+{% block body %}
+
+<section id="editor">
+
+{% if not create_mode %}<h1>{{node.title}}</h1>{% endif %}
+
+<form id="new_node_Form">
+	<div>
+        <label for="title">Title:</label>
+        <input type="text" id="title" required placeholder="Enter the title" {% if not create_mode %}value="{{node.title}}"{% endif %}>
+    </div>
+    
+    <button type="submit">{% if create_mode %}Create{% else %}Update{% endif %}</button>
+</form>
+<script>
+  
+
+    document.getElementById('new_node_Form').addEventListener('submit', async function(e) {
+        e.preventDefault(); // cancel
+
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = 'Sending...';
+        statusDiv.style.color = 'black';
+
+        // Get elements
+        const title = document.getElementById('title').value;
+        
+        // payload
+        const payload = {
+            title: title,
+        };
+
+        try {
+            // POST API
+			{% if create_mode %}
+            const api_url = '/cms/new_tree_node_api';
+			{% else %}
+            const api_url = '/cms/update_tree_node_api/{{node_id}}';
+			{% endif %}
+			
+			const response = await fetch( api_url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                statusDiv.textContent = 'Success!';
+                statusDiv.style.color = 'green';
+                document.getElementById('new_node_Form').reset(); // Clear form
+				window.location.href = `/cms/tree_node_page/${result.id}`;
+						
+            } else {
+                const errorText = await response.text();
+                statusDiv.textContent = `Server fail: ${response.status} - ${errorText}`;
+                statusDiv.style.color = 'red';
+            }
+        } catch (error) {
+            statusDiv.textContent = `Network fail: ${error.message}`;
+            statusDiv.style.color = 'red';
+        }
+    });
+  
+  
+  
+</script>
+
+<div id="status"></div>
+
+
+</section>
+
+{% endblock %}

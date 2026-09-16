@@ -52,3 +52,14 @@ Solution (plugin) should have unique UUID, fixed in	`__init__.py`. Do not change
 Solution developers of static sites with access to core API or another solutions API should manage the API KEY. 
 
 Full stack plugins may publish it's own API with API KEY only.
+
+# External databases
+
+In Wilderness unvoid section you can register the external databases and check the connection from server. Registration is simple with following arguments:
+
+| Argument | Mean |
+| :---     | :---: |
+| resource name | Name of resource for internal use. You can provide any, and do not change it for future |
+| description | Any description. Required, becouse you may forgot why and what... |
+| connection string | SQLAlchemy connection string. `postgresql+asyncpg://user:password@localhost:5432/dbname` or `sqlite+aiosqlite:///:memory::` or something else. You should use installed drivers only |
+| expires at | Expire date time |

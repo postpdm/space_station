@@ -1,0 +1,118 @@
+{% extends 'star_fortress/base.html' %}
+{% block title %}
+    Star fortress - Space station admin portal
+{% endblock %}
+{% block body %}
+
+<h1>Wilderness unvoid -
+{% if external_db %}
+edit
+{% else %}
+add new
+{% endif %}
+external db</h1>
+
+<form id="external_db_Form">
+	<div class="cyber-form-group">
+        <label for="resource_name">Resource name:</label>
+        <input type="text" class="cyber-input" id="resource_name" required placeholder="Enter the resource name"
+{% if external_db %} value='{{external_db.resource_name}}'{% endif %} >
+    </div>
+
+    <div class="cyber-form-group">
+        <label for="description">Description:</label>
+        <textarea id="description" required placeholder="Enter the description" rows="5" cols="55" class="cyber-input">{% if external_db %}{{external_db.description}}{% endif %}</textarea>
+    </div>
+
+    <div class="cyber-form-group">
+        <label for="connection_string">Connection_string (DATABASE_URL, something like <i>"postgresql+asyncpg://user:password@localhost:5432/dbname"</i> or <i>sqlite+aiosqlite:///:memory:</i>:</label>
+        <textarea id="connection_string" required placeholder="Enter the connection string" rows="5" cols="55" class="cyber-input">{% if external_db %}{{external_db.connection_string}}{% endif %}</textarea>
+    </div>
+
+	<div class="cyber-form-group">
+        <label for="expires_at">Expire date time:</label>
+        <!-- current time -->
+        <input type="datetime-local" class="cyber-input" id="expires_at" required>
+    </div>
+
+    <button type="submit">
+{% if external_db %}
+Update
+{% else %}
+Create
+{% endif %}
+	</button>
+</form>
+
+<div id="status"></div>
+
+<script>
+	{% if external_db %}
+		const dt = new Date( '{{external_db.expires_at}}' );
+	{% else %}
+		// Current date time
+		dt = new Date();
+	{% endif %}
+    document.getElementById('expires_at').value = dt.toISOString().slice(0, 16);
+
+    document.getElementById('external_db_Form').addEventListener('submit', async function(e) {
+        e.preventDefault(); // cancel
+
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = 'Sending...';
+        statusDiv.style.color = 'black';
+
+        // Get elements
+        const resource_name = document.getElementById('resource_name').value;
+        const description = document.getElementById('description').value;
+        const connection_string = document.getElementById('connection_string').value;
+        const localDate = document.getElementById('expires_at').value;
+
+        // Date time set to ISO (YYYY-MM-DDTHH:mm:ssZ)
+        const expires_at = new Date(localDate).toISOString();
+
+        // payload
+        const payload = {
+            resource_name: resource_name,
+            description: description,
+			connection_string : connection_string,
+            expires_at: expires_at
+        };
+
+        try {
+            // POST API
+			{% if external_db %}
+				post_url = '/star_fortress/wilderness_unvoid/inner_circle/update_external_db/{{external_db.id}}';
+			{% else %}
+				post_url = '/star_fortress/wilderness_unvoid/inner_circle/reg_new_external_db';
+			{% endif %}
+
+            const response = await fetch( post_url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                statusDiv.textContent = 'Success!';
+                statusDiv.style.color = 'green';
+                //document.getElementById('external_db_Form').reset(); // Clear form
+                document.getElementById('expires_at').value = new Date().toISOString().slice(0, 16);
+				window.location.href = `/star_fortress/wilderness_unvoid/view_external_db/${result.id}`;
+			} else {
+                const errorText = await response.text();
+                statusDiv.textContent = `Server fail: ${response.status} - ${errorText}`;
+                statusDiv.style.color = 'red';
+            }
+        } catch (error) {
+            statusDiv.textContent = `Network fail: ${error.message}`;
+            statusDiv.style.color = 'red';
+        }
+    });
+</script>
+
+
+{% endblock %}

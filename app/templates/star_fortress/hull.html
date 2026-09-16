@@ -14,7 +14,7 @@
 
 <h2>Settings </h2>
 <p>List of installed plugins: <i>{{installed_plugin_names}}</i></p>
-<p>List of installed spac_station plugins:</p>
+<p>List of installed space station plugins:</p>
 
 <table border="1">
 <thead>
@@ -24,6 +24,7 @@
 <th>System name</th>
 <th>User title</th>
 <th>User description</th>
+<th>Required <a href="/star_fortress/wilderness_unvoid">DB connections</a></th>
 <th>Links</th>
 </tr>
 </thead>
@@ -40,6 +41,11 @@
 <td>{{p.plugin_name}}</td>
 <td>{{p.user_title}}</td>
 <td>{{p.user_description}}</td>
+<td>{% if p.sql_connections %}
+{% for sc in p.sql_connections %}
+<a href="/star_fortress/wilderness_unvoid">{{sc}}</a>
+{% endfor %}
+{%endif%}</td>
 <td>
 	{% for c in p.controllers %}
 		<a href="{{c.path}}">User home page {{c.path}}</a>

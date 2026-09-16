@@ -1,7 +1,10 @@
 litestar[jinja]
 aiosqlite
 uuid-utils
+cryptography
 sqlalchemy
 advanced_alchemy
 pydantic
 pydantic_settings
+
+space-station-stc @ git+https://github.com/postpdm/space_station_stc.git
