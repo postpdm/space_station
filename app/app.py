@@ -60,10 +60,6 @@ async def init_plugin_sql_connections() -> None:
 
     validate_plugin_connections(plugins_list, sql_registry)
 
-
-#print("Registered SQL names:", sql_registry.all_names())
-
-
 app = Litestar( debug=settings.litestar_debug, # Hard disable debug mode in prod!
                 # allowed_hosts=host_config,
 
