@@ -60,7 +60,7 @@ class Reports_Controller(BasePluginController):
             result1 = await session.execute(query1)
             data = result1.all()
             
-            query2 = text("SELECT product_name, sum(quantity) FROM reports group by product_name")
+            query2 = text("SELECT product_name, sum(quantity) as S FROM reports group by product_name")
             result2 = await session.execute(query2)
             data_graph = result2.all()
 

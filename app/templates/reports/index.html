@@ -1,4 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>{% block title %}{% endblock %}</title>
+	<meta name="description" content="A class-less example, without dependencies.">
+
+    <!-- Pico.css -->
+	{% if USE_CDN %}
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.classless.min.css">
+	{% else %}
+	<link rel="stylesheet" href="{{ url_for_static_asset('static', file_path='pico/2.1.1/pico.classless.min.css') }}">
+	{% endif %}
+    <!-- Chartist.js -->
+	{% if USE_CDN %}
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chartist/dist/chartist.min.css">
+		<script src="https://cdn.jsdelivr.net/npm/chartist/dist/chartist.min.js') }}"></script>
+	{% else %}
+		<link rel="stylesheet" href="{{ url_for_static_asset('static', file_path='charts/chartist/0.11.4/chartist.min.css') }}">
+		<script src="{{ url_for_static_asset('static', file_path='charts/chartist/0.11.4/chartist.min.js') }}"></script>
+	{% endif %}
+
+    {% block extra_header %}
+	{% endblock %}
+  </head>
+
+  <body>
+
+    <!-- Main -->
+    <main>
+
+
 <h1>Reports</h1>
+
+<h2>Chart</h2>
+
+<div id="chart" class="ct-chart" style="height: 300px;"></div>
+
+<script>
+	
+	const labels = [{%for p in data_graph%}"{{p.product_name}}",{% endfor %}];
+	const series = [[{%for p in data_graph%}{{p.S}},{% endfor %}]];
+
+	new Chartist.Bar('#chart', {
+    labels,
+    series
+  }, {
+    fullWidth: true,
+    chartPadding: { right: 20, left: 10 },
+    axisY: {
+      onlyInteger: true,
+      offset: 20
+    }
+  });
+
+</script>
+
 
 <h2>Table</h2>
 
@@ -21,6 +79,9 @@
 {% endfor %}
 </table>
 
-<h2>Graph</h2>
 
-{{data_graph}}
+    </main>
+
+
+  </body>
+</html>
