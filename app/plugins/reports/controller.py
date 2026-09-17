@@ -56,13 +56,17 @@ class Reports_Controller(BasePluginController):
                 # commit
             await session.commit()
 
+            query1 = text("SELECT * FROM reports")
+            result1 = await session.execute(query1)
+            data = result1.all()
+            
+            query2 = text("SELECT product_name, sum(quantity) FROM reports group by product_name")
+            result2 = await session.execute(query2)
+            data_graph = result2.all()
 
-            query = text("SELECT * FROM reports")
-            result = await session.execute(query)
-            data = result.all()
         return Template(
             template_name = REPORTS_TEMPLATES_DIR + "index.html",
-            context={ "data" : data }
+            context={ "data" : data, "data_graph" : data_graph }
         )
 
     @get("/admin_panel")
