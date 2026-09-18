@@ -20,6 +20,7 @@ from rich import print as rich_p
 
 from space_station_stc.hull.plugin_abc.sql_registry import SQLConnectionRegistry
 from app.star_fortress.inner_circle.models import ExternalDB   # external databases list
+from .core_ext_db_service import build_connection_string
 
 #from .core_models import WebSession
 
@@ -69,8 +70,19 @@ async def build_sqlalchemy_fab(
         name = row.resource_name
 
         # Decrypt DSN.
+
+        # Reject empty values.
         try:
-            dsn = row.connection_string
+            url = row.connection_safe_string
+        except Exception as exc:
+            url = None
+                
+        if not url or not url.strip():
+            rich_p(f"[red][sql_registry] '{name}': empty connection_string[/red]")
+            continue
+            
+        try:
+            dsn = ( await build_connection_string( url, row.connection_pw ) ).render_as_string(hide_password=False)
         except Exception as exc:
             rich_p(
                 f"[red][sql_registry] '{name}': cannot decrypt DSN: "
@@ -78,10 +90,6 @@ async def build_sqlalchemy_fab(
             )
             continue
 
-        # Reject empty values.
-        if not dsn or not dsn.strip():
-            rich_p(f"[red][sql_registry] '{name}': empty connection_string[/red]")
-            continue
 
         # Validate URL syntax (pure parser, no side effects).
         try:

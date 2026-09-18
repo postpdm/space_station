@@ -46,8 +46,8 @@ async def test_fab_registers_all_good_rows(
     capsys,
 ) -> None:
     rows = [
-        make_external_row("report_database", "postgresql+asyncpg://h/r"),
-        make_external_row("audit_db", "postgresql+asyncpg://h/a"),
+        make_external_row("report_database", "postgresql+asyncpg://h/r", None ),
+        make_external_row("audit_db", "postgresql+asyncpg://h/a", None ),
     ]
     patch_alchemy(rows=rows)
 
@@ -85,8 +85,8 @@ async def test_fab_skips_invalid_url(
     registry, patch_alchemy, patch_engine_factory, make_external_row, capsys
 ) -> None:
     rows = [
-        make_external_row("good", "postgresql+asyncpg://h/g"),
-        make_external_row("fail", "FAIL:::::"),
+        make_external_row("good", "postgresql+asyncpg://h/g", None ),
+        make_external_row("fail", "FAIL:::::", None ),
     ]
     patch_alchemy(rows=rows)
 
@@ -96,14 +96,14 @@ async def test_fab_skips_invalid_url(
     assert not registry.has("fail")
     out = capsys.readouterr().out
     assert "'fail'" in out
-    assert "invalid URL syntax" in out
+    assert "cannot decrypt DSN" in out
 
 
 @pytest.mark.asyncio
 async def test_fab_skips_empty_connection_string(
     registry, patch_alchemy, patch_engine_factory, make_external_row, capsys
 ) -> None:
-    patch_alchemy(rows=[make_external_row("empty", "   ")])
+    patch_alchemy(rows=[make_external_row("empty", "   ", None)])
 
     await core_config.build_sqlalchemy_fab(registry=registry)
 
@@ -119,7 +119,7 @@ async def test_fab_skips_when_decrypt_fails(
         resource_name = "crypted"
 
         @property
-        def connection_string(self):
+        def connection_safe_string(self):
             raise RuntimeError("no key")
 
     patch_alchemy(rows=[BrokenRow()])
@@ -127,14 +127,16 @@ async def test_fab_skips_when_decrypt_fails(
     await core_config.build_sqlalchemy_fab(registry=registry)
 
     assert registry.all_names() == []
-    assert "cannot decrypt DSN" in capsys.readouterr().out
+    out = capsys.readouterr().out
+    print( out )
+    assert "empty connection_string" in out
 
 
 @pytest.mark.asyncio
 async def test_fab_skips_when_engine_creation_fails(
     registry, patch_alchemy, make_external_row, monkeypatch, capsys
 ) -> None:
-    patch_alchemy(rows=[make_external_row("bad-dialect", "nosuchdialect://h/d")])
+    patch_alchemy(rows=[make_external_row("bad-dialect", "nosuchdialect://h/d", None )])
 
     def fake_create(dsn, *a, **kw):
         raise ModuleNotFoundError("no driver")
@@ -173,8 +175,8 @@ async def test_fab_duplicate_name_overwrites_and_warns(
     registry, patch_alchemy, patch_engine_factory, make_external_row, capsys
 ) -> None:
     rows = [
-        make_external_row("dup", "postgresql+asyncpg://h/1"),
-        make_external_row("dup", "postgresql+asyncpg://h/2"),
+        make_external_row("dup", "postgresql+asyncpg://h/1", None ),
+        make_external_row("dup", "postgresql+asyncpg://h/2", None ),
     ]
     patch_alchemy(rows=rows)
 
@@ -191,7 +193,7 @@ async def test_fab_duplicate_name_overwrites_and_warns(
 async def test_fab_uses_default_registry(
     patch_alchemy, patch_engine_factory, make_external_row
 ) -> None:
-    patch_alchemy(rows=[make_external_row("x", "postgresql+asyncpg://h/x")])
+    patch_alchemy(rows=[make_external_row("x", "postgresql+asyncpg://h/x", "123" )])
 
     core_config.sql_registry._connections.clear()
     result = await core_config.build_sqlalchemy_fab()

@@ -224,9 +224,10 @@ class FakeAlchemyConfig:
 
 class FakeExternalDBRow:
     """Row-shaped object imitating ExternalDB model attributes."""
-    def __init__(self, name: str, dsn: str | None):
+    def __init__(self, name: str, dsn: str | None, pw : str | None ):
         self.resource_name = name
-        self.connection_string = dsn
+        self.connection_safe_string = dsn
+        self.connection_pw = pw
 
 
 @pytest.fixture
@@ -238,8 +239,8 @@ def make_alchemy_config():
 
 @pytest.fixture
 def make_external_row():
-    def _make(name: str, dsn: str | None):
-        return FakeExternalDBRow(name=name, dsn=dsn)
+    def _make(name: str, dsn: str | None, pw : str | None ):
+        return FakeExternalDBRow(name=name, dsn=dsn, pw=pw)
     return _make
 
 
