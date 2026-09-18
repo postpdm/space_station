@@ -127,7 +127,7 @@ class Star_Fortress_Controller(Controller):
     ) -> Response:
         """Check external db."""
         obj = await externaldbservice.get( item_id=external_db_id )
-        success, message = await check_ext_db_connection( obj.connection_string )
+        success, message = await check_ext_db_connection( obj.connection_safe_string, obj.connection_pw )
         if success:
             return Response( content={"status": "success"}, status_code=HTTP_200_OK )
         else:

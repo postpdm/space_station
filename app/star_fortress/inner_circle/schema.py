@@ -9,7 +9,7 @@ class ExternalDB_pdnt(BaseModel):
     id: Optional[UUID] = None
     resource_name: str
     description: str
-    connection_string : str
+    connection_safe_string : str
     connection_pw : Optional[str]
     expires_at : datetime
 
