@@ -15,6 +15,7 @@ class ExternalDB(UUIDAuditBase):
     
     # Advanced-Alchemy encrypted
     connection_string: Mapped[str] = mapped_column(EncryptedString( key = lambda: db_encryption_key.get().get_secret_value() ) )
+    connection_pw: Mapped[Optional[str]] = mapped_column(EncryptedString( default=None, key = lambda: db_encryption_key.get().get_secret_value() ) )
     
     # expire datetime
     expires_at: Mapped[datetime] = mapped_column(index=True)
