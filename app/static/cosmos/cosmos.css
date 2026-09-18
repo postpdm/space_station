@@ -246,7 +246,7 @@ button:active {
 /* Cyber Form Fields */
 .cyber-form-group {
   margin-bottom: 25px;
-  max-width: 400px;
+  /*max-width: 400px;*/
 }
 
 .cyber-form-group label {

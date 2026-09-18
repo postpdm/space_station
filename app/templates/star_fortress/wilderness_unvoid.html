@@ -44,6 +44,7 @@
       <th>Resource name</th>
       <th>Description</th>
       <th>Connection string</th>
+      <th>Connection pw</th>
       <th>Expires at</th>
     </tr>
   </thead>
@@ -54,6 +55,9 @@
 	  <td>{{edb.description}}</td>
 	  <td>
       <img src="/star_fortress/yautja_symbols.svg?v={{edb.resource_name}}" alt="secret" width="100%" style="max-width: {{ range(145, 201) | random }}px;">
+      </td>
+	  <td>
+      {% if edb.connection_pw%}<img src="/star_fortress/yautja_symbols.svg?v={{edb.id}}" alt="secret" width="100%" style="max-width: {{ range(105, 120) | random }}px;">{%endif%}
       </td>
 	  <td>{{edb.expires_at}}</td>
     </tr>

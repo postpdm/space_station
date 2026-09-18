@@ -18,7 +18,7 @@ class ExternalDB(UUIDAuditBase):
     connection_pw: Mapped[Optional[str]] = mapped_column(EncryptedString( default=None, key = lambda: db_encryption_key.get().get_secret_value() ) )
     
     # expire datetime
-    expires_at: Mapped[datetime] = mapped_column(index=True)
+    expires_at: Mapped[Optional[datetime]] = mapped_column(index=True)
 
     # check expires
     @property

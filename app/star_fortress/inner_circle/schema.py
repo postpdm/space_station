@@ -10,6 +10,7 @@ class ExternalDB_pdnt(BaseModel):
     resource_name: str
     description: str
     connection_string : str
+    connection_pw : Optional[str]
     expires_at : datetime
 
 class ExternalDB_Check_pdnt(BaseModel):
