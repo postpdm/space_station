@@ -28,7 +28,8 @@ class ExternalDB(UUIDAuditBase):
         # empry field is verbotten, SET NULL instead        
         if isinstance(value, str) and value.strip() == '':
             return None
-        return value
+        else:
+            return value
         
     # check expires
     @property
