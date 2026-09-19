@@ -52,6 +52,8 @@ plugin_sql_deps = build_global_sql_dependencies(plugins_list)
 async def init_plugin_sql_connections() -> None:
     await build_sqlalchemy_fab(registry=sql_registry)
 
+    validate_plugin_connections(plugins_list,sql_registry)
+
     for plugin in plugins_list:
         if hasattr(plugin, "fsql_connections"):
             plugin.fsql_provided = sql_registry.resolve(
