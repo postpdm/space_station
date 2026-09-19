@@ -10,7 +10,6 @@ from sqlalchemy.exc import IntegrityError
 
 from datetime import datetime, date, timezone
 
-from app.core.core_models import User
 from app.star_fortress.inner_circle.models import ExternalDB
 from app.star_fortress.inner_circle.context import db_encryption_key
 
