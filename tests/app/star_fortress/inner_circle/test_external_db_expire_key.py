@@ -127,13 +127,15 @@ async def test_expires_at_write_whitespace_string_becomes_none(db_session: Async
 @pytest.mark.asyncio
 async def test_expires_at_write_garbage_string_becomes_none(db_session: AsyncSession):
     """
-    Non-parsable string is normalized to None by SafeDateTime.
-    Contract: garbage is NEVER stored as a raw string in a DateTime column.
+    Non-parsable string is normalized to None by SafeDateTime on the DB side.
+    NOTE: must expire the identity map after flush to observe the stored value;
+    the in-memory attribute keeps whatever was assigned.
     """
     # Arrange
     new_ec = _make_external_db(expires_at="not-a-date")
     db_session.add(new_ec)
     await db_session.flush()
+    db_session.expire_all()  # <-- read the value as it landed in the DB
 
     # Act
     result = await db_session.execute(
@@ -149,11 +151,12 @@ async def test_expires_at_write_garbage_string_becomes_none(db_session: AsyncSes
 
 @pytest.mark.asyncio
 async def test_expires_at_write_wrong_type_becomes_none(db_session: AsyncSession):
-    """A non-datetime/non-string value must be normalized to None, not leaked."""
+    """A non-datetime/non-string value is normalized to None on the DB side."""
     # Arrange
     new_ec = _make_external_db(expires_at=12345)
     db_session.add(new_ec)
     await db_session.flush()
+    db_session.expire_all()  # <-- read the value as it landed in the DB
 
     # Act
     result = await db_session.execute(
