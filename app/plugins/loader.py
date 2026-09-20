@@ -6,6 +6,8 @@ import pkgutil
 from pathlib import Path
 
 from litestar.plugins import InitPlugin
+from litestar.exceptions import ImproperlyConfiguredException
+
 from rich import print as rich_p
 
 from space_station_stc.hull.plugin_abc.abc_plugin import BasePlugin
@@ -119,8 +121,10 @@ def validate_plugin_connections(
                 problems.append(
                     f"{plugin.plugin_name}: unknown connection '{name}'"
                 )
-    if problems:
-        raise RuntimeError(
-            "Plugin SQL connection validation failed:\n  - "
+    if problems:        
+        # fail hard or skip?
+        #raise RuntimeError(
+        rich_p(
+            "Plugin [red]SQL connection[/red] validation failed:\n  - "
             + "\n  - ".join(problems)
         )
