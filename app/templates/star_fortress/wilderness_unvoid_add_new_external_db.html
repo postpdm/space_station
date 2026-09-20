@@ -35,6 +35,13 @@ external db</h1>
     </div>
 
 	<div class="cyber-form-group">
+	   <label>
+		<input type="checkbox" id="toggleCheck" onchange="toggleField()">
+		Never expire
+	  </label>
+    </div>
+
+	<div class="cyber-form-group">
         <label for="expires_at">Expire date time:</label>
         <!-- current time -->
         <input type="datetime-local" class="cyber-input" id="expires_at">
@@ -52,11 +59,24 @@ Create
 <div id="status"></div>
 
 <script>
-	{% if external_db %}
+
+function toggleField() {
+  const checkbox = document.getElementById('toggleCheck');
+  const inputField = document.getElementById('expires_at');
+
+  // The 'checked' property returns true or false
+  // Assigning it directly to 'disabled' flips the logic as needed
+  inputField.disabled = checkbox.checked;
+
+}
+
+	{% if external_db and external_db.expires_at %}		
 		const dt = new Date( '{{external_db.expires_at}}' );
 	{% else %}
 		// Current date time
 		dt = new Date();
+		document.getElementById('toggleCheck').checked = true;
+		document.getElementById('expires_at').disabled = true;
 	{% endif %}
     document.getElementById('expires_at').value = dt.toISOString().slice(0, 16);
 
@@ -73,9 +93,12 @@ Create
         const connection_safe_string = document.getElementById('connection_safe_string').value;
         const connection_pw = document.getElementById('connection_pw').value;
         const localDate = document.getElementById('expires_at').value;
+		var expires_at = new Date(localDate).toISOString();
+		const never_expire = document.getElementById('toggleCheck').checked;
 
-        // Date time set to ISO (YYYY-MM-DDTHH:mm:ssZ)
-        const expires_at = new Date(localDate).toISOString();
+		if ( never_expire) {
+		  expires_at = "";
+		};
 
         // payload
         const payload = {
@@ -83,7 +106,7 @@ Create
             description: description,
 			connection_safe_string : connection_safe_string,
 			connection_pw : connection_pw,
-            expires_at: expires_at
+			expires_at: expires_at
         };
 
         try {
@@ -94,7 +117,9 @@ Create
 				post_url = '/star_fortress/wilderness_unvoid/inner_circle/reg_new_external_db';
 			{% endif %}
 
-            const response = await fetch( post_url, {
+            console.log( payload );
+
+			const response = await fetch( post_url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

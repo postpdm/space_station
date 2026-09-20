@@ -32,7 +32,7 @@
 {% endif %}
 <tr>
 <td>Expires at</td>
-<td>{{external_db.expires_at}}</td>
+<td>{% if external_db.expires_at %}{{external_db.expires_at}}{%else%}Until the stars light fades{%endif%}</td>
 </tr>
 </tbody>
 </table>

@@ -59,7 +59,7 @@
 	  <td>
       {% if edb.connection_pw%}<img src="/star_fortress/yautja_symbols.svg?v={{edb.id}}" alt="secret" width="100%" style="max-width: {{ range(105, 120) | random }}px;">{%endif%}
       </td>
-	  <td>{{edb.expires_at}}</td>
+	  <td>{% if edb.expires_at%}{{edb.expires_at}}{%endif%}</td>
     </tr>
   {% endfor %}
   </tbody>
