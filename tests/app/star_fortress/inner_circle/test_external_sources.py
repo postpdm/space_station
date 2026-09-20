@@ -67,4 +67,16 @@ async def test_external_datasource_try_save_bool(db_session: AsyncSession):
         db_session.add(new_ec)
         await db_session.flush()  # Push to DB within the active transaction
 
+@pytest.mark.asyncio
+async def test_external_datasource_try_save_str(db_session: AsyncSession):
+    """Test save wrong datasource type."""
+    # Arrange
+    expected_res_name = "my_secret_db"
+    expected_url = "ftp://some_where.galaxy"
+
+    with pytest.raises(ValueError):
+        new_ec = ExternalDB( resource_name = expected_res_name, source_type = 'huuu#j', description='test', connection_safe_string = expected_url )
+        db_session.add(new_ec)
+        await db_session.flush()  # Push to DB within the active transaction
+
 #
