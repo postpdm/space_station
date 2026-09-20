@@ -13,7 +13,7 @@
 <td>{{external_db.id}}</td>
 </tr>
 <tr>
-<td>Active</td>
+<td>Active flag. You should test your connection to make it active. Flag is switched off if you have edit the source.</td>
 <td>{% if external_db.active%}&#x2611;{%else%}&#x274C;{%endif%}</td>
 </tr>
 <tr>
@@ -78,11 +78,12 @@
                 const result = await response.json();
                 statusDiv.textContent = 'Success!' + JSON.stringify( result, null, 2);
                 statusDiv.style.color = 'green';
-                
+                location.reload();
 			} else {
                 const errorText = await response.text();
                 statusDiv.textContent = `Server fail: ${response.status} - ${errorText}`;
                 statusDiv.style.color = 'red';
+				location.reload();
             }
         } catch (error) {
             statusDiv.textContent = `Network fail: ${error.message}`;

@@ -116,6 +116,7 @@ class Star_Fortress_Controller(Controller):
     ) -> ExternalDB_pdnt:
         """Update external db."""
         obj = await externaldbservice.update(data, item_id=external_db_id, auto_commit=True)
+        obj.active = False
         return externaldbservice.to_schema(obj, schema_type=ExternalDB_pdnt)
 
     @post('/wilderness_unvoid/inner_circle/check_external_db/{external_db_id:uuid}')
@@ -129,8 +130,12 @@ class Star_Fortress_Controller(Controller):
         obj = await externaldbservice.get( item_id=external_db_id )
         success, message = await check_ext_db_connection( obj.connection_safe_string, obj.connection_pw )
         if success:
+            obj.active = True
+            await externaldbservice.repository.session.commit()
             return Response( content={"status": "success"}, status_code=HTTP_200_OK )
         else:
+            obj.active = False
+            await externaldbservice.repository.session.commit()
             return Response( content={"status": "error", "details": message }, status_code=HTTP_422_UNPROCESSABLE_ENTITY )
 
     @get('/yautja_symbols.svg')
