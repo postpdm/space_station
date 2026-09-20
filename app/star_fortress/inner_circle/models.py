@@ -11,6 +11,9 @@ from .context import db_encryption_key
 class ExternalDB(UUIDAuditBase):
     __tablename__ = "external_db"
 
+    # some sources may be untested or expired
+    active : Mapped[bool] = mapped_column( default=False )
+    
     resource_name: Mapped[str] = mapped_column(unique=True)  # "analytics_postgres" or "ducklake"
     
     description: Mapped[str]
