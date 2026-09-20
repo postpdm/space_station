@@ -6,8 +6,6 @@ from pydantic import SecretStr
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from sqlalchemy.exc import IntegrityError
-
 from datetime import datetime, date, timezone
 
 from app.star_fortress.inner_circle.models import ExternalDB, SourceType
@@ -25,7 +23,7 @@ def setup_test_encryption_key():
 
 @pytest.mark.asyncio
 async def test_external_datasource_good(db_session: AsyncSession):
-    """Test direct interaction with the database session."""
+    """Test direct interaction with the external db good."""
     # Arrange
     expected_res_name = "my_secret_db"
     expected_url = "ftp://some_where.galaxy"
@@ -44,5 +42,19 @@ async def test_external_datasource_good(db_session: AsyncSession):
     assert ec.resource_name == expected_res_name
     assert ec.connection_safe_string == expected_url
     assert ec.source_type == expected_datasource_type
+
+@pytest.mark.asyncio
+async def test_external_datasource_try_save_incorrect(db_session: AsyncSession):
+    """Test save wrong datasource type."""
+    # Arrange
+    expected_res_name = "my_secret_db"
+    expected_url = "ftp://some_where.galaxy"
+    expected_datasource_type = SourceType.SQL.value
+    
+
+    with pytest.raises(ValueError):
+        new_ec = ExternalDB( resource_name = expected_res_name, source_type = 0, description='test', connection_safe_string = expected_url )
+        db_session.add(new_ec)
+        await db_session.flush()  # Push to DB within the active transaction   
 
 #
