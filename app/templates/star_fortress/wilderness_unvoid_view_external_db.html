@@ -13,6 +13,10 @@
 <td>{{external_db.id}}</td>
 </tr>
 <tr>
+<td>Active</td>
+<td>{% if external_db.active%}&#x2611;{%else%}&#x274C;{%endif%}</td>
+</tr>
+<tr>
 <td>Resource name</td>
 <td>{{external_db.resource_name}}</td>
 </tr>

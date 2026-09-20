@@ -43,6 +43,7 @@
   </caption>
   <thead>
     <tr>
+      <th>Active</th>
       <th>Resource name</th>
       <th>Description</th>
       <th>Connection safe string</th>
@@ -53,6 +54,7 @@
   <tbody>
   {% for edb in external_db %}
     <tr>
+	  <td>{% if edb.active%}&#x2611;{%else%}&#x274C;{%endif%}</td>
       <td><a href="/star_fortress/wilderness_unvoid/view_external_db/{{edb.id}}">{{edb.resource_name}}</a></td>
 	  <td>{{edb.description}}</td>
 	  <td>
