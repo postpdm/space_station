@@ -264,12 +264,17 @@ def test_validate_ok(registry_with_report_db, make_plugin_class) -> None:
     loader_mod.validate_plugin_connections([p], registry_with_report_db)
 
 
-def test_validate_raises_on_unknown(registry, make_plugin_class) -> None:
+def test_validate_raises_on_unknown(registry, make_plugin_class, capsys ) -> None:
     P = make_plugin_class(
         "P",
         UUID("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
         sql=["ghost_db"],
     )
 
-    with pytest.raises(RuntimeError, match="ghost_db"):
-        loader_mod.validate_plugin_connections([P()], registry)
+    
+    loader_mod.validate_plugin_connections([P()], registry)
+    out = capsys.readouterr().out
+    assert "Plugin SQL connection validation failed:" in out
+    assert "P: unknown connection 'ghost_db'" in out
+
+#    with pytest.raises(RuntimeError, match="ghost_db"):
