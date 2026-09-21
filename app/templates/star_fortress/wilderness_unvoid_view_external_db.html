@@ -78,12 +78,12 @@
                 const result = await response.json();
                 statusDiv.textContent = 'Success!' + JSON.stringify( result, null, 2);
                 statusDiv.style.color = 'green';
-                location.reload();
+                //	location.reload();
 			} else {
                 const errorText = await response.text();
                 statusDiv.textContent = `Server fail: ${response.status} - ${errorText}`;
                 statusDiv.style.color = 'red';
-				location.reload();
+				//location.reload();
             }
         } catch (error) {
             statusDiv.textContent = `Network fail: ${error.message}`;
